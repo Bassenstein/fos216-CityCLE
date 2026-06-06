@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Office of Data Center Development — City of Cleveland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D2240;--navy-mid:#1A3A5C;--navy-lt:#243F63;
+  --gold:#C8861A;--gold-lt:#E8A030;--gold-pale:#F5E6C8;
+  --teal:#0F7B60;--teal-lt:#1AA080;
+  --purple:#7B4FC4;--purple-lt:#C4A0F0;--purple-pale:#F0EBF8;
+  --white:#FAF8F3;--off:#EDE9DF;--muted:#8C8070;--text:#1C1814;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);overflow-x:hidden;font-size:16px;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,134,26,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,134,26,.04) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:64px}
+.nav-brand{display:flex;flex-direction:column;gap:1px}
+.nav-brand-top{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.18em;text-transform:uppercase}
+.nav-brand-name{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--white);letter-spacing:.06em}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,248,243,.65);text-decoration:none;transition:color .2s;font-weight:500}
+.nav-links a:hover{color:var(--gold-lt)}
+.nav-cta{background:var(--gold);color:var(--navy)!important;padding:8px 18px;border-radius:2px;font-weight:500!important}
+.nav-cta:hover{background:var(--gold-lt)!important}
+
+/* HERO */
+.hero{position:relative;background:var(--navy);min-height:88vh;display:flex;flex-direction:column;justify-content:flex-end;padding:6rem 3rem 4rem;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-20%;right:-5%;width:70%;height:140%;background:linear-gradient(135deg,transparent 0%,transparent 48%,rgba(200,134,26,.08) 48%,rgba(200,134,26,.08) 50%,transparent 50%,transparent 68%,rgba(200,134,26,.05) 68%,rgba(200,134,26,.05) 70%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;top:20%;right:15%;width:600px;height:600px;background:radial-gradient(ellipse,rgba(15,123,96,.12) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{position:relative;z-index:1;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.hero-eyebrow::before{content:'';display:block;width:40px;height:1px;background:var(--gold)}
+.hero-title{position:relative;z-index:1;font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,8vw,8rem);line-height:.92;color:var(--white);letter-spacing:.02em;margin-bottom:1rem}
+.hero-title span{color:var(--gold);display:block}
+.hero-sub{position:relative;z-index:1;font-size:1.1rem;color:rgba(250,248,243,.65);max-width:560px;margin-bottom:3rem;font-weight:300;line-height:1.7}
+.hero-stats{position:relative;z-index:1;display:flex;gap:0;border-top:1px solid rgba(200,134,26,.3);padding-top:2rem}
+.hero-stat{flex:1;padding-right:2.5rem;border-right:1px solid rgba(200,134,26,.2);margin-right:2.5rem}
+.hero-stat:last-child{border-right:none;margin-right:0}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--gold-lt);line-height:1;letter-spacing:.03em}
+.stat-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,248,243,.5);margin-top:4px;font-family:'DM Mono',monospace}
+.hero-badge{position:absolute;top:3rem;right:3rem;z-index:2;border:1px solid rgba(200,134,26,.4);padding:1rem 1.5rem;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.badge-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.badge-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--white);letter-spacing:.06em}
+
+/* SECTION UTILITIES */
+section{position:relative;z-index:1;padding:6rem 3rem}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem}
+.section-label::before{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,4vw,3.6rem);color:var(--navy);letter-spacing:.03em;line-height:1;margin-bottom:1.5rem}
+.section-intro{font-size:1.05rem;color:var(--muted);max-width:660px;line-height:1.75;font-weight:300}
+
+/* MISSION */
+.mission{background:var(--white)}
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:4rem;align-items:start}
+.mission-statement{font-size:1.3rem;font-weight:300;line-height:1.7;color:var(--text);border-left:3px solid var(--gold);padding-left:1.5rem}
+.mission-findings{display:flex;flex-direction:column;gap:1.5rem}
+.finding{display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;background:var(--off);border-left:3px solid var(--navy)}
+.finding-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);line-height:1;flex-shrink:0;width:32px}
+.finding-text{font-size:.875rem;line-height:1.6}
+.finding-text strong{display:block;font-weight:500;color:var(--navy);margin-bottom:2px;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em}
+
+/* DEPARTMENT STRUCTURE */
+.dept{background:var(--off)}
+.dept-intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-bottom:4rem;align-items:start}
+.dept-statement{font-size:1.1rem;font-weight:300;line-height:1.75;color:var(--text)}
+.dept-auth{display:flex;flex-direction:column;gap:.75rem}
+.auth-item{display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:var(--white);border-left:3px solid var(--gold)}
+.auth-icon{font-size:1.1rem;flex-shrink:0;margin-top:2px}
+.auth-body{}
+.auth-title{font-size:.85rem;font-weight:500;color:var(--navy);margin-bottom:2px}
+.auth-desc{font-size:.8rem;color:var(--muted);line-height:1.5}
+.staff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3.5rem}
+.staff-card{background:var(--white);padding:1.5rem;border-top:3px solid var(--navy);transition:border-top-color .2s}
+.staff-card:hover{border-top-color:var(--gold)}
+.staff-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--navy);letter-spacing:.03em;margin-bottom:.25rem}
+.staff-type{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.staff-desc{font-size:.8rem;color:var(--muted);line-height:1.55}
+.authority-banner{margin-top:3.5rem;background:var(--navy);padding:2rem 2.5rem;display:flex;align-items:center;gap:2rem}
+.ab-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);flex-shrink:0}
+.ab-text{font-size:.95rem;color:rgba(250,248,243,.75);line-height:1.6;border-left:1px solid rgba(200,134,26,.3);padding-left:2rem}
+
+/* TIERS */
+.tiers{background:var(--navy);overflow:hidden}
+.tiers .section-title{color:var(--white)}
+.tiers .section-intro{color:rgba(250,248,243,.55)}
+.tier-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;margin-top:3.5rem;background:rgba(200,134,26,.2)}
+.tier-card{background:var(--navy);padding:2rem 1.5rem;position:relative;cursor:pointer;transition:background .25s}
+.tier-card:hover{background:var(--navy-mid)}
+.tier-card::before{content:attr(data-tier);font-family:'Bebas Neue',sans-serif;font-size:5rem;color:rgba(200,134,26,.1);position:absolute;top:.5rem;right:1rem;line-height:1;pointer-events:none}
+.tier-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:3px 10px;border:1px solid var(--gold);color:var(--gold);margin-bottom:1rem}
+.tier-badge.t4{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.tier-badge.t5{background:#E8E0F5;color:#3B1A6B;border-color:var(--purple)}
+.tier-name{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--white);letter-spacing:.04em;margin-bottom:.25rem}
+.tier-load{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.1em;margin-bottom:1.25rem}
+.tier-items{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.tier-items li{font-size:.8rem;color:rgba(250,248,243,.6);padding-left:1rem;position:relative;line-height:1.5}
+.tier-items li::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:.7rem}
+.tier-timeline{margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(200,134,26,.2);font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.1em}
+
+/* PRE-EVALUATION */
+.preeval{background:var(--white)}
+.preeval-intro-row{display:grid;grid-template-columns:1.1fr .9fr;gap:4rem;margin-bottom:4rem;align-items:start}
+.preeval-statement{font-size:1.05rem;font-weight:300;line-height:1.8;color:var(--text)}
+.preeval-statement strong{color:var(--navy);font-weight:500}
+.preeval-callout{background:var(--navy);padding:1.75rem;display:flex;flex-direction:column;gap:.5rem}
+.pc-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem}
+.pc-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--white);letter-spacing:.03em;margin-bottom:.5rem}
+.pc-items{display:flex;flex-direction:column;gap:.4rem}
+.pc-item{font-size:.82rem;color:rgba(250,248,243,.7);padding-left:.9rem;position:relative}
+.pc-item::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:.75rem}
+.preeval-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:3rem}
+.pe-step{background:var(--off);padding:1.75rem;border-top:3px solid var(--navy);position:relative;transition:border-top-color .2s}
+.pe-step:hover{border-top-color:var(--gold)}
+.pe-step-num{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--navy);line-height:1;margin-bottom:.5rem;opacity:.25}
+.pe-step-title{font-size:.95rem;font-weight:500;color:var(--navy);margin-bottom:.4rem}
+.pe-step-desc{font-size:.82rem;color:var(--muted);line-height:1.6}
+.pe-step-tag{margin-top:1rem;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.preeval-matrix{margin-top:1rem}
+.matrix-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--navy);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--navy)}
+.matrix-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:var(--off)}
+.matrix-hdr{background:var(--navy);padding:.6rem 1rem;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-pale)}
+.matrix-cell{background:var(--white);padding:.65rem 1rem;font-size:.8rem;color:var(--text);line-height:1.4}
+.matrix-cell.muted{color:var(--muted)}
+.matrix-cell.flag{color:#A32D2D;font-weight:500}
+.matrix-cell.ok{color:var(--teal);font-weight:500}
+
+/* PLAN REVIEW */
+.planreview{background:var(--off)}
+.planreview .section-title{color:var(--navy)}
+.pr-overview{display:grid;grid-template-columns:1.1fr .9fr;gap:4rem;margin-bottom:4rem;align-items:start}
+.pr-statement{font-size:1.05rem;font-weight:300;line-height:1.8;color:var(--text)}
+.pr-statement strong{color:var(--navy);font-weight:500}
+.pr-sidebar{display:flex;flex-direction:column;gap:1rem}
+.pr-stat-card{background:var(--navy);padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:3px}
+.pr-stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--gold-lt);line-height:1}
+.pr-stat-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,248,243,.5)}
+.pr-disciplines{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:3rem}
+.pr-discipline{background:var(--white);padding:1.5rem;border-left:3px solid var(--navy);transition:border-left-color .2s}
+.pr-discipline:hover{border-left-color:var(--gold)}
+.prd-icon{font-size:1.4rem;margin-bottom:.75rem}
+.prd-title{font-size:.9rem;font-weight:500;color:var(--navy);margin-bottom:.3rem}
+.prd-agency{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.prd-items{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+.prd-items li{font-size:.78rem;color:var(--muted);padding-left:.75rem;position:relative;line-height:1.45}
+.prd-items li::before{content:'·';position:absolute;left:0;color:var(--gold)}
+.pr-timeline-table{background:var(--white)}
+.prt-hdr{display:grid;grid-template-columns:120px 1fr 1fr 1fr;gap:1px;background:var(--navy);padding:0}
+.prt-hdr-cell{background:var(--navy);padding:.7rem 1rem;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-pale)}
+.prt-row{display:grid;grid-template-columns:120px 1fr 1fr 1fr;gap:1px;background:var(--off);border-bottom:1px solid var(--off);transition:background .15s}
+.prt-row:hover{background:rgba(200,134,26,.06)}
+.prt-cell{background:var(--white);padding:.75rem 1rem;font-size:.82rem;color:var(--text);line-height:1.4}
+.prt-cell.tier-col{font-family:'DM Mono',monospace;font-size:.78rem;font-weight:500;color:var(--navy)}
+.prt-cell.days{color:var(--teal);font-weight:500;font-family:'DM Mono',monospace;font-size:.78rem}
+.pr-deficiency{margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+.prdef-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--navy);letter-spacing:.03em;margin-bottom:1rem}
+.prdef-steps{display:flex;flex-direction:column;gap:.75rem}
+.prdef-step{display:flex;gap:.75rem;align-items:flex-start;padding:.9rem 1rem;background:var(--white);border-left:2px solid var(--gold)}
+.prdef-dot{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--gold);flex-shrink:0;line-height:1.1}
+.prdef-body{font-size:.82rem;color:var(--text);line-height:1.5}
+.prdef-body strong{font-weight:500;color:var(--navy);display:block;margin-bottom:2px}
+
+/* WORKFLOW */
+.workflow{background:var(--white)}
+.workflow-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.step{background:var(--off);padding:2rem;border-top:3px solid transparent;transition:border-color .2s}
+.step:hover{border-top-color:var(--gold)}
+.step-phase{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem}
+.step-num-wrap{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.75rem}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--navy);line-height:1}
+.step-of{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)}
+.step-title{font-size:1rem;font-weight:500;color:var(--navy);margin-bottom:.5rem;line-height:1.3}
+.step-desc{font-size:.82rem;color:var(--muted);line-height:1.65}
+.step-duration{margin-top:1.25rem;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.08em;border-top:1px solid var(--off);padding-top:.75rem}
+
+/* AGENCIES */
+.agencies{background:var(--navy)}
+.agencies .section-title{color:var(--white)}
+.agencies .section-intro{color:rgba(250,248,243,.55)}
+.agencies-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem}
+.agency-card{border:1px solid rgba(200,134,26,.2);padding:1.75rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;background:rgba(255,255,255,.03)}
+.agency-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.agency-card::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.agency-card:hover::after{transform:scaleX(1)}
+.agency-abbr{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--white);letter-spacing:.04em;line-height:1;margin-bottom:.25rem}
+.agency-name{font-size:.78rem;font-weight:500;color:rgba(250,248,243,.5);margin-bottom:1rem;text-transform:uppercase;letter-spacing:.06em}
+.agency-role{font-size:.85rem;color:rgba(250,248,243,.7);line-height:1.6}
+.lead-banner{margin-top:3.5rem;background:var(--gold);padding:2rem 2.5rem;display:flex;align-items:center;gap:2.5rem}
+.lb-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--navy);letter-spacing:.03em;flex-shrink:0}
+.lb-text{font-size:.9rem;color:var(--navy);line-height:1.65;border-left:2px solid rgba(13,34,64,.3);padding-left:1.5rem}
+
+/* STANDARDS */
+.standards{background:var(--white)}
+.standards-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:3.5rem}
+.standard-block{background:var(--off);padding:2.5rem;border-top:2px solid var(--navy);transition:background .2s}
+.standard-block:hover{background:rgba(200,134,26,.04)}
+.standard-category{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.standard-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--navy);letter-spacing:.03em;margin-bottom:1.25rem}
+.standard-metrics{display:flex;flex-direction:column;gap:.75rem}
+.metric{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid rgba(200,134,26,.15);padding-bottom:.5rem}
+.metric-name{font-size:.82rem;color:var(--muted)}
+.metric-val{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--navy);letter-spacing:.06em;font-weight:500}
+
+/* PIPELINE */
+.pipeline{background:var(--off)}
+.pipeline-track{margin-top:3.5rem;display:flex;flex-direction:column;border-left:2px solid rgba(200,134,26,.3);padding-left:2.5rem}
+.pipeline-institution{display:grid;grid-template-columns:200px 1fr;gap:2rem;padding:2rem 0;border-bottom:1px solid rgba(200,134,26,.2);align-items:start;position:relative}
+.pipeline-institution:last-child{border-bottom:none}
+.pipeline-institution::after{content:'';position:absolute;left:-2.5rem;top:2.25rem;width:12px;height:12px;background:var(--gold);border-radius:50%;transform:translateX(-4px);z-index:2}
+.pi-left{display:flex;flex-direction:column;gap:4px}
+.pi-tier-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--white);background:var(--navy);display:inline-block;padding:3px 8px;width:fit-content;margin-bottom:4px}
+.pi-name{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--navy);letter-spacing:.03em;line-height:1.1}
+.pi-abbr{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em}
+.pi-desc{font-size:.9rem;color:var(--text);line-height:1.65;max-width:600px}
+.pi-tracks{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+.pi-track-tag{font-size:11px;padding:3px 10px;border:1px solid var(--gold);color:var(--gold);font-family:'DM Mono',monospace;letter-spacing:.06em}
+
+/* INCENTIVES */
+.incentives{background:var(--navy)}
+.incentives .section-title{color:var(--white)}
+.incentives .section-intro{color:rgba(250,248,243,.55)}
+.incentives-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem}
+.incentive-card{padding:2rem;background:rgba(255,255,255,.04);border:1px solid rgba(200,134,26,.2);border-bottom:3px solid var(--gold);transition:border-color .2s,background .2s}
+.incentive-card:hover{background:rgba(255,255,255,.07);border-color:var(--gold)}
+.ic-icon{font-size:1.5rem;margin-bottom:1rem}
+.ic-title{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;color:var(--white);letter-spacing:.03em;margin-bottom:.5rem}
+.ic-value{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem}
+.ic-desc{font-size:.83rem;color:rgba(250,248,243,.6);line-height:1.6}
+.penalty-section{margin-top:3.5rem;background:rgba(0,0,0,.2);padding:2rem}
+.penalty-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem}
+.penalty-row{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;padding:.85rem 0;border-bottom:1px solid rgba(200,134,26,.12)}
+.penalty-row:last-child{border-bottom:none}
+.penalty-violation{font-size:.85rem;color:rgba(250,248,243,.7)}
+.penalty-amount{font-family:'DM Mono',monospace;font-size:.82rem;color:#E87070;white-space:nowrap;font-weight:500;letter-spacing:.05em}
+
+/* TIMELINE */
+.timeline{background:var(--off)}
+.timeline .section-label{color:var(--gold)}
+.timeline .section-label::before{background:var(--gold)}
+.tl-entries{margin-top:3.5rem;display:flex;flex-direction:column;border-left:2px solid rgba(13,34,64,.25);padding-left:2.5rem}
+.tl-entry{display:grid;grid-template-columns:140px 1fr;gap:2rem;padding-bottom:2.5rem;position:relative}
+.tl-entry::before{content:'';position:absolute;left:-2.5rem;top:6px;width:10px;height:10px;background:var(--navy);border-radius:50%;transform:translateX(-4px)}
+.tl-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--navy);letter-spacing:.1em;padding-top:3px;font-weight:500}
+.tl-event-title{font-weight:500;color:var(--navy);font-size:.95rem;margin-bottom:4px}
+.tl-event-desc{font-size:.82rem;color:var(--muted);line-height:1.6}
+
+/* CTA */
+.cta-section{background:var(--gold);padding:5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:3rem}
+.cta-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--navy);margin-bottom:.75rem;opacity:.7}
+.cta-title{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--navy);letter-spacing:.03em;line-height:1}
+.cta-buttons{display:flex;gap:1rem;flex-shrink:0}
+.btn-primary{background:var(--navy);color:var(--white);padding:14px 28px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background .2s}
+.btn-primary:hover{background:var(--navy-lt)}
+.btn-secondary{background:transparent;color:var(--navy);padding:14px 28px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border:2px solid var(--navy);cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s}
+.btn-secondary:hover{background:var(--navy);color:var(--white)}
+
+/* FOOTER */
+footer{background:#08162B;padding:3rem;border-top:1px solid rgba(200,134,26,.25)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-brand-name{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--white);letter-spacing:.05em;margin-bottom:.5rem}
+.footer-brand-sub{font-size:.78rem;color:rgba(250,248,243,.4);line-height:1.6}
+.footer-col-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.footer-links a{font-size:.82rem;color:rgba(250,248,243,.5);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold-lt)}
+.footer-bottom{padding-top:2rem;border-top:1px solid rgba(200,134,26,.15);display:flex;justify-content:space-between;align-items:center}
+.footer-legal{font-size:.75rem;color:rgba(250,248,243,.3)}
+.footer-ordinance{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.1em}
+
+/* ANIMATIONS */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-d1{transition-delay:.1s}
+.reveal-d2{transition-delay:.2s}
+.reveal-d3{transition-delay:.3s}
+.reveal-d4{transition-delay:.4s}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .tier-cards,.staff-grid{grid-template-columns:1fr 1fr}
+  .workflow-steps,.mission-grid,.dept-intro-grid,.preeval-steps,.pr-disciplines,.agencies-grid,.incentives-grid,.pr-overview,.preeval-intro-row,.pr-deficiency{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .cta-section{flex-direction:column}
+  .hero-stats{flex-direction:column;gap:1.5rem}
+  .hero-stat{border-right:none}
+  nav{padding:0 1.5rem}
+  .nav-links{display:none}
+  section{padding:4rem 1.5rem}
+  .matrix-grid,.prt-hdr,.prt-row{grid-template-columns:1fr 1fr}
+  .standards-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <span class="nav-brand-top">City of Cleveland · Building &amp; Housing</span>
+    <span class="nav-brand-name">Office of Data Center Development</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#department">Department</a></li>
+    <li><a href="#tiers">Permit Tiers</a></li>
+    <li><a href="#preeval">Pre-Evaluation</a></li>
+    <li><a href="#planreview">Plan Review</a></li>
+    <li><a href="#agencies">Partners</a></li>
+    <li><a href="#apply" class="nav-cta">Apply</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-label">Ordinance</span>
+    <span class="badge-val">DCO-2025-001</span>
+    <span class="badge-label" style="margin-top:8px">Effective</span>
+    <span class="badge-val" style="font-size:1rem">Jan 1, 2026</span>
+  </div>
+  <div class="hero-eyebrow">Dept. of Building &amp; Housing · Cleveland, Ohio</div>
+  <h1 class="hero-title">
+    Office of<br>
+    Data Center<br>
+    <span>Development</span>
+  </h1>
+  <p class="hero-sub">
+    Cleveland's dedicated municipal authority for data center planning, permitting, and inspection —
+    the single point of contact coordinating all city agencies, protecting public infrastructure,
+    and positioning Cleveland as the Great Lakes capital of sustainable compute.
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="stat-num">250 kW</div>
+      <div class="stat-label">Minimum IT load threshold</div>
+    </div>
+    <div class="hero-stat">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Regulatory tiers</div>
+    </div>
+    <div class="hero-stat">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Partner agencies</div>
+    </div>
+    <div class="hero-stat">
+      <div class="stat-num">30</div>
+      <div class="stat-label">Day expedited review (Tier 4 &amp; 5)</div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission" id="mission">
+  <div class="section-label">Purpose &amp; Authority</div>
+  <h2 class="section-title">Why the ODCD Exists</h2>
+  <div class="mission-grid">
+    <div class="mission-statement reveal">
+      The ODCD is the primary municipal authority for all data center development within Cleveland city limits.
+      It operates as a coordinating department — receiving a single application from an operator and
+      routing it concurrently to every agency required to approve the project, eliminating sequential filing
+      and providing a unified, accountable point of contact from first inquiry through certificate of occupancy.
+    </div>
+    <div class="mission-findings">
+      <div class="finding reveal reveal-d1">
+        <div class="finding-num">1</div>
+        <div class="finding-text">
+          <strong>Water Stewardship</strong>
+          Unconstrained data center development risks unsustainable Lake Erie freshwater
+          consumption and unauthorized thermal discharge into the NEORSD collection system.
+        </div>
+      </div>
+      <div class="finding reveal reveal-d2">
+        <div class="finding-num">2</div>
+        <div class="finding-text">
+          <strong>Grid Reliability</strong>
+          Unplanned high-density load additions degrade power reliability for residential
+          and commercial ratepayers served by Cleveland Public Power and FirstEnergy/CEI.
+        </div>
+      </div>
+      <div class="finding reveal reveal-d3">
+        <div class="finding-num">3</div>
+        <div class="finding-text">
+          <strong>Sewer Protection</strong>
+          Process cooling water discharge into the NEORSD system is prohibited.
+          The ODCD enforces this at permit stage — before a shovel enters the ground.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPARTMENT STRUCTURE -->
+<section class="dept" id="department">
+  <div class="section-label">Department Structure</div>
+  <h2 class="section-title">How the ODCD Is Organized</h2>
+  <div class="dept-intro-grid">
+    <div class="dept-statement reveal">
+      The ODCD is established within the Department of Building &amp; Housing as a dedicated division
+      with its own permitting authority, inspection staff, and inter-agency coordination mandate.
+      Unlike a general building permit office, the ODCD holds technical subject-matter expertise
+      in power infrastructure, water systems, and environmental compliance — enabling it to evaluate
+      complex data center proposals as a first-order reviewer, not a pass-through.
+      <br><br>
+      The ODCD Director reports directly to the Commissioner of Building &amp; Housing and
+      coordinates standing working relationships with the Division of Water, Cleveland Public Power,
+      FirstEnergy/CEI, NEORSD, Ohio EPA, and the Mayor's Office of Sustainability.
+      Every data center permit issued in Cleveland carries the ODCD seal.
+    </div>
+    <div class="dept-auth">
+      <div class="auth-item reveal reveal-d1">
+        <div class="auth-icon">📋</div>
+        <div class="auth-body">
+          <div class="auth-title">Primary Permit Authority</div>
+          <div class="auth-desc">The ODCD is the sole issuing authority for data center building permits, certificates of occupancy, and annual operating licenses within Cleveland city limits.</div>
+        </div>
+      </div>
+      <div class="auth-item reveal reveal-d2">
+        <div class="auth-icon">🔄</div>
+        <div class="auth-body">
+          <div class="auth-title">Concurrent Agency Router</div>
+          <div class="auth-desc">A single application filed with the ODCD is simultaneously distributed to all six partner agencies. No operator files independently with any partner agency.</div>
+        </div>
+      </div>
+      <div class="auth-item reveal reveal-d3">
+        <div class="auth-icon">🔍</div>
+        <div class="auth-body">
+          <div class="auth-title">Technical Reviewer</div>
+          <div class="auth-desc">ODCD staff perform first-order technical review of power, water, cooling, and structural plans before distributing to partner agencies — filtering incomplete submissions at intake.</div>
+        </div>
+      </div>
+      <div class="auth-item reveal reveal-d4">
+        <div class="auth-icon">⚖️</div>
+        <div class="auth-body">
+          <div class="auth-title">Enforcement Authority</div>
+          <div class="auth-desc">The ODCD issues stop-work orders, civil penalties, license suspensions, and permit revocations under Ordinance DCO-2025-001 without requiring a court order for compliance actions.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-bottom:1.25rem">Authorized Positions</div>
+  <div class="staff-grid">
+    <div class="staff-card reveal">
+      <div class="staff-type">Executive</div>
+      <div class="staff-title">ODCD Director</div>
+      <div class="staff-desc">Department head. Reports to Commissioner of Building &amp; Housing. Chairs the inter-agency Data Center Technical Committee. Signs all permits, COs, and enforcement orders.</div>
+    </div>
+    <div class="staff-card reveal reveal-d1">
+      <div class="staff-type">Plan Review · 2 Positions</div>
+      <div class="staff-title">Senior Plan Reviewers</div>
+      <div class="staff-desc">Licensed P.E. or equivalent. Conduct technical plan review across structural, mechanical, electrical, and plumbing disciplines. Issue completeness determinations within 10 business days of submission.</div>
+    </div>
+    <div class="staff-card reveal reveal-d2">
+      <div class="staff-type">Field Inspection · 2 Positions</div>
+      <div class="staff-title">Environmental &amp; Electrical Inspectors</div>
+      <div class="staff-desc">Conduct on-site inspections at foundation, rough-in, cooling system, switchgear, and final stages. Verify continuous monitoring systems before CO issuance. Enforce NEORSD sewer exclusion rule in field.</div>
+    </div>
+    <div class="staff-card reveal reveal-d3">
+      <div class="staff-type">Agency Coordination</div>
+      <div class="staff-title">Grid &amp; Utility Liaison</div>
+      <div class="staff-desc">Dedicated point of contact with CPP, FirstEnergy/CEI, and PJM. Manages grid interconnection study routing, demand response enrollment verification, and on-site generation certification.</div>
+    </div>
+  </div>
+
+  <div class="authority-banner reveal">
+    <div class="ab-label">Ordinance Authority</div>
+    <div class="ab-text">
+      The ODCD operates under Ordinance DCO-2025-001, adopted by Cleveland City Council.
+      The ordinance grants the ODCD statutory authority to condition, deny, suspend, or revoke any
+      data center building permit, certificate of occupancy, or operating license without further
+      Council action. Civil penalties are collectible as municipal debt. Enforcement actions are
+      posted publicly to the ODCD permit portal within 48 hours of issuance.
+    </div>
+  </div>
+</section>
+
+<!-- TIERS -->
+<section class="tiers" id="tiers">
+  <div class="section-label">Classification Framework</div>
+  <h2 class="section-title">Five Regulatory Tiers</h2>
+  <p class="section-intro">Tier classification is based on peak IT load declared at permit application and determines review timeline, on-site generation requirements, power architecture, and water use limits.</p>
+  <div class="tier-cards">
+    <div class="tier-card reveal" data-tier="1">
+      <div class="tier-badge">Tier 1</div>
+      <div class="tier-name">Edge / Small</div>
+      <div class="tier-load">250 kW – 5 MW</div>
+      <ul class="tier-items">
+        <li>Water metering required</li>
+        <li>PUE ≤ 1.5 target</li>
+        <li>Domestic sewer only</li>
+        <li>UPS backup mandatory</li>
+      </ul>
+      <div class="tier-timeline">Standard review: 60 days</div>
+    </div>
+    <div class="tier-card reveal reveal-d1" data-tier="2">
+      <div class="tier-badge">Tier 2</div>
+      <div class="tier-name">Mid-Scale</div>
+      <div class="tier-load">5 MW – 20 MW</div>
+      <ul class="tier-items">
+        <li>WUE ≤ 1.5 L/kWh</li>
+        <li>≥25% on-site generation</li>
+        <li>Grid study required</li>
+        <li>PJM DR enrollment</li>
+      </ul>
+      <div class="tier-timeline">Standard review: 75 days</div>
+    </div>
+    <div class="tier-card reveal reveal-d2" data-tier="3">
+      <div class="tier-badge">Tier 3</div>
+      <div class="tier-name">Hyperscale</div>
+      <div class="tier-load">20 MW – 100 MW</div>
+      <ul class="tier-items">
+        <li>WUE ≤ 1.2 L/kWh</li>
+        <li>≥75% on-site renewable / microgrid</li>
+        <li>Closed-loop cooling mandatory</li>
+        <li>Island-capable microgrid</li>
+      </ul>
+      <div class="tier-timeline">Standard review: 90 days</div>
+    </div>
+    <div class="tier-card reveal reveal-d3" data-tier="4">
+      <div class="tier-badge t4">Tier 4 ★</div>
+      <div class="tier-name">Campus-Scale</div>
+      <div class="tier-load">100 MW – 500 MW</div>
+      <ul class="tier-items">
+        <li>Net-zero water — 100% return to source</li>
+        <li>DO ≥ 8.0 mg/L at discharge</li>
+        <li>100% carbon-free power</li>
+        <li>FastOx / KARNO / PEM preferred</li>
+      </ul>
+      <div class="tier-timeline">Expedited review: 30 days</div>
+    </div>
+    <div class="tier-card reveal reveal-d4" data-tier="5" style="border-left:2px solid #7B4FC4">
+      <div class="tier-badge t5">Tier 5 ⬡ National Critical</div>
+      <div class="tier-name" style="color:#C4A0F0">Gigascale</div>
+      <div class="tier-load" style="color:#C4A0F0">501 MW+</div>
+      <ul class="tier-items">
+        <li>800 VDC power architecture mandatory</li>
+        <li>NG or H₂ turbine generator and/or onsite SMR</li>
+        <li>Net-zero water + DO reoxygenation</li>
+        <li>PJM transmission study + FERC coordination</li>
+        <li>Ohio Power Siting Board fast-track</li>
+        <li>NRC pre-application (SMR pathway)</li>
+      </ul>
+      <div class="tier-timeline" style="color:#C4A0F0;border-top-color:rgba(124,79,196,.3)">Expedited review: 30 days · Joint ODCD/State desk</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRE-EVALUATION -->
+<section class="preeval" id="preeval">
+  <div class="section-label">Step 1 of 3 — Before You Apply</div>
+  <h2 class="section-title">Pre-Evaluation &amp; Site Screening</h2>
+  <div class="preeval-intro-row">
+    <div class="preeval-statement reveal">
+      The ODCD Pre-Evaluation process is the <strong>mandatory first engagement</strong> between a prospective data center operator and the City of Cleveland. It is not a courtesy — it is a required prerequisite before any permit application is accepted. Pre-Evaluation protects both the operator and the City: operators receive a binding Tier Determination and a list of agency conditions before investing in full design documents, and the City ensures that no application enters formal review without passing a baseline feasibility screen.
+      <br><br>
+      The Pre-Evaluation process has three sequential steps: the <strong>Site Screening Form</strong>, the <strong>ODCD Technical Intake Meeting</strong>, and issuance of the <strong>Preliminary Tier Determination Letter</strong>. Only after receiving a valid PTD Letter may an operator submit Form DCO-APP-001.
+    </div>
+    <div class="preeval-callout reveal reveal-d1">
+      <div class="pc-label">What Pre-Evaluation Establishes</div>
+      <div class="pc-title">Binding Determinations Before Design</div>
+      <div class="pc-items">
+        <div class="pc-item">Preliminary Tier classification (binding for 18 months)</div>
+        <div class="pc-item">Water source feasibility — Lake Erie intake zone, city main, or private well</div>
+        <div class="pc-item">Grid interconnection point — CPP or CEI service territory, transmission voltage</div>
+        <div class="pc-item">NEORSD sewer exclusion confirmation — no process water pathway to collection system</div>
+        <div class="pc-item">Required Water Impact Study scope and parameters</div>
+        <div class="pc-item">Required Grid Interconnection Study scope and utility contact</div>
+        <div class="pc-item">Ohio EPA NPDES applicability determination</div>
+        <div class="pc-item">Tier 5 flag: OPSB and NRC coordination trigger points</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-bottom:1.25rem">Three-Step Pre-Evaluation Sequence</div>
+  <div class="preeval-steps">
+    <div class="pe-step reveal">
+      <div class="pe-step-num">01</div>
+      <div class="pe-step-title">Site Screening Form (SSF)</div>
+      <div class="pe-step-desc">
+        Operator submits the two-page ODCD Site Screening Form online. The SSF captures: proposed site address and parcel ID, estimated peak IT load (kW), proposed cooling architecture (air-side, water-side, immersion, or hybrid), proposed power supply (utility grid, on-site generation type, or combination), and contact information. No fee. ODCD reviews within 5 business days and issues either a Completeness Confirmation or a Request for Clarification.
+      </div>
+      <div class="pe-step-tag">Timeline: 5 business days · No fee · Online submission</div>
+    </div>
+    <div class="pe-step reveal reveal-d1">
+      <div class="pe-step-num">02</div>
+      <div class="pe-step-title">ODCD Technical Intake Meeting</div>
+      <div class="pe-step-desc">
+        Required meeting held at 601 Lakeside Ave or via ODCD video portal. Attendees must include the operator's representative, mechanical/electrical engineer of record (or equivalent), and — for Tier 3 through Tier 5 — the operator's licensed P.E. ODCD is represented by the Director or Senior Plan Reviewer, Grid &amp; Utility Liaison, and the NEORSD Coordination Specialist. Topics covered: site constraints, cooling system concept, power supply pathway, NEORSD sewer exclusion plan, water intake source, and timeline expectations. Meeting minutes are circulated within 3 business days and form part of the record.
+      </div>
+      <div class="pe-step-tag">Timeline: Scheduled within 15 days of SSF confirmation</div>
+    </div>
+    <div class="pe-step reveal reveal-d2">
+      <div class="pe-step-num">03</div>
+      <div class="pe-step-title">Preliminary Tier Determination Letter</div>
+      <div class="pe-step-desc">
+        Issued by the ODCD Director within 10 business days of the Technical Intake Meeting. The PTD Letter binds the City to the stated tier classification for 18 months from issuance, provided the operator does not materially change the proposed IT load or cooling architecture. The letter also includes: the list of required attachments for the formal application, the names of the assigned agency contacts at each of the six partner agencies, scope parameters for the Water Impact Study and Grid Interconnection Study, and any site-specific conditions identified during the intake meeting.
+      </div>
+      <div class="pe-step-tag">Issued within 10 business days · Valid 18 months</div>
+    </div>
+  </div>
+
+  <div class="preeval-matrix">
+    <div class="matrix-title">Pre-Evaluation Screening Matrix — Common Issues Identified at Intake</div>
+    <div class="matrix-grid">
+      <div class="matrix-hdr">Issue Category</div>
+      <div class="matrix-hdr">Example Finding</div>
+      <div class="matrix-hdr">ODCD Action</div>
+      <div class="matrix-hdr">Outcome</div>
+
+      <div class="matrix-cell">Sewer risk</div>
+      <div class="matrix-cell">Cooling tower blowdown drain connected to NEORSD manhole on concept drawings</div>
+      <div class="matrix-cell">Issue Sewer Risk Flag; require revised drain plan before PTD Letter</div>
+      <div class="matrix-cell ok">Correctable — redesign required</div>
+
+      <div class="matrix-cell">Grid capacity</div>
+      <div class="matrix-cell">Proposed 50 MW utility-only load on a feeder already at 70% capacity</div>
+      <div class="matrix-cell">Route to CPP/CEI for feeder study; flag on-site generation requirement</div>
+      <div class="matrix-cell ok">Correctable — gen requirement added</div>
+
+      <div class="matrix-cell">IT load understatement</div>
+      <div class="matrix-cell">Declared 18 MW but rack count and density imply 28–35 MW at full build-out</div>
+      <div class="matrix-cell">Reclassify to Tier 3; require revised power study and P.E. declaration</div>
+      <div class="matrix-cell flag">Tier reclassified upward</div>
+
+      <div class="matrix-cell">Water source conflict</div>
+      <div class="matrix-cell">Proposed intake location within 500 ft of GLWA intake structure</div>
+      <div class="matrix-cell">Require Division of Water intake conflict analysis before PTD Letter</div>
+      <div class="matrix-cell flag">Additional study required</div>
+
+      <div class="matrix-cell">Zoning mismatch</div>
+      <div class="matrix-cell">Proposed site in residential transition zone incompatible with DC use</div>
+      <div class="matrix-cell">Issue negative Site Feasibility Finding; refer to City Planning for variance</div>
+      <div class="matrix-cell flag">Application blocked pending variance</div>
+
+      <div class="matrix-cell">Tier 5 trigger</div>
+      <div class="matrix-cell">Declared 300 MW but phased build-out roadmap shows 750 MW by Year 5</div>
+      <div class="matrix-cell">Issue Tier 5 Notice; activate OPSB and NRC coordination trigger</div>
+      <div class="matrix-cell flag">OPSB/NRC coordination required</div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAN REVIEW -->
+<section class="planreview" id="planreview">
+  <div class="section-label">Step 2 of 3 — Formal Application Review</div>
+  <h2 class="section-title">ODCD Plan Review Process</h2>
+  <div class="pr-overview">
+    <div class="pr-statement reveal">
+      Plan Review is the core technical function of the ODCD. After an operator submits Form DCO-APP-001 and all required attachments, the ODCD Senior Plan Reviewers conduct a structured multi-discipline review across six technical domains: <strong>structural/architectural, mechanical/cooling, electrical/power, plumbing/drainage, environmental/water, and life safety/fire protection</strong>.
+      <br><br>
+      The ODCD does not wait for partner agencies before beginning its own review. ODCD technical review runs concurrently with agency review. The ODCD Plan Review team is the integrating body — it identifies conflicts, gaps, and conditions across all agency comments and assembles a single <strong>Consolidated Review Response (CRR)</strong> for the operator. No partner agency may issue independent permit denials, approvals, or conditions directly to the operator during active ODCD review.
+      <br><br>
+      This model gives operators a single voice from the City, eliminates conflicting agency directives, and establishes clear accountability: if the project stalls in review, the operator has one number to call.
+    </div>
+    <div class="pr-sidebar">
+      <div class="pr-stat-card reveal reveal-d1">
+        <div class="pr-stat-num">6</div>
+        <div class="pr-stat-label">Technical review disciplines</div>
+      </div>
+      <div class="pr-stat-card reveal reveal-d2">
+        <div class="pr-stat-num">1</div>
+        <div class="pr-stat-label">Consolidated Review Response — single ODCD document</div>
+      </div>
+      <div class="pr-stat-card reveal reveal-d3">
+        <div class="pr-stat-num">21</div>
+        <div class="pr-stat-label">Day maximum for deficiency response by operator</div>
+      </div>
+      <div class="pr-stat-card reveal reveal-d4" style="background:rgba(200,134,26,.15)">
+        <div class="pr-stat-num" style="color:var(--gold)">30→90</div>
+        <div class="pr-stat-label">Day review clock by tier (Tier 4/5 expedited to 30 days)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-bottom:1.25rem">Six Review Disciplines</div>
+  <div class="pr-disciplines">
+    <div class="pr-discipline reveal">
+      <div class="prd-icon">🏗️</div>
+      <div class="prd-title">Structural &amp; Architectural</div>
+      <div class="prd-agency">Primary: Building &amp; Housing (ODCD)</div>
+      <ul class="prd-items">
+        <li>Foundation design for raised floor and live load (kW/sq ft)</li>
+        <li>Structural framing for rooftop cooling towers and generator pads</li>
+        <li>Floor-to-ceiling heights for hot aisle/cold aisle clearance</li>
+        <li>Loading dock and equipment delivery path dimensions</li>
+        <li>Seismic bracing for server rack arrays</li>
+        <li>Blast and intrusion resistance (Tier 4 &amp; 5)</li>
+      </ul>
+    </div>
+    <div class="pr-discipline reveal reveal-d1">
+      <div class="prd-icon">❄️</div>
+      <div class="prd-title">Mechanical &amp; Cooling</div>
+      <div class="prd-agency">Primary: ODCD · Concurrent: Division of Water, NEORSD</div>
+      <ul class="prd-items">
+        <li>Cooling system P&amp;ID diagrams — full process flow</li>
+        <li>Closed-loop circuit verification — no process drain to NEORSD</li>
+        <li>Cooling tower blowdown routing — certified closed-loop or return to source</li>
+        <li>Water Usage Effectiveness (WUE) calculation and documentation</li>
+        <li>Discharge temperature and dissolved oxygen modeling</li>
+        <li>Immersion cooling fluid secondary containment (Tier 3+)</li>
+      </ul>
+    </div>
+    <div class="pr-discipline reveal reveal-d2">
+      <div class="prd-icon">⚡</div>
+      <div class="prd-title">Electrical &amp; Power</div>
+      <div class="prd-agency">Primary: ODCD · Concurrent: CPP / CEI, Mayor's Office of Sustainability</div>
+      <ul class="prd-items">
+        <li>One-line diagram from utility point of interconnection through UPS to rack</li>
+        <li>On-site generation single-line and protection coordination study</li>
+        <li>800 VDC bus architecture documentation (Tier 5 mandatory)</li>
+        <li>Turbine / SMR power block specifications and commissioning plan</li>
+        <li>PUE design calculation and metering plan</li>
+        <li>BESS sizing and interconnection protection relay coordination</li>
+      </ul>
+    </div>
+    <div class="pr-discipline reveal">
+      <div class="prd-icon">🚰</div>
+      <div class="prd-title">Plumbing &amp; Drainage</div>
+      <div class="prd-agency">Primary: ODCD · Concurrent: NEORSD, Division of Water</div>
+      <ul class="prd-items">
+        <li>Isometric drawings for all water service lines</li>
+        <li>Drain plan with explicit labeling: domestic vs. process vs. storm</li>
+        <li>NEORSD sewer connection certificate — domestic-only declaration</li>
+        <li>Backflow preventer location on all water services</li>
+        <li>Grease trap / interceptor requirements (cafeteria / break rooms)</li>
+        <li>Secondary containment for chemical treatment storage</li>
+      </ul>
+    </div>
+    <div class="pr-discipline reveal reveal-d1">
+      <div class="prd-icon">🌊</div>
+      <div class="prd-title">Environmental &amp; Water</div>
+      <div class="prd-agency">Primary: ODCD · Concurrent: Division of Water, Ohio EPA, NEORSD</div>
+      <ul class="prd-items">
+        <li>Water Impact Study — full ODCD-WIS-001 scope review</li>
+        <li>Lake Erie intake permit and GLWA coordination documentation</li>
+        <li>NPDES permit application or exemption determination</li>
+        <li>Discharge monitoring system architecture — ODCD dashboard API</li>
+        <li>Biocide management plan and spill prevention / SPCC plan</li>
+        <li>Thermal plume modeling at return point (Tier 3+)</li>
+      </ul>
+    </div>
+    <div class="pr-discipline reveal reveal-d2">
+      <div class="prd-icon">🔥</div>
+      <div class="prd-title">Life Safety &amp; Fire Protection</div>
+      <div class="prd-agency">Primary: ODCD · Concurrent: Cleveland Division of Fire</div>
+      <ul class="prd-items">
+        <li>FM Global / NFPA 75 data center fire suppression compliance</li>
+        <li>Clean agent suppression system design and cylinder sizing</li>
+        <li>Lithium-ion BESS fire detection and suppression (Tier 3+)</li>
+        <li>Hydrogen generation area ventilation and explosion protection</li>
+        <li>Emergency egress and access routes for emergency responders</li>
+        <li>High-voltage equipment clearances (per NFPA 70E)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-bottom:1.25rem">Review Timelines by Tier</div>
+  <div class="pr-timeline-table">
+    <div class="prt-hdr">
+      <div class="prt-hdr-cell">Tier</div>
+      <div class="prt-hdr-cell">Completeness Check</div>
+      <div class="prt-hdr-cell">ODCD + Agency Review Clock</div>
+      <div class="prt-hdr-cell">CRR Issued / Next Step</div>
+    </div>
+    <div class="prt-row">
+      <div class="prt-cell tier-col">Tier 1</div>
+      <div class="prt-cell">10 business days from submission</div>
+      <div class="prt-cell days">60 days from completeness determination</div>
+      <div class="prt-cell">Conditional Building Permit or deficiency letter issued</div>
+    </div>
+    <div class="prt-row">
+      <div class="prt-cell tier-col">Tier 2</div>
+      <div class="prt-cell">10 business days. Grid interconnection study must accompany application.</div>
+      <div class="prt-cell days">75 days from completeness determination</div>
+      <div class="prt-cell">CRR + CPP/CEI grid approval or conditions issued together</div>
+    </div>
+    <div class="prt-row">
+      <div class="prt-cell tier-col">Tier 3</div>
+      <div class="prt-cell">15 business days. P.E. seal on water, power, and cooling plans required.</div>
+      <div class="prt-cell days">90 days from completeness determination</div>
+      <div class="prt-cell">CRR includes NEORSD, Ohio EPA, and DOW conditions. Performance bond sized.</div>
+    </div>
+    <div class="prt-row">
+      <div class="prt-cell tier-col">Tier 4</div>
+      <div class="prt-cell">15 business days. Net-zero water and carbon-free power certifications required.</div>
+      <div class="prt-cell days">30 days (expedited) from completeness determination</div>
+      <div class="prt-cell">Expedited CRR. All agency conditions consolidated. Permit ready within 5 days of CRR acceptance.</div>
+    </div>
+    <div class="prt-row">
+      <div class="prt-cell tier-col" style="color:var(--purple)">Tier 5</div>
+      <div class="prt-cell">20 business days. 800 VDC architecture cert, turbine/SMR specs, OPSB filing required.</div>
+      <div class="prt-cell days" style="color:var(--purple)">30 days — Joint ODCD / State desk</div>
+      <div class="prt-cell">Joint CRR with OPSB. NRC pre-application meeting on record. FERC §205 filing confirmed.</div>
+    </div>
+  </div>
+
+  <div class="pr-deficiency">
+    <div>
+      <div class="prdef-title">Deficiency Response Process</div>
+      <div class="prdef-steps">
+        <div class="prdef-step reveal">
+          <div class="prdef-dot">1</div>
+          <div class="prdef-body">
+            <strong>Deficiency Letter Issued</strong>
+            ODCD issues a single consolidated Deficiency Letter listing all items from all six agencies. Review clock is paused at the date of issuance.
+          </div>
+        </div>
+        <div class="prdef-step reveal reveal-d1">
+          <div class="prdef-dot">2</div>
+          <div class="prdef-body">
+            <strong>Operator Response Window</strong>
+            Operator has 21 calendar days to submit a Response to Deficiency package. One 14-day extension may be requested in writing before the deadline.
+          </div>
+        </div>
+        <div class="prdef-step reveal reveal-d2">
+          <div class="prdef-dot">3</div>
+          <div class="prdef-body">
+            <strong>ODCD Adequacy Review</strong>
+            ODCD reviews the response and determines adequacy within 10 business days. If adequate, review clock restarts with remaining days. If inadequate, a second — and final — deficiency letter is issued.
+          </div>
+        </div>
+        <div class="prdef-step reveal reveal-d3">
+          <div class="prdef-dot">4</div>
+          <div class="prdef-body">
+            <strong>Second Deficiency / Denial</strong>
+            Failure to adequately resolve all items on the second deficiency letter results in application denial. A denied application may be resubmitted as a new application with new fees after 90 days.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="prdef-title">What Triggers Automatic Rejection</div>
+      <div class="prdef-steps">
+        <div class="prdef-step reveal">
+          <div class="prdef-dot" style="color:#A32D2D">✕</div>
+          <div class="prdef-body">
+            <strong>No Valid PTD Letter</strong>
+            Application submitted without a current Preliminary Tier Determination Letter is returned unreviewed within 5 business days. Pre-Evaluation step is mandatory.
+          </div>
+        </div>
+        <div class="prdef-step reveal reveal-d1">
+          <div class="prdef-dot" style="color:#A32D2D">✕</div>
+          <div class="prdef-body">
+            <strong>Process Drain to NEORSD Shown on Plans</strong>
+            Any plan set showing a process cooling water drain connection to the NEORSD collection system triggers immediate rejection and a Sewer Risk Notice to NEORSD.
+          </div>
+        </div>
+        <div class="prdef-step reveal reveal-d2">
+          <div class="prdef-dot" style="color:#A32D2D">✕</div>
+          <div class="prdef-body">
+            <strong>IT Load Inconsistency</strong>
+            If declared IT load in Section 2 is inconsistent with rack count, power density, and UPS sizing shown on the electrical plans by more than 15%, ODCD issues a Tier Reclassification Notice and rejects the application pending re-submission at the correct tier.
+          </div>
+        </div>
+        <div class="prdef-step reveal reveal-d3">
+          <div class="prdef-dot" style="color:#A32D2D">✕</div>
+          <div class="prdef-body">
+            <strong>Missing P.E. Seal (Tier 3, 4, 5)</strong>
+            Water Impact Study, cooling system design, and power supply documentation for Tier 3 and above must carry an Ohio-registered P.E. seal. Unsealed documents are rejected at completeness check.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW OVERVIEW -->
+<section class="workflow" id="workflow">
+  <div class="section-label">Full Permit Lifecycle</div>
+  <h2 class="section-title">Nine-Step Unified Process</h2>
+  <p class="section-intro">From first contact to operating license — the complete ODCD workflow. Every step is managed by a single department with a single point of contact for the operator.</p>
+  <div class="workflow-steps" style="margin-top:3.5rem">
+    <div class="step reveal">
+      <div class="step-phase">Phase 1 — Pre-Evaluation</div>
+      <div class="step-num-wrap"><div class="step-num">01</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Site Screening Form</div>
+      <div class="step-desc">Operator submits the two-page online SSF. ODCD confirms completeness within 5 business days. No fee required. Establishes the operator in the ODCD case management system.</div>
+      <div class="step-duration">5 business days · Online submission · No fee</div>
+    </div>
+    <div class="step reveal reveal-d1">
+      <div class="step-phase">Phase 1 — Pre-Evaluation</div>
+      <div class="step-num-wrap"><div class="step-num">02</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Technical Intake Meeting</div>
+      <div class="step-desc">Mandatory meeting with ODCD Director, Grid &amp; Utility Liaison, and NEORSD Coordination Specialist. Engineer of record required for Tier 3+. Meeting minutes become part of the project record.</div>
+      <div class="step-duration">Scheduled within 15 days of SSF confirmation</div>
+    </div>
+    <div class="step reveal reveal-d2">
+      <div class="step-phase">Phase 1 — Pre-Evaluation</div>
+      <div class="step-num-wrap"><div class="step-num">03</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Preliminary Tier Determination Letter</div>
+      <div class="step-desc">ODCD Director issues binding PTD Letter with tier classification, required study scopes, agency contacts, and site-specific conditions. Valid 18 months. Required before any formal application is accepted.</div>
+      <div class="step-duration">Issued within 10 business days · Valid 18 months</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-phase">Phase 2 — Plan Review</div>
+      <div class="step-num-wrap"><div class="step-num">04</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Unified Application Submission</div>
+      <div class="step-desc">Operator files Form DCO-APP-001 with all required attachments and application fee. ODCD completeness check within 10–20 business days (by tier). Incomplete submissions returned without review.</div>
+      <div class="step-duration">Fee: $2,500 (Tier 1) → $75,000 (Tier 5)</div>
+    </div>
+    <div class="step reveal reveal-d1">
+      <div class="step-phase">Phase 2 — Plan Review</div>
+      <div class="step-num-wrap"><div class="step-num">05</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Concurrent Six-Agency Review</div>
+      <div class="step-desc">ODCD routes to all six partner agencies simultaneously. ODCD Senior Plan Reviewers conduct independent six-discipline technical review in parallel. Review clock: 30–90 days by tier.</div>
+      <div class="step-duration">Clock stops at deficiency letter; restarts at operator response</div>
+    </div>
+    <div class="step reveal reveal-d2">
+      <div class="step-phase">Phase 2 — Plan Review</div>
+      <div class="step-num-wrap"><div class="step-num">06</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Consolidated Review Response &amp; Permit</div>
+      <div class="step-desc">ODCD assembles all agency findings into a single CRR. Operator receives one document, one contact, one revision cycle. Conditional Building Permit issued with performance bond requirement.</div>
+      <div class="step-duration">Performance bond sized to worst-case NEORSD remediation cost</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-phase">Phase 3 — Construction &amp; CO</div>
+      <div class="step-num-wrap"><div class="step-num">07</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Construction Inspections</div>
+      <div class="step-desc">ODCD inspectors conduct milestone inspections: foundation, mechanical rough-in, cooling system pressure test, electrical switchgear commissioning, and final. Field verification of NEORSD sewer exclusion at rough-in stage.</div>
+      <div class="step-duration">Thermal discharge simulation test required before CO</div>
+    </div>
+    <div class="step reveal reveal-d1">
+      <div class="step-phase">Phase 3 — Construction &amp; CO</div>
+      <div class="step-num-wrap"><div class="step-num">08</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Pre-Occupancy Environmental Audit</div>
+      <div class="step-desc">Joint audit by ODCD, Ohio EPA, and NEORSD. All cooling circuits, drain connections, and discharge points inspected. Continuous monitoring system must be online and transmitting to ODCD dashboard before CO is issued.</div>
+      <div class="step-duration">CO withheld until dashboard connection verified live</div>
+    </div>
+    <div class="step reveal reveal-d2">
+      <div class="step-phase">Phase 3 — Operations</div>
+      <div class="step-num-wrap"><div class="step-num">09</div><div class="step-of">/ 09</div></div>
+      <div class="step-title">Annual Operating License Renewal</div>
+      <div class="step-desc">License renewed annually. Operator submits prior-year water use report (WUE, total withdrawal, return temps), energy report (PUE, on-site generation %), and PJM DR performance record. Violations trigger suspension.</div>
+      <div class="step-duration">Annual license fee: $1,500 (Tier 1) → $40,000 (Tier 5)</div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENCIES -->
+<section class="agencies" id="agencies">
+  <div class="section-label">Coordinating Partners</div>
+  <h2 class="section-title">Six-Agency Partnership</h2>
+  <p class="section-intro">The ODCD leads — every partner agency receives the application from ODCD, routes comments back to ODCD, and issues no independent directives to the operator. One interface. One voice.</p>
+  <div class="agencies-grid">
+    <div class="agency-card reveal">
+      <div class="agency-abbr">ODCD</div>
+      <div class="agency-name">Office of Data Center Development (Lead)</div>
+      <div class="agency-role">Primary permit authority, plan review lead, inspection authority, enforcement, CO and annual license issuance. All other agencies report review findings to ODCD — not directly to the operator.</div>
+    </div>
+    <div class="agency-card reveal reveal-d1">
+      <div class="agency-abbr">DOW</div>
+      <div class="agency-name">Cleveland Division of Water</div>
+      <div class="agency-role">Water intake metering, discharge oversight, Lake Erie thermal compliance monitoring, and GLWA coordination for high-volume withdrawals. Review findings submitted to ODCD within the review clock.</div>
+    </div>
+    <div class="agency-card reveal reveal-d2">
+      <div class="agency-abbr">CPP</div>
+      <div class="agency-name">Cleveland Public Power / FirstEnergy CEI</div>
+      <div class="agency-role">Grid interconnection coordination, load curtailment agreement execution, PJM demand response enrollment verification, and on-site generation certification. Findings consolidated into ODCD CRR.</div>
+    </div>
+    <div class="agency-card reveal">
+      <div class="agency-abbr">NEORSD</div>
+      <div class="agency-name">NE Ohio Regional Sewer District</div>
+      <div class="agency-role">Industrial pretreatment permitting, sewer exclusion enforcement, biocide and temperature monitoring, and performance bond oversight. Any NEORSD Sewer Risk Flag is communicated to operator through ODCD only.</div>
+    </div>
+    <div class="agency-card reveal reveal-d1">
+      <div class="agency-abbr">EPA</div>
+      <div class="agency-name">Ohio Environmental Protection Agency</div>
+      <div class="agency-role">NPDES permit for any surface water discharge, thermal discharge compliance review, and air quality review for on-site generation systems above 1 MW. NPDES determination routed through ODCD CRR.</div>
+    </div>
+    <div class="agency-card reveal reveal-d2">
+      <div class="agency-abbr">MOS</div>
+      <div class="agency-name">Mayor's Office of Sustainability</div>
+      <div class="agency-role">Renewable energy compliance verification, PPA and REC documentation review, and carbon-free power pathway approval for Tier 3–5 facilities. Sustainability certification incorporated in ODCD Conditional Building Permit.</div>
+    </div>
+  </div>
+  <div class="lead-banner reveal">
+    <div class="lb-title">ODCD Leads. Always.</div>
+    <div class="lb-text">No partner agency may issue a permit approval, conditional approval, denial, or enforcement notice directly to a data center operator without routing through the ODCD. This single-lead model eliminates the conflicting directives, duplicated fees, and scheduling conflicts that operators face when navigating multiple city agencies independently. The ODCD Director is accountable for the consolidated position of all six agencies on every application.</div>
+  </div>
+</section>
+
+<!-- STANDARDS -->
+<section class="standards" id="standards">
+  <div class="section-label">Technical Requirements</div>
+  <h2 class="section-title">Infrastructure Standards</h2>
+  <p class="section-intro">Minimum binding standards applicable by tier. Operators exceeding these thresholds qualify for the incentive and expedited-review programs.</p>
+  <div class="standards-grid">
+    <div class="standard-block reveal">
+      <div class="standard-category">Water — Section 2</div>
+      <div class="standard-title">Consumption &amp; Discharge</div>
+      <div class="standard-metrics">
+        <div class="metric"><span class="metric-name">WUE — Tier 1</span><span class="metric-val">≤ 1.8 L/kWh</span></div>
+        <div class="metric"><span class="metric-name">WUE — Tier 2</span><span class="metric-val">≤ 1.5 L/kWh</span></div>
+        <div class="metric"><span class="metric-name">WUE — Tier 3</span><span class="metric-val">≤ 1.2 L/kWh</span></div>
+        <div class="metric"><span class="metric-name">WUE — Tier 4 &amp; 5</span><span class="metric-val">Net-zero</span></div>
+        <div class="metric"><span class="metric-name">Return volume (minimum)</span><span class="metric-val">≥ 85% of withdrawn</span></div>
+        <div class="metric"><span class="metric-name">Discharge dissolved oxygen</span><span class="metric-val">≥ 8.0 mg/L</span></div>
+        <div class="metric"><span class="metric-name">Discharge ΔT above ambient</span><span class="metric-val">≤ 2.0°C</span></div>
+        <div class="metric"><span class="metric-name">Biocide discharge</span><span class="metric-val">≤ NPDES detection limit</span></div>
+      </div>
+    </div>
+    <div class="standard-block reveal reveal-d1">
+      <div class="standard-category">Power &amp; Grid — Section 3</div>
+      <div class="standard-title">Generation &amp; Grid</div>
+      <div class="standard-metrics">
+        <div class="metric"><span class="metric-name">On-site generation — Tier 1</span><span class="metric-val">None required</span></div>
+        <div class="metric"><span class="metric-name">On-site generation — Tier 2</span><span class="metric-val">≥ 25% of IT load</span></div>
+        <div class="metric"><span class="metric-name">On-site generation — Tier 3</span><span class="metric-val">≥ 75% — island capable</span></div>
+        <div class="metric"><span class="metric-name">On-site generation — Tier 4</span><span class="metric-val">100% carbon-free</span></div>
+        <div class="metric"><span class="metric-name">On-site generation — Tier 5</span><span class="metric-val" style="color:var(--purple)">100% — NG/H₂ turbine or SMR</span></div>
+        <div class="metric"><span class="metric-name">PJM DR enrollment threshold</span><span class="metric-val">≥ 10 MW IT load</span></div>
+        <div class="metric"><span class="metric-name">Curtailment response time</span><span class="metric-val">≤ 15 minutes</span></div>
+        <div class="metric"><span class="metric-name">Island operation minimum (Tier 3+)</span><span class="metric-val">≥ 72 hours</span></div>
+      </div>
+    </div>
+    <div class="standard-block reveal">
+      <div class="standard-category">Sewer — Section 4</div>
+      <div class="standard-title">NEORSD Exclusion</div>
+      <div class="standard-metrics">
+        <div class="metric"><span class="metric-name">Process cooling water to NEORSD</span><span class="metric-val" style="color:#A32D2D">PROHIBITED</span></div>
+        <div class="metric"><span class="metric-name">Permitted sewer connection</span><span class="metric-val">Domestic sanitary only</span></div>
+        <div class="metric"><span class="metric-name">ITP permit threshold (incidental)</span><span class="metric-val">&gt; 1,000 GPD</span></div>
+        <div class="metric"><span class="metric-name">Max incidental temperature</span><span class="metric-val">≤ 100°F</span></div>
+        <div class="metric"><span class="metric-name">pH range (incidental discharge)</span><span class="metric-val">6.0 – 9.0</span></div>
+        <div class="metric"><span class="metric-name">Violation penalty</span><span class="metric-val" style="color:#A32D2D">$25,000/day + suspension</span></div>
+      </div>
+    </div>
+    <div class="standard-block reveal reveal-d1">
+      <div class="standard-category">Tier 5 — Section 7</div>
+      <div class="standard-title">Gigascale Architecture</div>
+      <div class="standard-metrics">
+        <div class="metric"><span class="metric-name">DC bus voltage</span><span class="metric-val" style="color:var(--purple)">800 VDC — mandatory</span></div>
+        <div class="metric"><span class="metric-name">Required power technology</span><span class="metric-val" style="color:var(--purple)">NG turbine / H₂ turbine / SMR</span></div>
+        <div class="metric"><span class="metric-name">Turbine class minimum</span><span class="metric-val">GE 7HA / SGT6-9000HL class</span></div>
+        <div class="metric"><span class="metric-name">SMR approved designs</span><span class="metric-val">NuScale VOYGR · Natrium · Xe-100</span></div>
+        <div class="metric"><span class="metric-name">Grid interface</span><span class="metric-val">PJM transmission study + FERC §205</span></div>
+        <div class="metric"><span class="metric-name">Ohio Power Siting Board</span><span class="metric-val">Fast-track designation required</span></div>
+        <div class="metric"><span class="metric-name">NRC (SMR pathway)</span><span class="metric-val">Pre-application meeting on record</span></div>
+        <div class="metric"><span class="metric-name">Application fee</span><span class="metric-val">$75,000 · Annual $40,000</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section class="pipeline" id="pipeline">
+  <div class="section-label">Workforce Development</div>
+  <h2 class="section-title">The Cleveland Education Corridor</h2>
+  <p class="section-intro">Operators establishing formal partnerships with Cleveland's education pipeline qualify for City workforce development credits against permit and license fees.</p>
+  <div class="pipeline-track">
+    <div class="pipeline-institution reveal">
+      <div class="pi-left">
+        <div class="pi-tier-badge">Tier 1 · Grades 9–12</div>
+        <div class="pi-name">Cleveland Metropolitan School District</div>
+        <div class="pi-abbr">CMSD</div>
+      </div>
+      <div class="pi-right">
+        <div class="pi-desc">Data center technician career pathway at Carl &amp; Louis Stokes School. Saturday apprenticeship rotations at permitted DC facilities. Students earn CompTIA A+, Network+, and OSHA 10 before graduation.</div>
+        <div class="pi-tracks">
+          <span class="pi-track-tag">DC Technician Track</span>
+          <span class="pi-track-tag">OSHA 10</span>
+          <span class="pi-track-tag">CompTIA A+</span>
+        </div>
+      </div>
+    </div>
+    <div class="pipeline-institution reveal reveal-d1">
+      <div class="pi-left">
+        <div class="pi-tier-badge">Tier 2 · Associate / Certificate</div>
+        <div class="pi-name">Cuyahoga Community College</div>
+        <div class="pi-abbr">TRI-C</div>
+      </div>
+      <div class="pi-right">
+        <div class="pi-desc">IT infrastructure, HVAC-R, and electrical associate degree tracks aligned to data center operations. Co-op placements at permitted facilities count toward degree requirements.</div>
+        <div class="pi-tracks">
+          <span class="pi-track-tag">IT Infrastructure AAS</span>
+          <span class="pi-track-tag">HVAC-R Certificate</span>
+          <span class="pi-track-tag">Electrical Technology</span>
+        </div>
+      </div>
+    </div>
+    <div class="pipeline-institution reveal reveal-d2">
+      <div class="pi-left">
+        <div class="pi-tier-badge">Tier 3 · Bachelor's / Graduate</div>
+        <div class="pi-name">Cleveland State University</div>
+        <div class="pi-abbr">CSU</div>
+      </div>
+      <div class="pi-right">
+        <div class="pi-desc">Fenn College of Engineering BS co-op rotations at permitted facilities. The Energy Policy Center and Midwest Hydrogen Center of Excellence provide applied research support for Tier 4 and 5 operators.</div>
+        <div class="pi-tracks">
+          <span class="pi-track-tag">Fenn Engineering Co-op</span>
+          <span class="pi-track-tag">Midwest H₂ Center</span>
+          <span class="pi-track-tag">Energy Policy Center</span>
+        </div>
+      </div>
+    </div>
+    <div class="pipeline-institution reveal">
+      <div class="pi-left">
+        <div class="pi-tier-badge">Tier 4–5 · PhD / Research</div>
+        <div class="pi-name">Case Western Reserve University</div>
+        <div class="pi-abbr">CWRU</div>
+      </div>
+      <div class="pi-right">
+        <div class="pi-desc">The Great Lakes Energy Institute anchors frontier research on PEM membrane development, battery storage, and electrochemical engineering. CWRU's Interdisciplinary Science and Engineering Building provides co-located lab capacity for Tier 4 and 5 hyperscale facility research partnerships.</div>
+        <div class="pi-tracks">
+          <span class="pi-track-tag">Great Lakes Energy Institute</span>
+          <span class="pi-track-tag">PEM Membrane R&amp;D</span>
+          <span class="pi-track-tag">ISEB Joint Appointments</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INCENTIVES -->
+<section class="incentives" id="incentives">
+  <div class="section-label">Incentive Program</div>
+  <h2 class="section-title">Why Build in Cleveland</h2>
+  <p class="section-intro">Operators who exceed minimum standards qualify for a layered incentive stack combining City, State, and Federal programs.</p>
+  <div class="incentives-grid">
+    <div class="incentive-card reveal">
+      <div class="ic-icon">⚡</div>
+      <div class="ic-title">Expedited 30-Day Review</div>
+      <div class="ic-value">Tier 4 &amp; Tier 5 Fast Track</div>
+      <div class="ic-desc">Operators meeting Tier 4 Hyperscale or Tier 5 Gigascale power and water standards receive the fastest permit review in the program — versus 90 days for standard Tier 3.</div>
+    </div>
+    <div class="incentive-card reveal reveal-d1">
+      <div class="ic-icon">🏛️</div>
+      <div class="ic-title">10-Year Tax Abatement</div>
+      <div class="ic-value">Net-Zero Water Certification</div>
+      <div class="ic-desc">Full property tax abatement for facilities achieving certified net-zero water status — eliminating consumptive loss from the Lake Erie watershed.</div>
+    </div>
+    <div class="incentive-card reveal reveal-d2">
+      <div class="ic-icon">💰</div>
+      <div class="ic-title">Green Bond Financing</div>
+      <div class="ic-value">100% Carbon-Free + On-Site Gen</div>
+      <div class="ic-desc">Facilities achieving 100% carbon-free power with qualifying on-site generation are eligible for City of Cleveland Green Bond financing at below-market rates.</div>
+    </div>
+    <div class="incentive-card reveal">
+      <div class="ic-icon">🎓</div>
+      <div class="ic-title">Workforce Development Credit</div>
+      <div class="ic-value">CMSD / Tri-C / CSU / CWRU Partnership</div>
+      <div class="ic-desc">Operators establishing formal training partnerships with Cleveland's education corridor receive City workforce development credits against permit and annual license fees.</div>
+    </div>
+    <div class="incentive-card reveal reveal-d1">
+      <div class="ic-icon">⚙️</div>
+      <div class="ic-title">Grid Resilience Credit</div>
+      <div class="ic-value">Island-Capable Microgrid Install</div>
+      <div class="ic-desc">Cleveland Public Power issues grid resilience credits to Tier 3–5 facilities with island-capable microgrids — recognizing their contribution to regional grid stability during emergencies.</div>
+    </div>
+    <div class="incentive-card reveal reveal-d2">
+      <div class="ic-icon">🌊</div>
+      <div class="ic-title">NEORSD Fee Exemption</div>
+      <div class="ic-value">Closed-Loop Cooling — Zero Sewer Discharge</div>
+      <div class="ic-desc">Facilities using certified closed-loop cooling with zero NEORSD connection are fully exempt from NEORSD industrial discharge fees — significant annual savings for large operators.</div>
+    </div>
+    <div class="incentive-card reveal" style="border-bottom-color:var(--purple);background:rgba(123,79,196,.06)">
+      <div class="ic-icon">⚛️</div>
+      <div class="ic-title" style="color:#3B1A6B">National Critical Infrastructure</div>
+      <div class="ic-value" style="color:var(--purple)">Tier 5 · 501 MW+ Gigascale</div>
+      <div class="ic-desc">Tier 5 operators qualify for Ohio Power Siting Board fast-track designation, DOE Strategic Energy Reserve co-investment, IRA Section 48E clean electricity ITC (30%), and NRC pre-application coordination for SMR licensing.</div>
+    </div>
+  </div>
+  <div class="penalty-section reveal">
+    <div class="penalty-title">Enforcement — Civil Penalty Schedule</div>
+    <div class="penalty-row">
+      <div class="penalty-violation">Unauthorized process cooling water discharge to NEORSD sewer</div>
+      <div class="penalty-amount">$25,000/day + license suspension</div>
+    </div>
+    <div class="penalty-row">
+      <div class="penalty-violation">False IT load declaration on permit application</div>
+      <div class="penalty-amount">$50,000 + permit revocation</div>
+    </div>
+    <div class="penalty-row">
+      <div class="penalty-violation">Discharge temperature violation (per degree above limit)</div>
+      <div class="penalty-amount">$5,000/day/°C</div>
+    </div>
+    <div class="penalty-row">
+      <div class="penalty-violation">Failure to enroll in PJM Demand Response (Tier 2+, ≥10 MW)</div>
+      <div class="penalty-amount">License suspension pending compliance</div>
+    </div>
+    <div class="penalty-row">
+      <div class="penalty-violation">Failure to maintain continuous monitoring dashboard connection</div>
+      <div class="penalty-amount">$2,500/day after 48-hour cure</div>
+    </div>
+    <div class="penalty-row">
+      <div class="penalty-violation">Tier 5 operation without 800 VDC architecture certification</div>
+      <div class="penalty-amount">$100,000 + stop-work order</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline" id="timeline">
+  <div class="section-label">Implementation Roadmap</div>
+  <h2 class="section-title">From Ordinance to Operations</h2>
+  <p class="section-intro">A structured 30-month implementation path from Council adoption through full citywide compliance.</p>
+  <div class="tl-entries">
+    <div class="tl-entry reveal">
+      <div class="tl-date">Q1 2025</div>
+      <div class="tl-content">
+        <div class="tl-event-title">Ordinance Drafting &amp; Stakeholder Comment</div>
+        <div class="tl-event-desc">City Law Department drafts Ordinance DCO-2025-001. Comment period opens for operators, NEORSD, CPP, CEI, and Ohio EPA. Technical standards working group with CWRU, CSU, and Tri-C convenes.</div>
+      </div>
+    </div>
+    <div class="tl-entry reveal reveal-d1">
+      <div class="tl-date">Q2 2025</div>
+      <div class="tl-content">
+        <div class="tl-event-title">Council Hearings &amp; Ohio EPA Pre-Coordination</div>
+        <div class="tl-event-desc">Cleveland City Council committee hearings. Ohio EPA pre-coordination on NPDES framework integration. CMSD data center career pathway curriculum development begins.</div>
+      </div>
+    </div>
+    <div class="tl-entry reveal reveal-d2">
+      <div class="tl-date">Q3 2025</div>
+      <div class="tl-content">
+        <div class="tl-event-title">Council Adoption &amp; ODCD Staffing Authorized</div>
+        <div class="tl-event-desc">Council adopts Ordinance DCO-2025-001. ODCD positions authorized: Director, 2 Senior Plan Reviewers, 2 Field Inspectors, Grid &amp; Utility Liaison. Unified permit portal development begins. SSF goes live for pre-registration.</div>
+      </div>
+    </div>
+    <div class="tl-entry reveal">
+      <div class="tl-date">Q4 2025</div>
+      <div class="tl-content">
+        <div class="tl-event-title">ODCD Operations Launch</div>
+        <div class="tl-event-desc">Pre-Evaluation process live. Technical Intake Meetings begin. Real-time monitoring dashboard pilot with 3 existing facilities. Form DCO-APP-001 available. Unified permit portal fully operational.</div>
+      </div>
+    </div>
+    <div class="tl-entry reveal reveal-d1">
+      <div class="tl-date">Jan 1, 2026</div>
+      <div class="tl-content">
+        <div class="tl-event-title">Ordinance Effective — All New Applications Subject to DCO-2025-001</div>
+        <div class="tl-event-desc">Full ODCD authority. Existing facilities enter 18-month compliance transition period. First CMSD apprenticeship cohort enrolled at permitted facilities.</div>
+      </div>
+    </div>
+    <div class="tl-entry reveal reveal-d2">
+      <div class="tl-date">Q2 2026</div>
+      <div class="tl-content">
+        <div class="tl-event-title">First Hyperscale (Tier 3+) Applications Anticipated</div>
+        <div class="tl-event-desc">Hyperscale campus applications enter Pre-Evaluation. Port of Cleveland data center campus Technical Intake Meeting. First annual report cycle for early permitted facilities.</div>
+      </div>
+    </div>
+    <div class="tl-entry reveal">
+      <div class="tl-date">Q4 2026</div>
+      <div class="tl-content">
+        <div class="tl-event-title" style="color:var(--purple)">Tier 5 Gigascale Framework Activated</div>
+        <div class="tl-event-desc">ODCD issues Tier 5 Technical Supplement, codifying 800 VDC standard, approved turbine classes (GE 7HA.01 / Siemens SGT6-9000HL), and SMR pre-application procedures. Joint ODCD/OPSB review desk established. First Tier 5 pre-application conferences anticipated.</div>
+      </div>
+    </div>
+    <div class="tl-entry reveal reveal-d1">
+      <div class="tl-date">Jul 1, 2027</div>
+      <div class="tl-content">
+        <div class="tl-event-title">Full Citywide Compliance Deadline</div>
+        <div class="tl-event-desc">All existing facilities must meet DCO-2025-001 standards. Annual operating license cycle in full force. First full water and energy report filings due. Tier 5 SMR pathway applicants enter NRC pre-application meeting process.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section" id="apply">
+  <div class="cta-text">
+    <div class="cta-label">Ready to Build in Cleveland</div>
+    <div class="cta-title">Start with the<br>Site Screening Form</div>
+  </div>
+  <div class="cta-buttons">
+    <a href="#" class="btn-primary">Submit Site Screening Form</a>
+    <a href="#" class="btn-secondary">Download Form DCO-APP-001</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">Office of Data Center Development</div>
+      <div class="footer-brand-sub">
+        City of Cleveland · Department of Building &amp; Housing<br>
+        601 Lakeside Ave, Room 505 · Cleveland, OH 44114<br>
+        216-664-2000 · odcd@city.cleveland.oh.us
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Department</div>
+      <ul class="footer-links">
+        <li><a href="#mission">Mission &amp; Authority</a></li>
+        <li><a href="#department">ODCD Structure</a></li>
+        <li><a href="#tiers">Regulatory Tiers</a></li>
+        <li><a href="#agencies">Partner Agencies</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Permit Process</div>
+      <ul class="footer-links">
+        <li><a href="#preeval">Pre-Evaluation</a></li>
+        <li><a href="#planreview">Plan Review</a></li>
+        <li><a href="#workflow">Permit Lifecycle</a></li>
+        <li><a href="#standards">Technical Standards</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Resources</div>
+      <ul class="footer-links">
+        <li><a href="#">Site Screening Form (SSF)</a></li>
+        <li><a href="#">Form DCO-APP-001</a></li>
+        <li><a href="#">Water Impact Study Guide</a></li>
+        <li><a href="#">Grid Interconnection Guide</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-legal">© 2026 City of Cleveland · Department of Building &amp; Housing · All rights reserved</div>
+    <div class="footer-ordinance">Ordinance DCO-2025-001 · Effective January 1, 2026</div>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+const sections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const navObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      navLinks.forEach(a => a.style.color = '');
+      const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if(active && !active.classList.contains('nav-cta')) active.style.color = 'var(--gold-lt)';
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s => navObs.observe(s));
+</script>
+</body>
+</html>

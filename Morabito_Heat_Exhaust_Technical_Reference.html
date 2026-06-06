@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morabito Campus — Heat Exhaust Capture & Redirection | Technical Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Sans+Condensed:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f1218;
+  --ink2: #2a3040;
+  --ink3: #4a5568;
+  --ink4: #718096;
+  --paper: #f8f6f1;
+  --paper2: #f0ede6;
+  --paper3: #e8e4dc;
+  --rule: #d4cfca;
+  --amber: #c8690a;
+  --amber2: #e8850f;
+  --amber-bg: #fef3e2;
+  --steel: #1e4a7a;
+  --steel2: #2563a8;
+  --steel-bg: #e8f0fb;
+  --teal: #0f5e52;
+  --teal2: #1a8a78;
+  --teal-bg: #e4f5f2;
+  --coral: #8b2a1a;
+  --coral2: #c0392b;
+  --coral-bg: #fdf0ee;
+  --green: #2d5a1b;
+  --green2: #3d7a26;
+  --green-bg: #edf5e8;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --cond: 'IBM Plex Sans Condensed', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid var(--amber);
+}
+.masthead-inner {
+  display: flex;
+  align-items: stretch;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.masthead-logo {
+  background: var(--amber);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 11px;
+  padding: 10px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+.masthead-title {
+  padding: 8px 20px;
+  font-family: var(--cond);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+.masthead-title span { color: var(--ink4); font-weight: 400; }
+.masthead-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 12px;
+  margin-left: auto;
+}
+.masthead-nav a {
+  color: var(--ink4);
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: all .15s;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.masthead-nav a:hover { background: rgba(255,255,255,.1); color: var(--paper); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--ink2);
+  color: var(--paper);
+  padding: 48px 0 40px;
+  border-bottom: 1px solid #3a4258;
+}
+.hero-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 48px;
+  align-items: start;
+}
+.hero-kicker {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--amber2);
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-family: var(--cond);
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  margin-bottom: 16px;
+}
+.hero-sub {
+  font-size: 15px;
+  color: #a8b4c8;
+  line-height: 1.6;
+  max-width: 640px;
+  margin-bottom: 24px;
+}
+.hero-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.hero-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hero-meta-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #6a7898;
+}
+.hero-meta-value {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--amber2);
+}
+.hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #3a4258;
+  border: 1px solid #3a4258;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.stat-cell {
+  background: var(--ink2);
+  padding: 14px 16px;
+}
+.stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: #6a7898; margin-bottom: 4px; }
+.stat-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--paper); }
+.stat-unit  { font-size: 10px; color: #6a7898; margin-left: 3px; }
+
+/* ── LAYOUT ── */
+.page-body {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 0;
+}
+
+/* ── SIDEBAR TOC ── */
+.toc {
+  padding: 32px 20px 32px 0;
+  position: sticky;
+  top: 46px;
+  height: calc(100vh - 46px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  border-right: 1px solid var(--rule);
+}
+.toc-section-head {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin: 20px 0 8px;
+}
+.toc-section-head:first-child { margin-top: 0; }
+.toc a {
+  display: block;
+  font-size: 12px;
+  color: var(--ink3);
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  border-left: 2px solid transparent;
+  margin-bottom: 1px;
+  transition: all .12s;
+  line-height: 1.4;
+}
+.toc a:hover, .toc a.active {
+  background: var(--amber-bg);
+  color: var(--amber);
+  border-left-color: var(--amber);
+}
+
+/* ── CONTENT ── */
+.content { padding: 32px 0 0 36px; }
+
+/* ── SECTIONS ── */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: 60px;
+}
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--amber);
+  background: var(--amber-bg);
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: .06em;
+  flex-shrink: 0;
+}
+.section-title {
+  font-family: var(--cond);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  flex: 1;
+}
+.section-line { flex: 1; height: 1px; background: var(--rule); }
+
+h3 { font-family: var(--cond); font-size: 16px; font-weight: 600; color: var(--steel); margin: 28px 0 10px; letter-spacing: .01em; }
+h4 { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--ink3); letter-spacing: .08em; text-transform: uppercase; margin: 20px 0 8px; }
+
+p { margin-bottom: 12px; color: var(--ink2); font-size: 13.5px; line-height: 1.7; }
+p:last-child { margin-bottom: 0; }
+
+/* ── CALL-OUT BOX ── */
+.callout {
+  border-left: 3px solid;
+  padding: 14px 18px;
+  border-radius: 0 4px 4px 0;
+  margin: 20px 0;
+  font-size: 13px;
+}
+.callout.amber { border-color: var(--amber); background: var(--amber-bg); }
+.callout.steel  { border-color: var(--steel); background: var(--steel-bg); }
+.callout.teal   { border-color: var(--teal);  background: var(--teal-bg);  }
+.callout.coral  { border-color: var(--coral); background: var(--coral-bg); }
+.callout.green  { border-color: var(--green); background: var(--green-bg); }
+.callout-head {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.callout.amber .callout-head { color: var(--amber); }
+.callout.steel  .callout-head { color: var(--steel); }
+.callout.teal   .callout-head { color: var(--teal);  }
+.callout.coral  .callout-head { color: var(--coral); }
+.callout.green  .callout-head { color: var(--green); }
+
+/* ── SPEC TABLE ── */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 16px 0;
+}
+.spec-table th {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: left;
+  background: var(--ink);
+  color: var(--paper);
+  white-space: nowrap;
+}
+.spec-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.spec-table tr:nth-child(even) td { background: var(--paper2); }
+.spec-table tr:hover td { background: var(--steel-bg); }
+.spec-table td:first-child { font-weight: 500; color: var(--ink2); white-space: nowrap; }
+.spec-table td.mono { font-family: var(--mono); font-size: 11.5px; }
+.spec-table td.amber { color: var(--amber); font-family: var(--mono); font-weight: 600; }
+.spec-table td.steel { color: var(--steel); font-family: var(--mono); font-weight: 600; }
+.spec-table td.teal  { color: var(--teal);  font-family: var(--mono); font-weight: 600; }
+.spec-table td.green { color: var(--green); font-family: var(--mono); font-weight: 600; }
+.spec-table td.coral { color: var(--coral); font-family: var(--mono); font-weight: 600; }
+
+/* ── DIAGRAM FRAME ── */
+.diagram-frame {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 20px 0;
+  background: var(--paper2);
+}
+.diagram-label {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.diagram-label span { color: var(--ink4); font-size: 9px; }
+.diagram-inner { padding: 20px; }
+.diagram-inner svg { display: block; width: 100%; }
+
+/* ── TWO COLUMN ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+
+/* ── DATA CARD ── */
+.data-card {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 16px;
+  background: var(--paper);
+}
+.data-card-head {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.data-card-value {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.data-card-unit { font-size: 11px; color: var(--ink4); }
+.data-card-note { font-size: 11px; color: var(--ink3); margin-top: 6px; line-height: 1.4; }
+.data-card.amber .data-card-value { color: var(--amber); }
+.data-card.steel  .data-card-value { color: var(--steel); }
+.data-card.teal   .data-card-value { color: var(--teal); }
+.data-card.green  .data-card-value { color: var(--green); }
+
+/* ── FLOW ANIMATIONS ── */
+@keyframes flowAmber { to { stroke-dashoffset: -24; } }
+@keyframes flowSteel  { to { stroke-dashoffset: -20; } }
+@keyframes flowTeal   { to { stroke-dashoffset: -16; } }
+@keyframes pulseDot   { 0%,100%{opacity:1} 50%{opacity:.4} }
+@media (prefers-reduced-motion: no-preference) {
+  .fa { animation: flowAmber 1.3s linear infinite; }
+  .fs { animation: flowSteel  1.7s linear infinite; }
+  .ft { animation: flowTeal   2.2s linear infinite; }
+  .pd { animation: pulseDot  2s ease-in-out infinite; }
+}
+.fa { stroke-dasharray: 8 6; }
+.fs { stroke-dasharray: 6 5; }
+.ft { stroke-dasharray: 5 5; }
+
+/* ── PIPE LEGEND ── */
+.pipe-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 12px 0 4px;
+}
+.pipe-legend-item { display: flex; align-items: center; gap: 8px; color: var(--ink3); }
+.pipe-swatch { width: 32px; height: 4px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── CODE BLOCK ── */
+.code-block {
+  background: var(--ink);
+  color: #a8c8d8;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 16px 18px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 14px 0;
+  line-height: 1.7;
+}
+.code-block .c { color: #6a7a8a; }
+.code-block .v { color: var(--amber2); }
+.code-block .k { color: #9fcfef; }
+
+/* ── CHECKLIST ── */
+.checklist { list-style: none; margin: 10px 0; }
+.checklist li {
+  padding: 5px 0 5px 22px;
+  position: relative;
+  font-size: 13px;
+  color: var(--ink2);
+  border-bottom: 1px solid var(--paper3);
+}
+.checklist li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--amber);
+  font-size: 10px;
+  top: 7px;
+}
+
+/* ── PHASE BADGE ── */
+.phase-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  padding: 2px 7px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+.phase-badge.ph1 { background: var(--green-bg); color: var(--green); }
+.phase-badge.ph2 { background: var(--steel-bg); color: var(--steel); }
+.phase-badge.ph3 { background: var(--amber-bg); color: var(--amber); }
+
+/* ── WARNING BOX ── */
+.warn-box {
+  background: var(--coral-bg);
+  border: 1px solid var(--coral2);
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 12.5px;
+  margin: 14px 0;
+  display: flex;
+  gap: 10px;
+}
+.warn-icon { color: var(--coral2); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── FOOTNOTE ── */
+.footnote {
+  font-size: 11px;
+  color: var(--ink4);
+  font-style: italic;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+}
+
+/* ── PRINT / FOOTER ── */
+.doc-footer {
+  background: var(--ink);
+  color: var(--ink4);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 20px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 60px;
+  letter-spacing: .04em;
+}
+.doc-footer span { color: var(--amber); }
+
+@media print {
+  .masthead, .toc { display: none; }
+  .page-body { grid-template-columns: 1fr; }
+  .content { padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ MASTHEAD ══════════════════════════════════════════════════════════════ -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-logo">FOS 216<br>LEG</div>
+    <div class="masthead-title">
+      Morabito Campus &mdash; Heat Exhaust Capture &amp; Redirection
+      <span>Technical Reference Document</span>
+    </div>
+    <nav class="masthead-nav">
+      <a href="#s1">Source</a>
+      <a href="#s2">HRSG</a>
+      <a href="#s3">Absorption</a>
+      <a href="#s4">Process Steam</a>
+      <a href="#s5">Campus Loop</a>
+      <a href="#s6">District</a>
+      <a href="#s7">Emissions</a>
+      <a href="#s8">Specs</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ══ HERO ══════════════════════════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-kicker">Class 4 Technical Reference &mdash; May 2026 &mdash; Lakeland Equity Group</div>
+      <h1 class="hero-title">GE 7HA.01 Exhaust Capture<br>& Thermal Redirection System</h1>
+      <p class="hero-sub">Complete engineering reference for the HRSG-integrated heat recovery, absorption chilling, internal campus steam distribution loop, and district energy spine at the Morabito Data Center Campus, Slavic Village, Cleveland, Ohio.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><div class="hero-meta-label">Turbine</div><div class="hero-meta-value">GE 7HA.01 &mdash; 340 MW</div></div>
+        <div class="hero-meta-item"><div class="hero-meta-label">Exhaust flow</div><div class="hero-meta-value">14M lb/hr</div></div>
+        <div class="hero-meta-item"><div class="hero-meta-label">Exhaust temp</div><div class="hero-meta-value">1,100&deg;F</div></div>
+        <div class="hero-meta-item"><div class="hero-meta-label">HRSG extractable</div><div class="hero-meta-value">280 MW-th</div></div>
+        <div class="hero-meta-item"><div class="hero-meta-label">Design standard</div><div class="hero-meta-value">ASME B31.1 / Sec. VIII</div></div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-cell"><div class="stat-label">CC net output</div><div class="stat-value">~500<span class="stat-unit">MW</span></div></div>
+      <div class="stat-cell"><div class="stat-label">Plant efficiency</div><div class="stat-value">~62<span class="stat-unit">%</span></div></div>
+      <div class="stat-cell"><div class="stat-label">Chiller tonnage</div><div class="stat-value">6,000<span class="stat-unit">TR</span></div></div>
+      <div class="stat-cell"><div class="stat-label">Stack NOx target</div><div class="stat-value">2.0<span class="stat-unit">ppm</span></div></div>
+      <div class="stat-cell"><div class="stat-label">Total thermal use</div><div class="stat-value">230<span class="stat-unit">MW-th</span></div></div>
+      <div class="stat-cell"><div class="stat-label">District revenue</div><div class="stat-value">$22M<span class="stat-unit">/yr</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE BODY ══════════════════════════════════════════════════════════════ -->
+<div class="page-body">
+
+<!-- TOC -->
+<aside class="toc">
+  <div class="toc-section-head">Thermal source</div>
+  <a href="#s1">1 &mdash; Gas turbine exhaust</a>
+  <a href="#s2">2 &mdash; HRSG system</a>
+
+  <div class="toc-section-head">Heat end uses</div>
+  <a href="#s3">3 &mdash; Absorption chilling</a>
+  <a href="#s4">4 &mdash; Process steam</a>
+  <a href="#s5">5 &mdash; Campus steam loop</a>
+  <a href="#s6">6 &mdash; District energy spine</a>
+
+  <div class="toc-section-head">Compliance</div>
+  <a href="#s7">7 &mdash; Emissions control</a>
+
+  <div class="toc-section-head">Engineering data</div>
+  <a href="#s8">8 &mdash; Pipe &amp; equipment specs</a>
+  <a href="#s9">9 &mdash; Design basis</a>
+</aside>
+
+<!-- CONTENT -->
+<main class="content">
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 1 — GAS TURBINE EXHAUST SOURCE
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s1">
+  <div class="section-rule">
+    <div class="section-num">01</div>
+    <h2 class="section-title">Gas Turbine Exhaust &mdash; Source Characterization</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <p>The GE 7HA.01 in simple cycle exhausts approximately <strong>14 million lb/hr</strong> of combustion gases at ~1,100&deg;F and atmospheric pressure at the turbine exit flange. This exhaust stream is the thermal source for all downstream heat recovery. Understanding its composition, temperature profile, and flow characteristics drives every sizing decision in the HRSG and distribution system.</p>
+
+  <div class="three-col">
+    <div class="data-card amber"><div class="data-card-head">Exhaust temperature</div><div class="data-card-value">1,100</div><div class="data-card-unit">&deg;F at turbine exit flange</div><div class="data-card-note">Drops to ~190&deg;F at HRSG stack exit — 910&deg;F temperature range available for heat recovery</div></div>
+    <div class="data-card amber"><div class="data-card-head">Mass flow rate</div><div class="data-card-value">14.0</div><div class="data-card-unit">Million lb/hr (3,889 lb/s)</div><div class="data-card-note">At ISO conditions, 59&deg;F ambient. Increases ~0.3% per &deg;F below ISO</div></div>
+    <div class="data-card amber"><div class="data-card-head">Available thermal power</div><div class="data-card-value">~450</div><div class="data-card-unit">MW-th gross in exhaust stream</div><div class="data-card-note">HRSG recovers ~280 MW-th extractable; stack loss ~170 MW-th</div></div>
+  </div>
+
+  <h3>Exhaust gas composition</h3>
+  <table class="spec-table">
+    <thead><tr><th>Component</th><th>Concentration (vol %)</th><th>Mass fraction</th><th>Significance for heat recovery</th></tr></thead>
+    <tbody>
+      <tr><td>N₂ (nitrogen)</td><td class="mono">74–76%</td><td class="mono">~71%</td><td>Primary heat carrier — high specific heat at elevated temps</td></tr>
+      <tr><td>O₂ (oxygen, excess)</td><td class="mono">13–15%</td><td class="mono">~14%</td><td>Enables duct firing supplemental combustion; limits CO formation</td></tr>
+      <tr><td>CO₂ (carbon dioxide)</td><td class="mono">4–5%</td><td class="mono">~6%</td><td>Low vs. coal; EGR can concentrate for post-combustion capture</td></tr>
+      <tr><td>H₂O (water vapor)</td><td class="mono">8–10%</td><td class="mono">~6%</td><td>Latent heat potential if condensing economizer added (not in base design)</td></tr>
+      <tr><td>NOx (as NO₂)</td><td class="mono">9 ppm pre-SCR</td><td class="mono">Trace</td><td>Primary regulated pollutant; reduced to 2 ppm by SCR</td></tr>
+      <tr><td>CO</td><td class="mono">~50 ppm DLN exit</td><td class="mono">Trace</td><td>Reduced to &lt;10 ppm by CO oxidation catalyst</td></tr>
+      <tr><td>SO₂</td><td class="mono">&lt;1 ppm</td><td class="mono">Negligible</td><td>Pipeline NG is effectively sulfur-free; no FGD required</td></tr>
+      <tr><td>PM₂.₅</td><td class="mono">&lt;0.006 lb/MMBtu</td><td class="mono">Negligible</td><td>No particulate control required beyond combustor design</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Temperature profile through HRSG</h3>
+  <div class="diagram-frame">
+    <div class="diagram-label">Figure 1.1 — Exhaust temperature profile from turbine exit through HRSG to stack <span>Morabito Campus / 7HA.01 Simple Cycle</span></div>
+    <div class="diagram-inner">
+      <svg viewBox="0 0 720 200" role="img" aria-label="Temperature profile from 1100F turbine exit through HRSG sections to 190F stack exit">
+        <title>HRSG temperature profile</title>
+        <defs>
+          <linearGradient id="tempgrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#c8690a" stop-opacity="0.7"/>
+            <stop offset="40%" stop-color="#c8690a" stop-opacity="0.45"/>
+            <stop offset="70%" stop-color="#1e4a7a" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#1a8a78" stop-opacity="0.25"/>
+          </linearGradient>
+        </defs>
+        <!-- Temp curve area -->
+        <path d="M60 30 L160 30 C200 30 220 55 260 75 C300 95 340 110 400 130 C460 148 520 158 580 165 L650 170 L650 185 L60 185 Z" fill="url(#tempgrad)" opacity="0.6"/>
+        <path d="M60 30 L160 30 C200 30 220 55 260 75 C300 95 340 110 400 130 C460 148 520 158 580 165 L650 170" fill="none" stroke="#c8690a" stroke-width="2.5" stroke-linejoin="round"/>
+        <!-- Zone markers -->
+        <line x1="160" y1="20" x2="160" y2="185" stroke="#d4cfca" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="300" y1="20" x2="300" y2="185" stroke="#d4cfca" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="440" y1="20" x2="440" y2="185" stroke="#d4cfca" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="580" y1="20" x2="580" y2="185" stroke="#d4cfca" stroke-width="1" stroke-dasharray="3 3"/>
+        <!-- Zone labels -->
+        <text font-family="IBM Plex Mono" font-size="9" fill="#c8690a" x="90" y="15" text-anchor="middle">Turbine exit</text>
+        <text font-family="IBM Plex Mono" font-size="9" fill="#4a5568" x="230" y="15" text-anchor="middle">Superheater</text>
+        <text font-family="IBM Plex Mono" font-size="9" fill="#4a5568" x="370" y="15" text-anchor="middle">Evaporator</text>
+        <text font-family="IBM Plex Mono" font-size="9" fill="#1a8a78" x="510" y="15" text-anchor="middle">Economizer</text>
+        <text font-family="IBM Plex Mono" font-size="9" fill="#1a8a78" x="615" y="15" text-anchor="middle">Stack</text>
+        <!-- Temp labels on curve -->
+        <text font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#c8690a" x="95" y="28">1,100°F</text>
+        <text font-family="IBM Plex Mono" font-size="10" fill="#4a5568" x="162" y="52">~900°F</text>
+        <text font-family="IBM Plex Mono" font-size="10" fill="#4a5568" x="302" y="100">~650°F</text>
+        <text font-family="IBM Plex Mono" font-size="10" fill="#1a8a78" x="442" y="135">~350°F</text>
+        <text font-family="IBM Plex Mono" font-size="10" fill="#1a8a78" x="582" y="162">~190°F</text>
+        <!-- X axis -->
+        <line x1="60" y1="185" x2="660" y2="185" stroke="#d4cfca" stroke-width="1"/>
+        <text font-family="IBM Plex Mono" font-size="9" fill="#718096" x="360" y="198" text-anchor="middle">Exhaust gas flow direction →</text>
+        <!-- SCR annotation -->
+        <rect x="168" y="42" width="56" height="16" rx="3" fill="#c8690a" opacity="0.15"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#c8690a" x="196" y="52" text-anchor="middle">SCR zone</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-head">Key design constraint</div>
+    The HRSG must maintain stack exhaust temperature above ~190&deg;F (acid dew point for NG combustion) to prevent sulfuric acid condensation on the economizer tubes. The 190&deg;F stack design point in this document includes a 20&deg;F margin above the calculated dew point. A condensing economizer could recover an additional 15–25 MW-th but requires acid-resistant materials (304L SS or Corten) and a drain neutralization system — budget accordingly if pursued.
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 2 — HRSG SYSTEM
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s2">
+  <div class="section-rule">
+    <div class="section-num">02</div>
+    <h2 class="section-title">Heat Recovery Steam Generator (HRSG)</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <p>The HRSG is a single-pressure, horizontal gas-flow, natural-circulation unit with selective catalytic reduction (SCR) and CO oxidation catalyst modules integrated in the gas path. Unfired in base configuration, with provision for supplemental duct firing up to 120 MW-th thermal input. All pressure parts per ASME Section I Power Boilers.</p>
+
+  <div class="diagram-frame">
+    <div class="diagram-label">Figure 2.1 — HRSG cross-section and tube bank arrangement <span>Horizontal gas-flow, natural circulation, single-pressure</span></div>
+    <div class="diagram-inner">
+      <svg viewBox="0 0 720 320" role="img" aria-label="HRSG cross-section showing gas flow left to right through SCR, superheater, evaporator drum, and economizer tube banks with steam and feedwater connections">
+        <title>HRSG cross-section diagram</title>
+        <defs>
+          <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- HRSG casing -->
+        <rect x="60" y="40" width="560" height="220" rx="6" fill="none" stroke="#4a5568" stroke-width="1.5" opacity="0.5"/>
+        <rect x="60" y="40" width="560" height="220" rx="6" fill="#f8f6f1" opacity="0.4"/>
+
+        <!-- Gas inlet duct left -->
+        <rect x="20" y="80" width="42" height="140" rx="0" fill="#f0ede6" stroke="#c8690a" stroke-width="1.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#c8690a" x="41" y="148" text-anchor="middle" transform="rotate(-90,41,148)">1,100°F exhaust</text>
+        <path class="fa" d="M20 150 L60 150" fill="none" stroke="#c8690a" stroke-width="2.5" marker-end="url(#arw)"/>
+
+        <!-- Duct firing burners (optional) -->
+        <rect x="64" y="44" width="18" height="212" rx="2" fill="none" stroke="#e8850f" stroke-width="0.5" stroke-dasharray="3 2" opacity="0.6"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#e8850f" x="73" y="150" text-anchor="middle" transform="rotate(-90,73,150)">Duct firing (opt.)</text>
+
+        <!-- SCR module -->
+        <rect x="86" y="54" width="72" height="202" rx="3" fill="#fef3e2" stroke="#c8690a" stroke-width="0.5"/>
+        <!-- SCR catalyst layers -->
+        <rect x="90" y="64" width="64" height="12" rx="1" fill="#e8850f" opacity="0.4"/>
+        <rect x="90" y="82" width="64" height="12" rx="1" fill="#e8850f" opacity="0.3"/>
+        <rect x="90" y="100" width="64" height="12" rx="1" fill="#e8850f" opacity="0.2"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#c8690a" x="122" y="130" text-anchor="middle">SCR</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#c8690a" x="122" y="142" text-anchor="middle">+ CO cat.</text>
+        <!-- NH3 injection -->
+        <line x1="122" y1="54" x2="122" y2="44" stroke="#e8850f" stroke-width="1.5"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#e8850f" x="122" y="38" text-anchor="middle">NH₃</text>
+
+        <!-- Superheater tube bank -->
+        <rect x="168" y="54" width="100" height="202" rx="3" fill="#fdf0ee" stroke="#c0392b" stroke-width="0.5"/>
+        <!-- Tube rows -->
+        <line x1="168" y1="74" x2="268" y2="74" stroke="#c0392b" stroke-width="0.8" opacity="0.5"/>
+        <line x1="168" y1="90" x2="268" y2="90" stroke="#c0392b" stroke-width="0.8" opacity="0.4"/>
+        <line x1="168" y1="106" x2="268" y2="106" stroke="#c0392b" stroke-width="0.8" opacity="0.3"/>
+        <line x1="168" y1="122" x2="268" y2="122" stroke="#c0392b" stroke-width="0.8" opacity="0.25"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#993c1d" x="218" y="150" text-anchor="middle">Superheater</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#993c1d" x="218" y="163" text-anchor="middle">HP steam</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#993c1d" x="218" y="175" text-anchor="middle">~1,050°F</text>
+        <!-- HP steam out top -->
+        <line x1="218" y1="54" x2="218" y2="30" stroke="#c0392b" stroke-width="2" marker-end="url(#arw)"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#c0392b" x="218" y="22" text-anchor="middle">HP steam out</text>
+
+        <!-- Steam drum -->
+        <ellipse cx="330" cy="32" rx="28" ry="18" fill="#e8f0fb" stroke="#2563a8" stroke-width="1.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#1e4a7a" x="330" y="30" text-anchor="middle">Steam</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#1e4a7a" x="330" y="41" text-anchor="middle">drum</text>
+
+        <!-- Evaporator tube bank -->
+        <rect x="278" y="54" width="104" height="202" rx="3" fill="#e8f0fb" stroke="#2563a8" stroke-width="0.5"/>
+        <line x1="278" y1="74" x2="382" y2="74" stroke="#2563a8" stroke-width="0.8" opacity="0.5"/>
+        <line x1="278" y1="90" x2="382" y2="90" stroke="#2563a8" stroke-width="0.8" opacity="0.4"/>
+        <line x1="278" y1="106" x2="382" y2="106" stroke="#2563a8" stroke-width="0.8" opacity="0.3"/>
+        <line x1="278" y1="122" x2="382" y2="122" stroke="#2563a8" stroke-width="0.8" opacity="0.25"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#1e4a7a" x="330" y="155" text-anchor="middle">Evaporator</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#1e4a7a" x="330" y="168" text-anchor="middle">1,800 psi</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#1e4a7a" x="330" y="180" text-anchor="middle">drum pressure</text>
+        <!-- Downcomer / riser connections to drum -->
+        <line x1="295" y1="54" x2="308" y2="50" stroke="#2563a8" stroke-width="1" stroke-dasharray="2 2"/>
+        <line x1="360" y1="54" x2="348" y2="50" stroke="#2563a8" stroke-width="1" stroke-dasharray="2 2"/>
+
+        <!-- IP/LP extraction tap -->
+        <line x1="330" y1="32" x2="330" y2="15" stroke="#2563a8" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#2563a8" x="340" y="10" text-anchor="start">IP/LP extraction →</text>
+
+        <!-- Economizer tube bank -->
+        <rect x="392" y="54" width="100" height="202" rx="3" fill="#e4f5f2" stroke="#1a8a78" stroke-width="0.5"/>
+        <line x1="392" y1="74" x2="492" y2="74" stroke="#1a8a78" stroke-width="0.8" opacity="0.5"/>
+        <line x1="392" y1="90" x2="492" y2="90" stroke="#1a8a78" stroke-width="0.8" opacity="0.4"/>
+        <line x1="392" y1="106" x2="492" y2="106" stroke="#1a8a78" stroke-width="0.8" opacity="0.3"/>
+        <line x1="392" y1="122" x2="492" y2="122" stroke="#1a8a78" stroke-width="0.8" opacity="0.25"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#0f5e52" x="442" y="155" text-anchor="middle">Economizer</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#0f5e52" x="442" y="168" text-anchor="middle">Feedwater</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#0f5e52" x="442" y="180" text-anchor="middle">preheat</text>
+        <!-- Feedwater in at bottom right -->
+        <line x1="442" y1="256" x2="442" y2="278" stroke="#1a8a78" stroke-width="1.5" marker-end="url(#arw)"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="442" y="290" text-anchor="middle">FW in 250°F</text>
+
+        <!-- Optional condensing economizer (dashed) -->
+        <rect x="502" y="54" width="72" height="202" rx="3" fill="none" stroke="#718096" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#718096" x="538" y="148" text-anchor="middle">Condensing</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#718096" x="538" y="160" text-anchor="middle">econ. (opt.)</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#718096" x="538" y="174" text-anchor="middle">+15 MW-th</text>
+
+        <!-- Stack exit -->
+        <rect x="622" y="80" width="58" height="140" rx="0" fill="#f0ede6" stroke="#1a8a78" stroke-width="1"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#0f5e52" x="651" y="148" text-anchor="middle" transform="rotate(-90,651,148)">~190°F stack exit</text>
+        <path class="ft" d="M620 150 L622 150" fill="none" stroke="#1a8a78" stroke-width="2" marker-end="url(#arw)"/>
+
+        <!-- Gas flow arrow below tanks -->
+        <path class="fa" d="M110 270 L580 270" fill="none" stroke="#c8690a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arw)"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#c8690a" x="340" y="284" text-anchor="middle">Exhaust gas flow 1,100°F → 190°F</text>
+
+        <!-- Backpressure limit annotation -->
+        <text font-family="IBM Plex Mono" font-size="7" fill="#c8690a" x="66" y="302" text-anchor="start">GE limit: ≤4.0" H₂O backpressure at turbine exit</text>
+      </svg>
+    </div>
+  </div>
+
+  <h3>HRSG design parameters</h3>
+  <table class="spec-table">
+    <thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Basis / notes</th></tr></thead>
+    <tbody>
+      <tr><td>HRSG type</td><td>Natural circulation, horizontal gas flow, single-pressure</td><td>—</td><td>ASME Section I, Power Boilers stamped</td></tr>
+      <tr><td>Total extractable thermal</td><td class="amber">280</td><td>MW-th</td><td>At 7HA.01 full load, ISO conditions</td></tr>
+      <tr><td>HP steam output (base)</td><td class="mono">~530,000</td><td>lb/hr</td><td>At 1,800 psi, 1,050°F superheated</td></tr>
+      <tr><td>HP steam pressure</td><td class="mono">1,800</td><td>psig</td><td>Design 2,160 psig (1.2× operating)</td></tr>
+      <tr><td>HP steam temperature</td><td class="mono">1,050</td><td>&deg;F</td><td>Superheated — suitable for CC steam turbine</td></tr>
+      <tr><td>IP/LP extraction point</td><td class="mono">50</td><td>psig</td><td>Campus distribution header tap — 300°F sat.</td></tr>
+      <tr><td>IP/LP extraction max</td><td class="mono">230</td><td>MW-th</td><td>Phase 2 full utilization scenario</td></tr>
+      <tr><td>Stack exit temperature</td><td class="teal">190</td><td>&deg;F</td><td>Above acid dew point; 20°F safety margin</td></tr>
+      <tr><td>HRSG backpressure (max)</td><td class="coral">4.0</td><td>in-H₂O</td><td>GE turbine spec limit — must not exceed</td></tr>
+      <tr><td>Duct firing capacity</td><td class="mono">120</td><td>MW-th</td><td>Supplemental burners in inlet duct — optional</td></tr>
+      <tr><td>SCR location in gas path</td><td>Post-duct firing, pre-superheater</td><td>—</td><td>650–900°F window for catalyst activity</td></tr>
+      <tr><td>CO catalyst location</td><td>Downstream of SCR — same module</td><td>—</td><td>CO+VOC oxidation; requires 500°F+ inlet</td></tr>
+      <tr><td>Ammonia injection system</td><td>40% aqueous urea, vaporized</td><td>—</td><td>AIG (ammonia injection grid) across full duct width</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 3 — ABSORPTION CHILLING
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s3">
+  <div class="section-rule">
+    <div class="section-num">03</div>
+    <h2 class="section-title">Absorption Chilling Integration</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <p>IP/LP steam at 50 psig / 300°F is extracted from the HRSG evaporator section and directed to double-effect lithium bromide (LiBr) absorption chillers. At a COP of 1.2–1.4, each MW-th of steam input produces 1.2–1.4 MW-th of cooling effect, eliminating the need for electric centrifugal chillers for 60% of the campus cooling load. The economic argument: steam is available at near-zero marginal fuel cost once the turbine is running.</p>
+
+  <div class="two-col">
+    <div>
+      <h3>How double-effect LiBr absorption works</h3>
+      <p>Steam enters the high-temperature generator at ~150 psig and boils dilute LiBr solution, driving refrigerant vapor (water) upward. The refrigerant passes through a second-effect generator, condenser, then expansion valve to the evaporator where it absorbs heat from the chilled water loop at 44°F. The absorber closes the cycle, rejecting heat to the cooling tower. The net effect: heat in → cold out, with no compressor shaft power.</p>
+
+      <div class="callout teal">
+        <div class="callout-head">Efficiency advantage</div>
+        Double-effect machines achieve COP 1.2–1.4 vs. single-effect COP 0.7. At $0 marginal steam cost vs. $0.06/kWh electric: a 1,500-TR absorption chiller saves ~$1.8M/year vs. an equivalent electric centrifugal chiller at Phase 1 IT load.
+      </div>
+    </div>
+    <div>
+      <h3>Phase 1 / Phase 2 chiller configuration</h3>
+      <table class="spec-table">
+        <thead><tr><th>Parameter</th><th>Phase 1</th><th>Phase 2</th></tr></thead>
+        <tbody>
+          <tr><td>IT load</td><td class="mono">50 MW</td><td class="mono">150 MW</td></tr>
+          <tr><td>Cooling load</td><td class="mono">~4,250 TR</td><td class="mono">~12,750 TR</td></tr>
+          <tr><td>Absorption fraction</td><td class="mono">60%</td><td class="mono">60%</td></tr>
+          <tr><td>Absorption tonnage</td><td class="mono amber">~2,550 TR</td><td class="mono amber">~7,650 TR</td></tr>
+          <tr><td>Steam for absorption</td><td class="mono">42 MW-th</td><td class="mono">120 MW-th</td></tr>
+          <tr><td>Steam flow (klb/hr)</td><td class="mono">~125</td><td class="mono">~360</td></tr>
+          <tr><td>Chiller units</td><td>2 × 1,500 TR</td><td>6 × 1,500 TR</td></tr>
+          <tr><td>Electric chillers (backup)</td><td>2 × 1,200 TR</td><td>4 × 1,200 TR</td></tr>
+          <tr><td>Cooling tower cells</td><td>4 cells</td><td>10 cells</td></tr>
+          <tr><td>CHW supply / return</td><td class="mono">44°F / 54°F</td><td class="mono">44°F / 54°F</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3>Absorption chilling — steam to chilled water flow diagram</h3>
+  <div class="diagram-frame">
+    <div class="diagram-label">Figure 3.1 — LiBr absorption chilling integration with HRSG and data center cooling <span>IP/LP steam extraction path</span></div>
+    <div class="diagram-inner">
+      <svg viewBox="0 0 720 280" role="img" aria-label="Flow diagram showing IP/LP steam from HRSG feeding absorption chiller generator, producing chilled water for CRAC units, with condenser heat rejected to cooling tower and condensate returned to HRSG">
+        <title>Absorption chilling flow diagram</title>
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- HRSG box -->
+        <rect x="20" y="100" width="110" height="60" rx="6" fill="#fef3e2" stroke="#c8690a" stroke-width="1"/>
+        <text font-family="IBM Plex Mono" font-size="10" font-weight="600" fill="#c8690a" x="75" y="124" text-anchor="middle">HRSG</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#c8690a" x="75" y="140" text-anchor="middle">IP/LP extraction</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#c8690a" x="75" y="152" text-anchor="middle">50 psig / 300°F</text>
+
+        <!-- Steam supply line -->
+        <line class="fa" x1="130" y1="128" x2="200" y2="128" stroke="#c8690a" stroke-width="2.5" marker-end="url(#a2)"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#c8690a" x="165" y="120" text-anchor="middle">Steam</text>
+
+        <!-- Absorption chiller box -->
+        <rect x="200" y="60" width="160" height="180" rx="6" fill="#fdf0ee" stroke="#993c1d" stroke-width="1"/>
+        <text font-family="IBM Plex Mono" font-size="10" font-weight="600" fill="#993c1d" x="280" y="84" text-anchor="middle">LiBr Absorption Chiller</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#993c1d" x="280" y="98" text-anchor="middle">Double-effect · 1,500 TR</text>
+        <!-- Internal sections -->
+        <rect x="212" y="110" width="60" height="36" rx="3" fill="none" stroke="#993c1d" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#993c1d" x="242" y="125" text-anchor="middle">Generator</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#993c1d" x="242" y="136" text-anchor="middle">HE + HG</text>
+        <rect x="288" y="110" width="60" height="36" rx="3" fill="none" stroke="#1a8a78" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="318" y="125" text-anchor="middle">Evaporator</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="318" y="136" text-anchor="middle">44°F</text>
+        <rect x="212" y="162" width="136" height="34" rx="3" fill="none" stroke="#718096" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#718096" x="280" y="177" text-anchor="middle">Absorber / Condenser</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#718096" x="280" y="188" text-anchor="middle">Heat rejection to cooling tower</text>
+
+        <!-- CHW supply to DC -->
+        <line class="fs" x1="360" y1="128" x2="460" y2="128" stroke="#2563a8" stroke-width="2.5" marker-end="url(#a2)"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#1e4a7a" x="410" y="120" text-anchor="middle">44°F CHW</text>
+
+        <!-- Data center box -->
+        <rect x="460" y="90" width="130" height="80" rx="6" fill="#e8f0fb" stroke="#2563a8" stroke-width="1"/>
+        <text font-family="IBM Plex Mono" font-size="10" font-weight="600" fill="#1e4a7a" x="525" y="118" text-anchor="middle">Data Center</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#1e4a7a" x="525" y="132" text-anchor="middle">CRAC / in-row cooling</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#1e4a7a" x="525" y="146" text-anchor="middle">Server inlet 68–77°F</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#1e4a7a" x="525" y="160" text-anchor="middle">100 MW IT load (Ph 2)</text>
+
+        <!-- CHW return -->
+        <path d="M590 170 L610 170 L610 200 L410 200 L410 146 L360 146" fill="none" stroke="#2563a8" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#a2)"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#1e4a7a" x="490" y="215" text-anchor="middle">54°F CHW return</text>
+
+        <!-- Condensate return -->
+        <path d="M242 146 L242 220 L75 220 L75 160" fill="none" stroke="#1a8a78" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#0f5e52" x="155" y="235" text-anchor="middle">Condensate return 200°F</text>
+
+        <!-- Cooling tower -->
+        <rect x="200" y="250" width="160" height="24" rx="4" fill="#e4f5f2" stroke="#1a8a78" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#0f5e52" x="280" y="263" text-anchor="middle">Cooling tower — heat rejection</text>
+        <line x1="280" y1="196" x2="280" y2="250" stroke="#1a8a78" stroke-width="1.5" marker-end="url(#a2)"/>
+        <line x1="280" y1="274" x2="280" y2="290" stroke="#1a8a78" stroke-width="1.5" opacity="0.4"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#718096" x="280" y="280" text-anchor="middle">To atmosphere</text>
+
+        <!-- COP annotation -->
+        <rect x="620" y="80" width="90" height="60" rx="4" fill="#e4f5f2" stroke="#1a8a78" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#0f5e52" x="665" y="100" text-anchor="middle">COP: 1.2–1.4</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="665" y="114" text-anchor="middle">1 MW-th steam</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="665" y="126" text-anchor="middle">→ 1.2–1.4 MW-th</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="665" y="134" text-anchor="middle">cooling</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="pipe-legend">
+    <div class="pipe-legend-item"><div class="pipe-swatch" style="background:#c8690a"></div>Steam supply (50 psig)</div>
+    <div class="pipe-legend-item"><div class="pipe-swatch" style="background:#2563a8"></div>Chilled water supply (44°F)</div>
+    <div class="pipe-legend-item"><div class="pipe-swatch" style="background:#2563a8;opacity:.5"></div>CHW return (54°F)</div>
+    <div class="pipe-legend-item"><div class="pipe-swatch" style="background:#1a8a78"></div>Condensate return (200°F)</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 4 — PROCESS STEAM INTEGRATION
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s4">
+  <div class="section-rule">
+    <div class="section-num">04</div>
+    <h2 class="section-title">Process Steam Integration</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <p>Process steam from the LP ring (30 psig / 275°F) serves three parallel end uses via the internal campus distribution loop: building HVAC heat exchange, server hall humidification, and process / district energy taps. A single HP header feeds PRV station A (300→150 psig) for the absorption chillers, then PRV station B (150→30 psig) with desuperheat injection feeds the LP ring.</p>
+
+  <h3>LP steam end-use breakdown</h3>
+  <table class="spec-table">
+    <thead><tr><th>End use</th><th>Load (MW-th)</th><th>Flow (klb/hr)</th><th>Control instrument</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Building HVAC — steam-to-HW HX</td><td class="amber">8</td><td class="mono">24</td><td>TIC-401 (HW supply temp)</td><td>180°F hot water supply; 3 plate HX units in parallel</td></tr>
+      <tr><td>Server hall humidification</td><td class="amber">2</td><td class="mono">6</td><td>RH transmitters → modulating valves</td><td>Target 45–55% RH; Cleveland winter requires significant steam</td></tr>
+      <tr><td>District energy export tap</td><td class="amber">10</td><td class="mono">30</td><td>FI-501 custody transfer meter</td><td>Phase 1 initial district customers; metered billing</td></tr>
+      <tr><td>Process / domestic HW</td><td class="amber">1</td><td class="mono">3</td><td>TIC-501 (DHW temp)</td><td>Data center maintenance, lab, office use</td></tr>
+      <tr><td><strong>Total LP ring load</strong></td><td class="amber"><strong>~21</strong></td><td class="mono"><strong>~63</strong></td><td>PIC-201 (LP ring header pressure)</td><td>Phase 1 — grows to ~85 MW-th at Phase 2</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout amber">
+    <div class="callout-head">PRV station B desuperheat requirement</div>
+    Reducing from 150 psig to 30 psig lowers saturation temperature from 366°F to 274°F but does not automatically desuperheat superheated steam. PRV station B must include a spray-type desuperheater (demineralized water injection) controlled by TIC-301 to ensure steam entering the LP ring is saturated — not superheated — at 274°F. Superheated steam at 30 psig entering humidifiers or heat exchangers causes control instability and can damage equipment.
+  </div>
+
+  <h3>Humidification load sizing — Cleveland climate basis</h3>
+  <p>Cleveland's design winter condition is -5°F / 65% RH outdoor. When this air is heated to the data center supply temperature of ~72°F, relative humidity drops to ~3% without humidification — far below the ASHRAE A1-A2 class minimum of 20% RH and the target 45–55% for electrostatic discharge control. Steam required to humidify 100,000 CFM of outdoor air from 3% to 50% RH at 72°F supply is approximately 1,800 lb/hr — scaling with outdoor air fraction and IT load.</p>
+
+  <table class="spec-table">
+    <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Design outdoor condition</td><td class="mono">-5°F / 65% RH</td><td>Cleveland 99.6% heating design day</td></tr>
+      <tr><td>Supply air target RH</td><td class="mono">45–55%</td><td>ASHRAE 9.9-2021 data center humidity band</td></tr>
+      <tr><td>Outdoor air fraction</td><td class="mono">~15%</td><td>ASHRAE 62.1 minimum ventilation</td></tr>
+      <tr><td>Steam injection rate (Phase 1)</td><td class="mono">~1,800 lb/hr</td><td>Per 100,000 CFM AHU; 4 AHUs in Phase 1</td></tr>
+      <tr><td>Steam injection rate (Phase 2)</td><td class="mono">~5,400 lb/hr</td><td>Scales with IT floor area</td></tr>
+      <tr><td>Humidifier type</td><td>Steam grid — direct injection</td><td>Clean steam from LP ring; no electrode humidifiers needed</td></tr>
+      <tr><td>Steam quality requirement</td><td class="mono">≥ 0.995 dryness</td><td>Separator on each humidifier branch to prevent carryover</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 5 — CAMPUS INTERNAL STEAM LOOP
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s5">
+  <div class="section-rule">
+    <div class="section-num">05</div>
+    <h2 class="section-title">Campus Internal Steam Distribution Loop</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <p>The internal loop is a closed, three-pressure system: 300 psig HP header → 150 psig HP ring (absorption chillers) → 30 psig LP ring (building and process) → atmospheric condensate return. All three circuits are physically separate, thermodynamically coupled through the PRV cascade and the condensate receiver / deaerator. Design standard: ASME B31.1 Power Piping throughout.</p>
+
+  <h3>Pressure tier architecture</h3>
+  <div class="diagram-frame">
+    <div class="diagram-label">Figure 5.1 — Campus steam loop — pressure tier structural diagram <span>3-tier cascade: HP header → HP ring → LP ring → condensate return</span></div>
+    <div class="diagram-inner">
+      <svg viewBox="0 0 720 600" role="img" aria-label="Structural diagram of the Morabito campus three-tier steam distribution loop showing HP header from HRSG, PRV station A to HP ring serving absorption chillers, PRV station B to LP ring serving HVAC and humidification, and condensate return loop">
+        <title>Campus steam loop pressure tier architecture</title>
+        <defs>
+          <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- HRSG -->
+        <rect x="20" y="20" width="140" height="56" rx="6" fill="#fef3e2" stroke="#c8690a" stroke-width="1"/>
+        <text font-family="IBM Plex Mono" font-size="10" font-weight="600" fill="#c8690a" x="90" y="42" text-anchor="middle">HRSG</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#c8690a" x="90" y="58" text-anchor="middle">300 psig · 420°F</text>
+        <line class="fa" x1="160" y1="48" x2="220" y2="48" stroke="#c8690a" stroke-width="2.5" marker-end="url(#a3)"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#854F0B" x="190" y="40" text-anchor="middle">HP header</text>
+
+        <!-- Isolation valve + meter -->
+        <rect x="220" y="28" width="130" height="40" rx="5" fill="#f0ede6" stroke="#4a5568" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#2a3040" x="285" y="44" text-anchor="middle">XV-001 · FE-001</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#718096" x="285" y="57" text-anchor="middle">Isolation + custody meter</text>
+        <line x1="350" y1="48" x2="390" y2="48" stroke="#c8690a" stroke-width="2.5"/>
+        <line class="fa" x1="350" y1="48" x2="390" y2="48" stroke="#c8690a" stroke-width="2.5"/>
+        <circle cx="390" cy="48" r="6" fill="#c8690a"/>
+
+        <!-- HP header trunk down from tee -->
+        <line x1="390" y1="54" x2="390" y2="130" stroke="#c8690a" stroke-width="2.5"/>
+        <line class="fa" x1="390" y1="54" x2="390" y2="130" stroke="#c8690a" stroke-width="2.5"/>
+
+        <!-- District tie-in right -->
+        <line x1="396" y1="48" x2="480" y2="48" stroke="#c8690a" stroke-width="1.5" stroke-dasharray="5 3"/>
+        <rect x="480" y="32" width="80" height="32" rx="4" fill="#f0ede6" stroke="#4a5568" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#4a5568" x="520" y="44" text-anchor="middle">District</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#4a5568" x="520" y="56" text-anchor="middle">spine tie-in</text>
+
+        <!-- PRV station A -->
+        <rect x="334" y="130" width="112" height="52" rx="6" fill="#fdf0ee" stroke="#993c1d" stroke-width="1"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#993c1d" x="390" y="150" text-anchor="middle">PRV station A</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#993c1d" x="390" y="165" text-anchor="middle">300 → 150 psig · PIC-101</text>
+        <line x1="390" y1="182" x2="390" y2="220" stroke="#993c1d" stroke-width="2"/>
+        <line class="fs" x1="390" y1="182" x2="390" y2="220" stroke="#993c1d" stroke-width="2" marker-end="url(#a3)"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#993c1d" x="408" y="204" text-anchor="start">150 psig</text>
+
+        <!-- HP ring container -->
+        <rect x="220" y="220" width="380" height="140" rx="8" fill="none" stroke="#993c1d" stroke-width="1" stroke-dasharray="4 3"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#993c1d" x="234" y="238" text-anchor="start">HP ring — 150 psig · 366°F</text>
+
+        <!-- Abs chiller A -->
+        <rect x="234" y="248" width="142" height="66" rx="5" fill="#e8f0fb" stroke="#2563a8" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#1e4a7a" x="305" y="268" text-anchor="middle">Abs. chiller A</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#1e4a7a" x="305" y="282" text-anchor="middle">2 × 1,500 TR · FIC-201</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#1e4a7a" x="305" y="294" text-anchor="middle">42 MW-th steam · Ph 1</text>
+        <circle class="pd" cx="286" cy="248" r="4" fill="#993c1d"/>
+
+        <!-- Abs chiller B -->
+        <rect x="424" y="248" width="142" height="66" rx="5" fill="#f0ede6" stroke="#4a5568" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#4a5568" x="495" y="268" text-anchor="middle">Abs. chiller B</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#718096" x="495" y="282" text-anchor="middle">2 × 1,500 TR · FIC-211</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#718096" x="495" y="294" text-anchor="middle">Ph 2 — XV-203 closed</text>
+        <circle cx="444" cy="248" r="4" fill="#888780" opacity="0.5"/>
+
+        <!-- PRV B tap from HP ring -->
+        <circle cx="390" cy="360" r="6" fill="#993c1d"/>
+        <line x1="390" y1="366" x2="390" y2="404" stroke="#993c1d" stroke-width="2"/>
+        <line class="fs" x1="390" y1="360" x2="390" y2="404" stroke="#993c1d" stroke-width="2"/>
+
+        <!-- PRV station B -->
+        <rect x="334" y="404" width="112" height="52" rx="6" fill="#fdf0ee" stroke="#993c1d" stroke-width="1"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#993c1d" x="390" y="424" text-anchor="middle">PRV station B</text>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#993c1d" x="390" y="439" text-anchor="middle">150 → 30 psig + TIC-301</text>
+        <line x1="390" y1="456" x2="390" y2="486" stroke="#e8850f" stroke-width="2"/>
+        <line class="fa" x1="390" y1="456" x2="390" y2="486" stroke="#e8850f" stroke-width="2" marker-end="url(#a3)"/>
+        <text font-family="IBM Plex Mono" font-size="8" fill="#854F0B" x="408" y="474" text-anchor="start">30 psig</text>
+
+        <!-- LP ring container -->
+        <rect x="220" y="486" width="380" height="90" rx="8" fill="none" stroke="#e8850f" stroke-width="1" stroke-dasharray="4 3"/>
+        <text font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#854F0B" x="234" y="504" text-anchor="start">LP ring — 30 psig · 275°F</text>
+
+        <!-- LP end uses: HVAC, Humid, Process -->
+        <rect x="234" y="512" width="88" height="52" rx="4" fill="#e4f5f2" stroke="#1a8a78" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#0f5e52" x="278" y="530" text-anchor="middle">HVAC HX</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="278" y="543" text-anchor="middle">8 MW-th</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="278" y="555" text-anchor="middle">TIC-401</text>
+
+        <rect x="336" y="512" width="88" height="52" rx="4" fill="#e4f5f2" stroke="#1a8a78" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#0f5e52" x="380" y="530" text-anchor="middle">Humidifiers</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="380" y="543" text-anchor="middle">2 MW-th</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="380" y="555" text-anchor="middle">45–55% RH</text>
+
+        <rect x="438" y="512" width="88" height="52" rx="4" fill="#e4f5f2" stroke="#1a8a78" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#0f5e52" x="482" y="530" text-anchor="middle">Process tap</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="482" y="543" text-anchor="middle">11 MW-th</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="482" y="555" text-anchor="middle">FI-501 metered</text>
+
+        <!-- Condensate return path -->
+        <line x1="278" y1="564" x2="278" y2="580" stroke="#1a8a78" stroke-width="1.5"/>
+        <line x1="380" y1="564" x2="380" y2="584" stroke="#1a8a78" stroke-width="1.5"/>
+        <line x1="482" y1="564" x2="482" y2="580" stroke="#1a8a78" stroke-width="1.5"/>
+        <line x1="305" y1="314" x2="305" y2="586" stroke="#1a8a78" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="210" y1="586" x2="530" y2="586" stroke="#1a8a78" stroke-width="1.5"/>
+        <line class="ft" x1="530" y1="586" x2="210" y2="586" stroke="#1a8a78" stroke-width="2"/>
+
+        <!-- Condensate receiver -->
+        <rect x="100" y="566" width="112" height="40" rx="5" fill="#e4f5f2" stroke="#1a8a78" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#0f5e52" x="156" y="582" text-anchor="middle">Condensate rcvr</text>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="156" y="597" text-anchor="middle">DA-001 · 10,000 gal</text>
+        <path d="M210 586 L212 586" fill="none"/>
+        <line x1="212" y1="586" x2="212" y2="586"/>
+        <path class="ft" d="M212 586 L100 586" fill="none" stroke="#1a8a78" stroke-width="2" marker-end="url(#a3)"/>
+
+        <!-- Return pump to HRSG feedwater -->
+        <line x1="100" y1="586" x2="80" y2="586" stroke="#1a8a78" stroke-width="2"/>
+        <line x1="80" y1="586" x2="80" y2="48" stroke="#1a8a78" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <line class="ft" x1="80" y1="200" x2="80" y2="80" stroke="#1a8a78" stroke-width="1.5"/>
+        <line x1="80" y1="48" x2="160" y2="48" stroke="#1a8a78" stroke-width="1.5" marker-end="url(#a3)"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#0f5e52" x="64" y="320" text-anchor="middle" transform="rotate(-90,64,320)">Condensate return to HRSG FW</text>
+
+        <!-- Legend bottom right -->
+        <rect x="570" y="490" width="130" height="86" rx="4" fill="none" stroke="#d4cfca" stroke-width="0.5"/>
+        <text font-family="IBM Plex Mono" font-size="8" font-weight="600" fill="#2a3040" x="578" y="505" text-anchor="start">Flow legend</text>
+        <line x1="578" y1="520" x2="608" y2="520" stroke="#c8690a" stroke-width="2.5" stroke-dasharray="8 5"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#4a5568" x="614" y="520" text-anchor="start">HP steam 300 psig</text>
+        <line x1="578" y1="536" x2="608" y2="536" stroke="#993c1d" stroke-width="2" stroke-dasharray="6 5"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#4a5568" x="614" y="536" text-anchor="start">HP ring 150 psig</text>
+        <line x1="578" y1="552" x2="608" y2="552" stroke="#e8850f" stroke-width="2" stroke-dasharray="6 5"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#4a5568" x="614" y="552" text-anchor="start">LP ring 30 psig</text>
+        <line x1="578" y1="568" x2="608" y2="568" stroke="#1a8a78" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text font-family="IBM Plex Mono" font-size="7" fill="#4a5568" x="614" y="568" text-anchor="start">Condensate rtn</text>
+      </svg>
+    </div>
+  </div>
+
+  <h3>Condensate return system</h3>
+  <p>Condensate returns from all steam-consuming equipment to a central atmospheric deaerator (DA-001) sized at 10,000 gallons with 20-minute retention time. The deaerator removes dissolved oxygen to &lt;7 ppb via tray-type steam stripping, preventing oxygen-induced corrosion of the HRSG tubes and feedwater system. Feedwater pumps P-001A/B (duty/standby) return treated condensate at 600 psig to the HRSG economizer inlet.</p>
+
+  <div class="warn-box">
+    <div class="warn-icon">⚠</div>
+    <div>Dissolved oxygen in feedwater is the leading cause of pitting corrosion in HRSG economizer and evaporator tubes. The deaerator must maintain effluent O₂ below 7 ppb at all loads. Add sodium sulfite O₂ scavenger injection downstream of the deaerator as a backup chemical treatment layer. Test DA-001 effluent weekly; respond to any reading above 20 ppb within 24 hours.</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 6 — DISTRICT ENERGY SPINE
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s6">
+  <div class="section-rule">
+    <div class="section-num">06</div>
+    <h2 class="section-title">District Energy Spine</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <p>Available steam beyond campus consumption is exported to the Slavic Village Industrial Valley district energy spine at 50 psig / 300°F — the same IP/LP extraction pressure, without further pressure reduction. Customer-side PRV stations step down to end-use pressure at each building. Morabito would be the first district steam provider in Cleveland since CLECO / Dominion ceased operations in 2018.</p>
+
+  <div class="three-col">
+    <div class="data-card green"><div class="data-card-head">Ph 1 available for export</div><div class="data-card-value">~230</div><div class="data-card-unit">MW-th after campus loads</div><div class="data-card-note">Phase 1 campus uses ~42 MW-th; Phase 2 uses ~130 MW-th</div></div>
+    <div class="data-card green"><div class="data-card-head">20-yr gross revenue</div><div class="data-card-value">$235</div><div class="data-card-unit">Million (base case)</div><div class="data-card-note">Industrial $11.50/MMBtu, institutional $14.00/MMBtu, 2.5%/yr escalation</div></div>
+    <div class="data-card green"><div class="data-card-head">Network capex (all phases)</div><div class="data-card-value">$24.5</div><div class="data-card-unit">Million installed</div><div class="data-card-note">Pre-insulated underground piping, metering, PRV stations at each customer</div></div>
+  </div>
+
+  <h3>District customer pipeline <span class="phase-badge ph1">Phase 1</span> <span class="phase-badge ph2">Phase 2</span> <span class="phase-badge ph3">Phase 3</span></h3>
+  <table class="spec-table">
+    <thead><tr><th>Customer</th><th>Class</th><th>Phase</th><th>Demand (klb/hr)</th><th>Load factor</th><th>Rate ($/MMBtu)</th><th>Est. annual revenue</th></tr></thead>
+    <tbody>
+      <tr><td>Slavic Village Food Hub (anchor)</td><td>Industrial</td><td><span class="phase-badge ph1">1</span></td><td class="mono">12.0</td><td class="mono">72%</td><td class="mono">$11.50</td><td class="green">$1.18M</td></tr>
+      <tr><td>Opportunity Corridor Light Mfg.</td><td>Industrial</td><td><span class="phase-badge ph1">1</span></td><td class="mono">8.0</td><td class="mono">68%</td><td class="mono">$11.50</td><td class="green">$0.74M</td></tr>
+      <tr><td>SV Industrial Incubator</td><td>Commercial</td><td><span class="phase-badge ph1">1</span></td><td class="mono">4.0</td><td class="mono">55%</td><td class="mono">$13.00</td><td class="green">$0.40M</td></tr>
+      <tr><td>Metro Health — new MOB campus</td><td>Institutional</td><td><span class="phase-badge ph2">2</span></td><td class="mono">14.0</td><td class="mono">80%</td><td class="mono">$14.00</td><td class="green">$1.88M</td></tr>
+      <tr><td>Cuyahoga County Justice Center</td><td>Institutional</td><td><span class="phase-badge ph2">2</span></td><td class="mono">9.0</td><td class="mono">75%</td><td class="mono">$14.00</td><td class="green">$1.13M</td></tr>
+      <tr><td>Opportunity Corridor Mixed-Use</td><td>Commercial</td><td><span class="phase-badge ph2">2</span></td><td class="mono">7.0</td><td class="mono">60%</td><td class="mono">$13.00</td><td class="green">$0.65M</td></tr>
+      <tr><td>ArcelorMittal Cleveland (partial)</td><td>Industrial</td><td><span class="phase-badge ph2">2</span></td><td class="mono">22.0</td><td class="mono">85%</td><td class="mono">$11.50</td><td class="green">$2.73M</td></tr>
+      <tr><td>Residential district heat</td><td>Residential</td><td><span class="phase-badge ph3">3</span></td><td class="mono">18.0</td><td class="mono">70%</td><td class="mono">$10.50</td><td class="green">$1.60M</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footnote">Annual revenue estimates at Year 1 of each phase, before 2.5%/yr CPI escalation. ArcelorMittal contract is the single largest swing item: at 50% contracted capacity vs. 85%, 20-year revenue changes by ~$55M.</div>
+
+  <h3>Tariff structure</h3>
+  <table class="spec-table">
+    <thead><tr><th>Tariff element</th><th>Industrial</th><th>Institutional</th><th>Commercial</th><th>Residential</th></tr></thead>
+    <tbody>
+      <tr><td>Commodity rate ($/MMBtu)</td><td class="mono">$11.50</td><td class="mono">$14.00</td><td class="mono">$13.00</td><td class="mono">$10.50</td></tr>
+      <tr><td>Capacity reservation ($/klb-hr/mo)</td><td class="mono">$4.80</td><td class="mono">$4.80</td><td class="mono">$4.80</td><td class="mono">$4.00</td></tr>
+      <tr><td>Connection fee (one-time)</td><td class="mono">$35,000</td><td class="mono">$35,000</td><td class="mono">$35,000</td><td class="mono">$20,000</td></tr>
+      <tr><td>Annual escalation</td><td class="mono" colspan="4">2.5%/yr — CPI-linked; 5-year rate lock minimum</td></tr>
+      <tr><td>vs. NG boiler alternative</td><td class="mono">~8% below</td><td class="mono">~6% below</td><td class="mono">~7% below</td><td class="mono">Competitive</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 7 — EMISSIONS CONTROL
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s7">
+  <div class="section-rule">
+    <div class="section-num">07</div>
+    <h2 class="section-title">Emissions Control System</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <p>Cuyahoga County is a USEPA ozone nonattainment area, triggering LAER (Lowest Achievable Emission Rate) rather than BACT for this project. The emission control chain achieves 2.0 ppm NOx at the stack — the Ohio RACT limit — through DLN combustors at the turbine followed by SCR with urea injection in the HRSG gas path.</p>
+
+  <h3>NOx reduction chain</h3>
+  <table class="spec-table">
+    <thead><tr><th>Stage</th><th>Technology</th><th>NOx level (ppm @15% O₂)</th><th>Reduction</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Raw combustion</td><td>Diffusion flame (uncontrolled)</td><td class="coral">~180</td><td>—</td><td>Reference only — not GE 7HA.01 actual</td></tr>
+      <tr><td>DLN combustors</td><td>Dry low-NOx premix</td><td class="amber">9</td><td>~95%</td><td>GE guaranteed · varies with load and ambient temp</td></tr>
+      <tr><td>After SCR</td><td>Selective catalytic reduction</td><td class="steel">1.35</td><td>~85%</td><td>Urea/NH₃ injection · vanadium catalyst 650–900°F window</td></tr>
+      <tr><td>Stack (permitted limit)</td><td>Combined DLN + SCR</td><td class="teal">2.0</td><td>—</td><td>Ohio RACT limit / Ohio Admin. Code 3745-110 · 30-day rolling avg</td></tr>
+    </tbody>
+  </table>
+
+  <div class="two-col">
+    <div>
+      <h3>Annual mass emissions — controlled</h3>
+      <table class="spec-table">
+        <thead><tr><th>Pollutant</th><th>Controlled (t/yr)</th><th>Major source threshold</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>NOx</td><td class="mono">~140</td><td class="mono">100 tpy</td><td class="coral">Major source — LAER + ERC</td></tr>
+          <tr><td>CO</td><td class="mono">~85</td><td class="mono">100 tpy</td><td class="teal">Below major; no ERC</td></tr>
+          <tr><td>VOC</td><td class="mono">~22</td><td class="mono">50 tpy</td><td class="teal">Below major</td></tr>
+          <tr><td>PM₂.₅</td><td class="mono">&lt;5</td><td class="mono">25 tpy</td><td class="teal">Well below major</td></tr>
+          <tr><td>CO₂</td><td class="mono">~1,200,000</td><td>—</td><td class="amber">Reporting only — no ERC</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>ERC acquisition budget</h3>
+      <table class="spec-table">
+        <thead><tr><th>Item</th><th>Low</th><th>Base</th><th>High</th></tr></thead>
+        <tbody>
+          <tr><td>NOx ERCs required (tons)</td><td class="mono">168</td><td class="mono">182</td><td class="mono">196</td></tr>
+          <tr><td>Market price ($/ton)</td><td class="mono">$3,000</td><td class="mono">$4,500</td><td class="mono">$6,500</td></tr>
+          <tr><td>NOx ERC cost</td><td class="mono">$504K</td><td class="steel">$819K</td><td class="mono">$1.27M</td></tr>
+          <tr><td>VOC ERC cost</td><td class="mono">$18K</td><td class="mono">$26K</td><td class="mono">$44K</td></tr>
+          <tr><td>Permit legal + consulting</td><td class="mono">$325K</td><td class="mono">$390K</td><td class="mono">$575K</td></tr>
+          <tr><td>AERMOD + CEMS</td><td class="mono">$725K</td><td class="mono">$900K</td><td class="mono">$1.09M</td></tr>
+          <tr><td><strong>Total air permit budget</strong></td><td class="mono">$1.57M</td><td class="steel"><strong>$2.14M</strong></td><td class="mono">$2.98M</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3>SCR system sizing</h3>
+  <table class="spec-table">
+    <thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>SCR catalyst volume</td><td class="mono">~272</td><td>m³</td><td>0.8 m³/MW basis · vanadium-titanium honeycomb</td></tr>
+      <tr><td>SCR inlet temperature window</td><td class="mono">650–900</td><td>&deg;F</td><td>Required for catalyst activity; HRSG placement provides this</td></tr>
+      <tr><td>Ammonia slip limit</td><td class="mono">≤5</td><td>ppm</td><td>Permit limit; monitor at stack with NH₃ CEMS</td></tr>
+      <tr><td>Urea solution consumption</td><td class="mono">~3.2</td><td>t/day</td><td>40% aqueous urea; stored in 2 × 10,000-gal AST</td></tr>
+      <tr><td>HRSG pressure drop (SCR)</td><td class="mono">~2.5</td><td>in-H₂O</td><td>Included in 4.0" GE backpressure limit allocation</td></tr>
+      <tr><td>Catalyst replacement interval</td><td class="mono">24,000</td><td>hr</td><td>~3-year cycle at 8,400 hr/yr operation</td></tr>
+      <tr><td>CEMS instruments required</td><td colspan="3">NOx, CO, O₂, stack flow, temperature — continuous per Title V; NH₃ slip periodic</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout coral">
+    <div class="callout-head">Environmental justice — Slavic Village</div>
+    Slavic Village is a designated EJ community under USEPA EJScreen (80th+ percentile). This requires enhanced public participation, a community health baseline study, and real-time fence-line air quality monitoring (4 Class 1 sound level meters + NO₂/O₃/PM₂.₅ at property boundary). The Community Benefits Agreement commits $350,000 per health study (Years 0, 3, 7) and a public data portal showing live fence-line readings.
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 8 — PIPE & EQUIPMENT SPECIFICATIONS
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s8">
+  <div class="section-rule">
+    <div class="section-num">08</div>
+    <h2 class="section-title">Pipe &amp; Equipment Specifications</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <h3>Pipe sizing summary — internal campus loop</h3>
+  <p>All pipe sized by velocity method. Target velocities: 80–100 ft/s steam (mains), 60–80 ft/s steam (branches), 5–8 ft/s condensate (pumped). All HP piping ASME B31.1 Sch 80+; LP piping Sch 40. All welds P1 material — radiograph at 10% minimum, 100% at HP ring.</p>
+
+  <table class="spec-table">
+    <thead><tr><th>Line tag</th><th>Service</th><th>Flow (klb/hr)</th><th>Calc dia (in)</th><th>Selected NPS</th><th>Schedule</th><th>MAWP (psig)</th><th>Length (ft)</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">HP-001</td><td>HP header — HRSG to campus</td><td class="mono">14,000</td><td class="mono">9.2</td><td class="amber">10"</td><td class="mono">Sch 80</td><td class="mono">450</td><td class="mono">120</td></tr>
+      <tr><td class="mono">HP-002</td><td>HP header — to PRV-A</td><td class="mono">14,000</td><td class="mono">9.2</td><td class="amber">10"</td><td class="mono">Sch 80</td><td class="mono">450</td><td class="mono">80</td></tr>
+      <tr><td class="mono">HP-100</td><td>HP ring — PRV-A to chiller A</td><td class="mono">12,000</td><td class="mono">7.3</td><td class="amber">8"</td><td class="mono">Sch 80</td><td class="mono">300</td><td class="mono">200</td></tr>
+      <tr><td class="mono">HP-101/102</td><td>HP ring lateral segments</td><td class="mono">4,000</td><td class="mono">4.2</td><td class="amber">4"</td><td class="mono">Sch 80</td><td class="mono">300</td><td class="mono">240</td></tr>
+      <tr><td class="mono">HP-103</td><td>HP ring — return to PRV-B</td><td class="mono">8,000</td><td class="mono">5.9</td><td class="amber">6"</td><td class="mono">Sch 80</td><td class="mono">300</td><td class="mono">120</td></tr>
+      <tr><td class="mono">CS-201/202</td><td>Chiller A/B — ring to generator</td><td class="mono">10,000</td><td class="mono">6.6</td><td class="amber">8"</td><td class="mono">Sch 80</td><td class="mono">300</td><td class="mono">40 ea</td></tr>
+      <tr><td class="mono">LP-001</td><td>LP ring supply — PRV-B to header</td><td class="mono">8,000</td><td class="mono">7.4</td><td class="steel">8"</td><td class="mono">Sch 40</td><td class="mono">60</td><td class="mono">60</td></tr>
+      <tr><td class="mono">LP-100/101/102</td><td>LP ring laterals — HVAC/humid/process</td><td class="mono">1,500–3,000</td><td class="mono">2.6–4.1</td><td class="steel">3"–4"</td><td class="mono">Sch 40</td><td class="mono">60</td><td class="mono">350</td></tr>
+      <tr><td class="mono">CR-001/002</td><td>Condensate headers — end uses</td><td class="mono">4,000–6,000</td><td class="mono">3.8–4.7</td><td class="teal">4"–6"</td><td class="mono">Sch 40</td><td class="mono">15</td><td class="mono">520</td></tr>
+      <tr><td class="mono">CR-003/004</td><td>Condensate return main</td><td class="mono">8,500</td><td class="mono">5.2</td><td class="teal">8"</td><td class="mono">Sch 40</td><td class="mono">15</td><td class="mono">580</td></tr>
+      <tr><td class="mono">FW-001</td><td>Feedwater pump discharge</td><td class="mono">8,500</td><td class="mono">3.1</td><td class="teal">6"</td><td class="mono">Sch 80</td><td class="mono">450</td><td class="mono">400</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Major equipment summary</h3>
+  <table class="spec-table">
+    <thead><tr><th>Tag</th><th>Equipment</th><th>Key rating</th><th>Material</th><th>Code</th><th>Qty</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">PCV-101A/B</td><td>PRV station A — 300→150 psig</td><td class="mono">12,000 klb/hr · 8" globe</td><td>CS body / SS trim</td><td>API 623</td><td>2 (1 duty + 1 standby)</td></tr>
+      <tr><td class="mono">PCV-201A/B</td><td>PRV station B — 150→30 psig + desuperheat</td><td class="mono">8,000 klb/hr · 6" globe</td><td>CS body / SS trim</td><td>API 623</td><td>2 (1 duty + 1 standby)</td></tr>
+      <tr><td class="mono">ABS-A-001/002</td><td>Absorption chiller A — Phase 1</td><td class="mono">1,500 TR ea · 150 psig steam</td><td>SS316 generator</td><td>ASHRAE 15</td><td>2</td></tr>
+      <tr><td class="mono">ABS-B-001/002</td><td>Absorption chiller B — Phase 2</td><td class="mono">1,500 TR ea · 150 psig steam</td><td>SS316 generator</td><td>ASHRAE 15</td><td>2 (future)</td></tr>
+      <tr><td class="mono">DA-001</td><td>Deaerator / condensate receiver</td><td class="mono">10,000 gal · 15 psig · tray-type</td><td>SA-516-70</td><td>ASME Sec. VIII</td><td>1</td></tr>
+      <tr><td class="mono">P-001A/B</td><td>Condensate return / feedwater pump</td><td class="mono">8,500 lb/hr · 450 ft TDH · 15 HP</td><td>CA6NM SS</td><td>API 610 equiv.</td><td>2 (1 duty + 1 standby)</td></tr>
+      <tr><td class="mono">SV-HP-001</td><td>HP header safety valve</td><td class="mono">Set 330 psig · D orifice</td><td>CS/SS</td><td>ASME Sec. I UV stamp</td><td>2 parallel</td></tr>
+      <tr><td class="mono">SV-LP-001</td><td>LP ring safety valve</td><td class="mono">Set 33 psig · E orifice</td><td>CS/SS</td><td>ASME Sec. I UV stamp</td><td>2 parallel</td></tr>
+      <tr><td class="mono">TK-001</td><td>Makeup water / desuperheat tank</td><td class="mono">5,000 gal · atmospheric</td><td>FRP</td><td>—</td><td>1</td></tr>
+      <tr><td class="mono">FE-001</td><td>Chemical injection skid</td><td class="mono">O₂ scavenger + scale inhibitor</td><td>SS316</td><td>—</td><td>1</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Insulation schedule</h3>
+  <table class="spec-table">
+    <thead><tr><th>Service</th><th>Pipe size</th><th>Insulation thickness</th><th>Material</th><th>Jacket</th><th>Surface temp target</th></tr></thead>
+    <tbody>
+      <tr><td>HP header 300 psig</td><td>10"</td><td class="mono">4"</td><td>Mineral wool (ASTM C547)</td><td>ASJ + PVC weather cover</td><td class="mono">≤ 130°F</td></tr>
+      <tr><td>HP ring 150 psig</td><td>4"–8"</td><td class="mono">3"</td><td>Mineral wool (ASTM C547)</td><td>ASJ</td><td class="mono">≤ 130°F</td></tr>
+      <tr><td>LP ring 30 psig</td><td>2.5"–8"</td><td class="mono">2"</td><td>Mineral wool (ASTM C547)</td><td>ASJ</td><td class="mono">≤ 130°F</td></tr>
+      <tr><td>Condensate return</td><td>All sizes</td><td class="mono">1"</td><td>Mineral wool (ASTM C547)</td><td>ASJ</td><td class="mono">≤ 130°F</td></tr>
+      <tr><td>Underground pre-insulated</td><td>All sizes</td><td class="mono">4" PU foam</td><td>Polyurethane foam (ASTM C591)</td><td>HDPE carrier pipe</td><td>N/A (buried)</td></tr>
+      <tr><td>Valves and flanges</td><td>All</td><td colspan="3">Removable insulation boxes — enables inspection without damage to pipe insulation</td><td class="mono">≤ 130°F</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECTION 9 — DESIGN BASIS
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="section" id="s9">
+  <div class="section-rule">
+    <div class="section-num">09</div>
+    <h2 class="section-title">Design Basis &amp; Engineering Criteria</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3>Applicable codes and standards</h3>
+      <ul class="checklist">
+        <li>ASME B31.1 — Power Piping (all steam, condensate, feedwater)</li>
+        <li>ASME Section I — Power Boilers (HRSG pressure parts)</li>
+        <li>ASME Section VIII Div. 1 — Pressure Vessels (deaerator, receivers)</li>
+        <li>ASME B36.10 — Seamless carbon steel pipe dimensions</li>
+        <li>ASME B16.5 — Flanges (150#, 300#, 600# classes)</li>
+        <li>API 600 / 602 / 623 — Valves (gate, compact gate, globe control)</li>
+        <li>NFPA 85 — Boiler and Combustion Systems Hazards Code</li>
+        <li>ASTM C547 / C533 — Pipe insulation (mineral wool, calcium silicate)</li>
+        <li>AWS D1.1 / ASME Sec IX — Structural and pressure welding</li>
+        <li>ASCE 7-22 — Structural loads (Site Class D, Cleveland)</li>
+        <li>Ohio Admin. Code 3745-110 — RACT for NOx</li>
+        <li>USEPA 40 CFR Part 75 — CEMS requirements</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Hydraulic design criteria</h3>
+      <table class="spec-table">
+        <thead><tr><th>Criterion</th><th>Limit</th></tr></thead>
+        <tbody>
+          <tr><td>Steam velocity — mains</td><td class="mono">80–100 ft/s</td></tr>
+          <tr><td>Steam velocity — branches</td><td class="mono">60–80 ft/s</td></tr>
+          <tr><td>Condensate — gravity drain</td><td class="mono">0.5–2.0 ft/s (1% slope min)</td></tr>
+          <tr><td>Condensate — pumped return</td><td class="mono">5–8 ft/s</td></tr>
+          <tr><td>PRV pressure drop max</td><td class="mono">50% of inlet absolute</td></tr>
+          <tr><td>HRSG backpressure max</td><td class="coral">4.0" H₂O (GE turbine limit)</td></tr>
+          <tr><td>Steam quality at chiller inlet</td><td class="mono">≥ 0.999 dryness</td></tr>
+          <tr><td>Deaerator O₂ effluent max</td><td class="mono">7 ppb</td></tr>
+          <tr><td>Feedwater pH range</td><td class="mono">8.5–9.5</td></tr>
+          <tr><td>TDS — boiler feedwater max</td><td class="mono">500 ppm</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3>Thermal design conditions — summary</h3>
+  <table class="spec-table">
+    <thead><tr><th>System</th><th>Design pressure (psig)</th><th>Design temp (&deg;F)</th><th>Operating pressure</th><th>Operating temp</th></tr></thead>
+    <tbody>
+      <tr><td>HP header</td><td class="mono">450</td><td class="mono">500</td><td class="mono">300 psig</td><td class="mono">420°F</td></tr>
+      <tr><td>HP ring (absorption chiller supply)</td><td class="mono">300</td><td class="mono">420</td><td class="mono">150 psig</td><td class="mono">366°F</td></tr>
+      <tr><td>LP ring (HVAC / humidification)</td><td class="mono">60</td><td class="mono">310</td><td class="mono">30 psig</td><td class="mono">275°F</td></tr>
+      <tr><td>Condensate return system</td><td class="mono">50</td><td class="mono">250</td><td class="mono">Atm – 5 psig</td><td class="mono">200–212°F</td></tr>
+      <tr><td>Feedwater pump discharge</td><td class="mono">600</td><td class="mono">250</td><td class="mono">450 psig</td><td class="mono">240°F</td></tr>
+      <tr><td>HRSG steam drum</td><td class="mono">2,160</td><td class="mono">—</td><td class="mono">1,800 psig</td><td class="mono">Sat. temp</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Key project milestones and long-lead items</h3>
+  <table class="spec-table">
+    <thead><tr><th>Item</th><th>Action required</th><th>Lead time</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Ohio EPA Title V permit</td><td>Application filing</td><td class="mono">18–24 mo</td><td>Cuyahoga nonattainment — allow extra time for LAER review</td></tr>
+      <tr><td>NOx ERC acquisition</td><td>Broker engagement at permit filing</td><td class="mono">6–12 mo</td><td>Lock price at application; forward contract recommended</td></tr>
+      <tr><td>HRSG procurement</td><td>RFQ at FID</td><td class="mono">18–24 mo</td><td>Major long-lead; Vogt-Nem, CMI, Babcock Wilcox</td></tr>
+      <tr><td>HP steam piping Sch 80</td><td>Material reservation</td><td class="mono">16–20 mo</td><td>SA-106 Gr B seamless — allocation required in current market</td></tr>
+      <tr><td>Absorption chillers</td><td>RFQ at FID</td><td class="mono">20–28 mo</td><td>Carrier 16JT or York YIA double-effect LiBr</td></tr>
+      <tr><td>PRV stations (HP-A, HP-B)</td><td>RFQ at permit application</td><td class="mono">12–16 mo</td><td>Fisher EWT or Masoneilan; specify SIL 2 per NFPA 85</td></tr>
+      <tr><td>Deaerator DA-001</td><td>RFQ at HRSG award</td><td class="mono">20–26 mo</td><td>ASME stamped; Cochrane or Industrial Steam</td></tr>
+      <tr><td>CEMS installation</td><td>Detail design at permit approval</td><td class="mono">8–12 mo</td><td>Must certify 60 days before startup per 40 CFR Part 75</td></tr>
+      <tr><td>District piping (underground)</td><td>Civil contractor RFQ</td><td class="mono">8–12 mo</td><td>Pre-insulated Perma-Pipe or Calpipe — schedule to match Ph 1 COD</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout green">
+    <div class="callout-head">Overall thermal efficiency — system-level summary</div>
+    Simple cycle 7HA.01 efficiency: ~38–40%. Adding the HRSG and steam turbine (combined cycle): ~62%. Adding absorption chilling and process heat reuse: effective campus-level energy utilization rises to ~78–82% of fuel input energy delivered as useful work — electricity to grid, cooling to data center, heat to campus and district customers. This is the core value proposition of the integrated Morabito energy campus vs. a conventional data center drawing power from the grid.
+  </div>
+
+  <div class="footnote">This document reflects Class 4 engineering basis (AACE accuracy range −30%/+50%) as of May 2026. All dimensions and specifications subject to final engineering, OEM data sheets, and Ohio EPA permit conditions. GE 7HA.01 turbine data from public GE Power specifications and HRSG vendor preliminary data. Contact Lakeland Equity Group / FOS 216 for current project status.</div>
+</section>
+
+</main>
+</div><!-- end page-body -->
+
+<footer class="doc-footer">
+  <span>FOS 216 / Lakeland Equity Group</span>
+  <span>Morabito Data Center Campus — Heat Exhaust Capture & Redirection Technical Reference</span>
+  <span>Rev 1.0 — May 2026 — <span style="color:var(--ink4)">Class 4 Engineering Basis</span></span>
+</footer>
+
+<script>
+const sections = document.querySelectorAll('.section');
+const links = document.querySelectorAll('.toc a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.toc a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
