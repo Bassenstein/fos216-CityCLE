@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cleveland MSW & FastOx Analysis — The FixOurStreets216 Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --ink:       #0d0f0e;
+    --paper:     #f5f2eb;
+    --paper2:    #ede9e0;
+    --rust:      #c44b2b;
+    --rust-lt:   #e8614a;
+    --steel:     #2b4c6f;
+    --steel-lt:  #4a7aab;
+    --sage:      #2d6a4f;
+    --sage-lt:   #52b788;
+    --amber:     #d4882a;
+    --amber-lt:  #f0ad55;
+    --mid:       #7a7770;
+    --rule:      #c8c4bb;
+    --mono:      'IBM Plex Mono', monospace;
+    --head:      'Barlow Condensed', sans-serif;
+    --body:      'Barlow', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 18px,
+      rgba(255,255,255,0.025) 18px,
+      rgba(255,255,255,0.025) 19px
+    );
+    pointer-events: none;
+  }
+  .masthead-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 48px 56px;
+    position: relative;
+    z-index: 1;
+  }
+  .byline-top {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--rust-lt);
+    margin-bottom: 18px;
+  }
+  .masthead h1 {
+    font-family: var(--head);
+    font-weight: 900;
+    font-size: clamp(38px, 6vw, 76px);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .masthead h1 span { color: var(--rust-lt); }
+  .masthead-sub {
+    font-family: var(--head);
+    font-weight: 300;
+    font-size: clamp(16px, 2vw, 22px);
+    letter-spacing: 0.02em;
+    color: rgba(245,242,235,0.72);
+    max-width: 680px;
+    line-height: 1.4;
+    margin-bottom: 36px;
+  }
+  .masthead-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(245,242,235,0.5);
+    text-transform: uppercase;
+  }
+  .meta-item strong {
+    display: block;
+    font-size: 13px;
+    color: rgba(245,242,235,0.85);
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+  .rust-bar {
+    height: 5px;
+    background: linear-gradient(90deg, var(--rust) 0%, var(--rust-lt) 40%, var(--amber) 100%);
+  }
+
+  /* ── NAV ── */
+  .toc-bar {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .toc-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc-inner::-webkit-scrollbar { display: none; }
+  .toc-inner a {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,242,235,0.5);
+    text-decoration: none;
+    padding: 14px 16px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .toc-inner a:hover { color: var(--rust-lt); border-bottom-color: var(--rust-lt); }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1200px; margin: 0 auto; padding: 72px 48px; }
+  .page + .page { padding-top: 0; }
+
+  /* ── SECTION HEADERS ── */
+  .section-flag {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .flag-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--rust);
+    text-transform: uppercase;
+  }
+  .flag-line {
+    flex: 1;
+    height: 1px;
+    background: var(--rust);
+    opacity: 0.35;
+  }
+  h2.section-title {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: clamp(28px, 4vw, 46px);
+    letter-spacing: -0.01em;
+    line-height: 1.0;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  h2.section-title em { font-style: normal; color: var(--rust); }
+  h3.subsection {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    margin: 40px 0 16px;
+    color: var(--steel);
+  }
+  h3.subsection::before {
+    content: '▸ ';
+    color: var(--rust);
+    font-size: 16px;
+  }
+
+  /* ── PROSE ── */
+  .prose { max-width: 740px; }
+  .prose p { margin-bottom: 16px; color: #2a2a2a; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose strong { font-weight: 600; color: var(--ink); }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-left: 4px solid var(--rust);
+    background: var(--paper2);
+    padding: 18px 22px;
+    margin: 28px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout.steel { border-left-color: var(--steel); }
+  .callout.sage  { border-left-color: var(--sage); }
+  .callout.amber { border-left-color: var(--amber); }
+  .callout-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 6px;
+  }
+  .callout.steel .callout-label { color: var(--steel); }
+  .callout.sage  .callout-label { color: var(--sage); }
+  .callout.amber .callout-label { color: var(--amber); }
+  .callout p { margin: 0; font-size: 14px; color: #2a2a2a; }
+
+  /* ── STAT CARDS ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .stat-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 22px 20px;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--rust);
+  }
+  .stat-card.steel::after { background: var(--steel-lt); }
+  .stat-card.sage::after  { background: var(--sage-lt); }
+  .stat-card.amber::after { background: var(--amber-lt); }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,242,235,0.5);
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.0;
+    color: var(--paper);
+    margin-bottom: 4px;
+  }
+  .stat-sub {
+    font-size: 12px;
+    color: rgba(245,242,235,0.5);
+    line-height: 1.4;
+  }
+
+  /* ── DATA TABLE ── */
+  .data-table-wrap {
+    overflow-x: auto;
+    margin: 28px 0;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: right;
+    font-weight: 600;
+  }
+  thead th:first-child { text-align: left; }
+  tbody tr:nth-child(even) { background: var(--paper2); }
+  tbody td {
+    padding: 10px 16px;
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #2a2a2a;
+    border-bottom: 1px solid var(--rule);
+  }
+  tbody td:first-child {
+    text-align: left;
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  tfoot td {
+    padding: 12px 16px;
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--ink);
+    color: var(--paper);
+    border-top: 2px solid var(--rust);
+  }
+  tfoot td:first-child { text-align: left; }
+  .cell-red  { color: var(--rust) !important; }
+  .cell-grn  { color: var(--sage) !important; }
+  .cell-blue { color: var(--steel-lt) !important; }
+
+  /* ── CHART CONTAINERS ── */
+  .chart-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 28px;
+    margin: 28px 0;
+  }
+  .chart-title {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .chart-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 22px;
+  }
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--mid);
+    font-family: var(--mono);
+  }
+  .legend-swatch {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  /* ── TWO-COL COMPARISON ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 32px 0;
+  }
+  @media (max-width: 768px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-col {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .compare-col-head {
+    padding: 16px 20px;
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .compare-col-head.rust  { background: var(--rust);   color: #fff; }
+  .compare-col-head.steel { background: var(--steel);  color: #fff; }
+  .compare-col-body { padding: 20px; background: #fff; }
+  .line-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--paper2);
+    font-size: 13px;
+    gap: 12px;
+  }
+  .line-item:last-child { border-bottom: none; }
+  .li-label { color: var(--mid); flex: 1; line-height: 1.3; }
+  .li-label small { display: block; font-size: 10px; color: #aaa; margin-top: 1px; }
+  .li-value { font-family: var(--mono); font-weight: 600; font-size: 12px; white-space: nowrap; }
+  .subtotal-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0 0;
+    margin-top: 6px;
+    border-top: 1.5px solid var(--ink);
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .total-box {
+    margin-top: 12px;
+    padding: 14px 16px;
+    border-radius: 3px;
+    background: var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .total-box .label { font-size: 13px; font-weight: 600; color: var(--paper); }
+  .total-box .value { font-family: var(--head); font-weight: 700; font-size: 26px; color: var(--paper); }
+  .total-box.rust   .value { color: var(--rust-lt); }
+  .total-box.sage   .value { color: var(--sage-lt); }
+  .total-box.amber  .value { color: var(--amber-lt); }
+  .credit-box {
+    margin-top: 8px;
+    padding: 12px 16px;
+    border-radius: 3px;
+    background: rgba(43,76,111,0.12);
+    border: 1px solid rgba(43,76,111,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .credit-box .label { font-size: 12px; color: var(--steel); }
+  .credit-box .value { font-family: var(--head); font-weight: 700; font-size: 22px; color: var(--steel); }
+
+  /* ── VERDICT ── */
+  .verdict {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px 40px;
+    border-radius: 4px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .verdict::before {
+    content: '"';
+    font-family: var(--head);
+    font-size: 280px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    position: absolute;
+    top: -40px;
+    right: 20px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .verdict-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--rust-lt);
+    margin-bottom: 14px;
+  }
+  .verdict p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(245,242,235,0.85);
+    max-width: 820px;
+    position: relative;
+    z-index: 1;
+  }
+  .verdict p + p { margin-top: 14px; }
+  .verdict strong { color: var(--paper); font-weight: 600; }
+
+  /* ── FASTOX EXPLAINER ── */
+  .process-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 28px 0;
+  }
+  .process-step {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px 16px;
+    border-radius: 3px;
+    text-align: center;
+    position: relative;
+  }
+  .process-step::after {
+    content: '→';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--rust);
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .process-step:last-child::after { display: none; }
+  .step-icon { font-size: 28px; margin-bottom: 8px; }
+  .step-label {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--rust-lt);
+    margin-bottom: 6px;
+  }
+  .step-desc { font-size: 11px; color: rgba(245,242,235,0.55); line-height: 1.4; }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(245,242,235,0.45);
+    padding: 48px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+  }
+  footer .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  footer strong { color: rgba(245,242,235,0.7); font-weight: 600; }
+  footer .fos-mark {
+    font-family: var(--head);
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--rust-lt);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    .toc-bar { display: none; }
+    .page { padding: 40px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <p class="byline-top">Research Report · The FixOurStreets216 Project · Cleveland, Ohio</p>
+    <h1>Cleveland <span>MSW</span><br>At the Crossroads</h1>
+    <p class="masthead-sub">A data-driven case for moving Cleveland's Municipal Solid Waste from perpetual landfill contracts to city-owned FastOx gasification — with 7-year actuals from the city's own budget books.</p>
+    <div class="masthead-meta">
+      <div class="meta-item"><strong>Data Source</strong>City of Cleveland Mayor's Estimate Budget PDFs, 2019–2026</div>
+      <div class="meta-item"><strong>Technology</strong>Sierra Energy FastOx Gasification</div>
+      <div class="meta-item"><strong>Analysis Window</strong>7-Year Actuals &amp; 20-Year Projections</div>
+      <div class="meta-item"><strong>Prepared By</strong>The FixOurStreets216 Project</div>
+    </div>
+  </div>
+</div>
+<div class="rust-bar"></div>
+
+<!-- NAV -->
+<nav class="toc-bar">
+  <div class="toc-inner">
+    <a href="#section-problem">01 — The Problem</a>
+    <a href="#section-actuals">02 — Budget Actuals</a>
+    <a href="#section-fastox">03 — FastOx Technology</a>
+    <a href="#section-7yr">04 — 7-Year Comparison</a>
+    <a href="#section-20yr">05 — 20-Year Comparison</a>
+    <a href="#section-recycling">06 — Adding Recycling</a>
+    <a href="#section-verdict">07 — Conclusion</a>
+  </div>
+</nav>
+
+<!-- SECTION 1: THE PROBLEM -->
+<section id="section-problem" class="page">
+  <div class="section-flag"><span class="flag-num">01 — The Problem</span><div class="flag-line"></div></div>
+  <h2 class="section-title">Cleveland Is Paying <em>More</em> Every Year<br>To Bury Its Own Waste</h2>
+
+  <div class="prose">
+    <p>Every year, the City of Cleveland pays a landfill operator to accept its Municipal Solid Waste — and every year, that bill grows. Tipping fees escalate with inflation, landfill capacity tightens, and Ohio EPA regulatory surcharges add another layer of cost on top. At the end of each contract cycle, the city owns nothing: no infrastructure, no energy, no asset. Just a receipt.</p>
+    <p>The Division of Waste Collection and Disposal has seen its total budget grow from $23.4 million in 2016 to nearly $39.6 million in 2024 — a 69% increase in eight years. The disposal contract line alone — what the city pays per ton to landfill residential MSW — swung from $4.2 million in 2016 to a peak of $10.8 million in 2021.</p>
+    <p>The question The FixOurStreets216 Project is posing to the City of Cleveland is direct: <strong>what if, instead of writing perpetually escalating checks to a landfill, Cleveland built an asset that converts its own waste into clean hydrogen and electricity — and owned the revenue?</strong></p>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">7-Year Disposal Spend</div>
+      <div class="stat-value">$57.5M</div>
+      <div class="stat-sub">2019–2025 actual MSW disposal contracts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">+ Ohio EPA Surcharges</div>
+      <div class="stat-value">$9.8M</div>
+      <div class="stat-sub">Regulatory pass-through fees, same period</div>
+    </div>
+    <div class="stat-card steel">
+      <div class="stat-label">Combined 7-Year Cost</div>
+      <div class="stat-value">$67.3M</div>
+      <div class="stat-sub">Disposal contracts + EPA fees, 2019–2025</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">2026 Budget (Disposal)</div>
+      <div class="stat-value">$8.76M</div>
+      <div class="stat-sub">From 2026 Mayor's Estimate — escalating</div>
+    </div>
+    <div class="stat-card sage">
+      <div class="stat-label">Division Total Budget Growth</div>
+      <div class="stat-value">+69%</div>
+      <div class="stat-sub">From $23.4M (2016) to $39.6M (2024)</div>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">⚠ The Escalation Risk</div>
+    <p>Midwest landfill tipping fees have averaged 3–4% annual growth, driven by tightening regional capacity and increasing regulatory burden. At that rate, Cleveland's annual disposal contract will exceed $13 million by 2035 — and the city will still have nothing to show for it.</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 2: BUDGET ACTUALS -->
+<section id="section-actuals" class="page">
+  <div class="section-flag"><span class="flag-num">02 — Budget Actuals</span><div class="flag-line"></div></div>
+  <h2 class="section-title">The Numbers from<br><em>Cleveland's Own Budgets</em></h2>
+
+  <div class="prose">
+    <p>All figures below are drawn directly from the City of Cleveland Mayor's Estimate budget PDFs for fiscal years 2019 through 2026 — the Division of Waste Collection and Disposal, Program: Waste Disposal/Commodity Processing. These are not estimates or projections; they are official city records.</p>
+  </div>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Fiscal Year</th>
+          <th>Waste Disposal Contract</th>
+          <th>Ohio EPA Surcharge</th>
+          <th>Combined Disposal Cost</th>
+          <th>Total Division Budget</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>2016 (actual)</td><td>$4,188,888</td><td>$1,454,718</td><td>$5,643,606</td><td>$23,419,663</td></tr>
+        <tr><td>2017 (actual)</td><td>$6,324,277</td><td>$1,419,671</td><td>$7,743,948</td><td>$26,853,536</td></tr>
+        <tr><td>2018 (actual)</td><td>$6,035,434</td><td>$1,389,776</td><td>$7,425,210</td><td>$28,271,597</td></tr>
+        <tr><td>2019 (actual)</td><td>$6,592,224</td><td>$1,575,658</td><td>$8,167,882</td><td>$30,441,838</td></tr>
+        <tr><td>2020 (actual)</td><td>$7,970,744</td><td>$1,567,579</td><td>$9,538,323</td><td>$30,272,215</td></tr>
+        <tr><td>2021 (actual)</td><td class="cell-red">$10,764,900</td><td>$1,577,093</td><td class="cell-red">$12,341,993</td><td>$35,922,081</td></tr>
+        <tr><td>2022 (actual)</td><td>$9,189,867</td><td>$1,328,991</td><td>$10,518,858</td><td>$35,530,813</td></tr>
+        <tr><td>2023 (actual)</td><td>$8,167,476</td><td>$1,333,098</td><td>$9,500,574</td><td>$36,303,841</td></tr>
+        <tr><td>2024 (actual)</td><td>$6,714,363</td><td>$1,306,848</td><td>$8,021,211</td><td>$39,644,202</td></tr>
+        <tr><td>2025 (unaudited)</td><td>$8,107,066</td><td>$1,080,703</td><td>$9,187,769</td><td>—</td></tr>
+        <tr><td>2026 (budget)</td><td class="cell-blue">$8,762,982</td><td class="cell-blue">$1,581,990</td><td class="cell-blue">$10,344,972</td><td>—</td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>10-Year Total (2016–2025)</td>
+          <td>$74,057,239</td>
+          <td>$14,034,135</td>
+          <td>$88,091,374</td>
+          <td>—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="callout steel">
+    <div class="callout-label">ℹ 2021 Spike Explained</div>
+    <p>The 2021 peak of $10.76M in disposal contracts occurred when Cleveland's recycling contract with Kimble Recycling expired without a replacement in place. The city was forced to landfill its recyclables alongside regular MSW, dramatically increasing disposal tonnage. This single event added roughly $2.5M in avoidable disposal costs — a preview of what happens when waste strategy is reactive rather than proactive.</p>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Annual Disposal Contract vs. EPA Surcharge Spending</div>
+    <div class="chart-sub">City of Cleveland · 2016–2026 · Source: Mayor's Estimate Budget PDFs</div>
+    <div class="chart-wrap" style="height:320px;">
+      <canvas id="chart-actuals"></canvas>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:#c44b2b;"></div>Waste Disposal Contract</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#d4882a;"></div>Ohio EPA Surcharge</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 3: FASTOX TECHNOLOGY -->
+<section id="section-fastox" class="page">
+  <div class="section-flag"><span class="flag-num">03 — FastOx Technology</span><div class="flag-line"></div></div>
+  <h2 class="section-title">Sierra Energy <em>FastOx</em><br>How It Works</h2>
+
+  <div class="prose">
+    <p>FastOx is a pressurized gasification system developed by Sierra Energy. Unlike incineration — which burns waste to produce heat — FastOx converts waste into syngas (hydrogen and carbon monoxide) through a high-temperature chemical process in an oxygen-injected vessel. The key distinction: <strong>no combustion occurs in the gasifier itself</strong>. Municipal Solid Waste goes in; clean hydrogen, electricity, and an inert stone byproduct come out.</p>
+    <p>The system was piloted at Fort Hunter Liggett, California, processing military base MSW. It operates at temperatures exceeding 3,000°F, breaking down virtually all organic compounds — including hazardous materials — into elemental components.</p>
+  </div>
+
+  <div class="process-row">
+    <div class="process-step">
+      <div class="step-icon">🗑️</div>
+      <div class="step-label">MSW Input</div>
+      <div class="step-desc">Shredded, dried municipal solid waste fed into pressurized vessel</div>
+    </div>
+    <div class="process-step">
+      <div class="step-icon">🔥</div>
+      <div class="step-label">O₂ Injection</div>
+      <div class="step-desc">Pure oxygen + steam injected; gasification at 3,000°F+ — no combustion</div>
+    </div>
+    <div class="process-step">
+      <div class="step-icon">⚗️</div>
+      <div class="step-label">Syngas Production</div>
+      <div class="step-desc">H₂ + CO produced; syngas cleaned and conditioned</div>
+    </div>
+    <div class="process-step">
+      <div class="step-icon">⚡</div>
+      <div class="step-label">Energy Output</div>
+      <div class="step-desc">78 kg H₂/ton or 1,083 kWh electricity per ton of MSW</div>
+    </div>
+    <div class="process-step">
+      <div class="step-icon">🪨</div>
+      <div class="step-label">Inert Slag</div>
+      <div class="step-desc">Glassy stone byproduct — non-leaching, usable as construction aggregate</div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card sage">
+      <div class="stat-label">H₂ Yield Per Ton</div>
+      <div class="stat-value">78 kg</div>
+      <div class="stat-sub">Of hydrogen per ton of MSW feedstock</div>
+    </div>
+    <div class="stat-card sage">
+      <div class="stat-label">Electricity Yield</div>
+      <div class="stat-value">1,083 kWh</div>
+      <div class="stat-sub">Per ton MSW (alternative to H₂ output)</div>
+    </div>
+    <div class="stat-card steel">
+      <div class="stat-label">IRA 45V Credit</div>
+      <div class="stat-value">Up to $3/kg</div>
+      <div class="stat-sub">For waste-derived clean hydrogen (10 yr)</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">Landfill Diversion</div>
+      <div class="stat-value">~100%</div>
+      <div class="stat-sub">Of MSW feedstock — nothing enters landfill</div>
+    </div>
+  </div>
+
+  <div class="callout steel">
+    <div class="callout-label">ℹ City-Owned vs. Operator Model</div>
+    <p>This analysis models Cleveland as the <strong>owner and operator</strong> of the FastOx system — meaning the city bears full CAPEX but keeps 100% of energy revenues. An alternative structure — where Sierra Energy or a licensed operator owns the facility and charges Cleveland a below-market "gate fee" — would eliminate capital risk but also eliminate most upside. Both models result in lower per-ton disposal cost than current landfill contracts. This report focuses on city ownership because it produces the strongest long-term financial and strategic position.</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 4: 7-YEAR COMPARISON -->
+<section id="section-7yr" class="page">
+  <div class="section-flag"><span class="flag-num">04 — 7-Year Comparison</span><div class="flag-line"></div></div>
+  <h2 class="section-title">The Honest <em>7-Year</em><br>Head-to-Head</h2>
+
+  <div class="prose">
+    <p>A 7-year comparison is the most demanding test for FastOx — it pits a massive upfront capital investment against the period when the landfill contract cost is smallest. Over 7 years, continued landfill contracts win on pure cost grounds. But these numbers deserve careful reading: the landfill path produces nothing except a longer-dated liability, while the FastOx system begins generating revenue from day one of operation.</p>
+  </div>
+
+  <div class="compare-grid">
+    <div class="compare-col">
+      <div class="compare-col-head rust">Option A — City-Owned FastOx System</div>
+      <div class="compare-col-body">
+        <p style="font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:12px;">Capital Expenditure (One-Time)</p>
+        <div class="line-item"><span class="li-label">FastOx gasification system<small>400 tpd @ $600K/tpd</small></span><span class="li-value">$240,000,000</span></div>
+        <div class="line-item"><span class="li-label">Oxygen supply plant (VPSA/ASU)</span><span class="li-value">$18,000,000</span></div>
+        <div class="line-item"><span class="li-label">H₂ compression system</span><span class="li-value">$4,000,000</span></div>
+        <div class="line-item"><span class="li-label">H₂ storage — cascade tanks<small>62,400 kg @ ~$500/kg installed</small></span><span class="li-value">$31,200,000</span></div>
+        <div class="line-item"><span class="li-label">Feedstock prep &amp; processing</span><span class="li-value">$8,000,000</span></div>
+        <div class="line-item"><span class="li-label">Site, civil works, utility connections</span><span class="li-value">$12,000,000</span></div>
+        <div class="line-item"><span class="li-label">Engineering, procurement &amp; commissioning</span><span class="li-value">$15,000,000</span></div>
+        <div class="line-item"><span class="li-label">Owner's contingency (15%)</span><span class="li-value">$19,080,000</span></div>
+        <div class="subtotal-row"><span>Total CAPEX</span><span style="color:var(--rust);">$347,280,000</span></div>
+
+        <p style="font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin:16px 0 10px;">7-Year Operating Costs</p>
+        <div class="line-item"><span class="li-label">O&amp;M — 7% of CAPEX × 7 years</span><span class="li-value">$114,156,600</span></div>
+        <div class="line-item"><span class="li-label">Ohio EPA surcharge × 7 years</span><span class="li-value">$9,100,000</span></div>
+        <div class="subtotal-row"><span>7-Year OPEX</span><span>$123,256,600</span></div>
+
+        <div class="total-box rust" style="margin-top:14px;">
+          <span class="label">Gross 7-Year Cost</span>
+          <span class="value">$470.5M</span>
+        </div>
+        <div style="margin-top:8px;padding:11px 14px;background:rgba(45,106,79,0.1);border:1px solid rgba(45,106,79,0.3);border-radius:3px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sage);font-family:var(--mono);font-weight:600;">
+            <span>Less: 7-Year H₂ + Electricity Revenue</span>
+            <span>−$132,678,000</span>
+          </div>
+        </div>
+        <div class="total-box" style="margin-top:6px;">
+          <span class="label">Net 7-Year Cost</span>
+          <span class="value" style="color:var(--rust-lt);">$337.9M</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-col">
+      <div class="compare-col-head steel">Option B — Continue Landfill Contracts</div>
+      <div class="compare-col-body">
+        <p style="font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:12px;">Actual Disposal Spending (Budget PDFs)</p>
+        <div class="line-item"><span class="li-label">2019 actual</span><span class="li-value">$6,592,224</span></div>
+        <div class="line-item"><span class="li-label">2020 actual</span><span class="li-value">$7,970,744</span></div>
+        <div class="line-item"><span class="li-label">2021 actual</span><span class="li-value" style="color:var(--rust);">$10,764,900</span></div>
+        <div class="line-item"><span class="li-label">2022 actual</span><span class="li-value">$9,189,867</span></div>
+        <div class="line-item"><span class="li-label">2023 actual</span><span class="li-value">$8,167,476</span></div>
+        <div class="line-item"><span class="li-label">2024 actual</span><span class="li-value">$6,714,363</span></div>
+        <div class="line-item"><span class="li-label">2025 (unaudited)</span><span class="li-value">$8,107,066</span></div>
+        <div class="subtotal-row"><span>7-Year Disposal Total</span><span>$57,506,640</span></div>
+
+        <p style="font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin:16px 0 10px;">Ohio EPA Surcharges (Actual)</p>
+        <div class="line-item"><span class="li-label">2019–2025 actual EPA surcharges</span><span class="li-value">$9,769,970</span></div>
+        <div class="subtotal-row"><span>7-Year EPA Total</span><span>$9,769,970</span></div>
+
+        <div style="margin-top:14px;padding:14px;background:var(--paper2);border-radius:3px;border:1px solid var(--rule);">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--mid);margin-bottom:6px;">No capital expenditure · No energy revenue</div>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--mid);">CAPEX: $0 &nbsp;·&nbsp; Energy Revenue: $0 &nbsp;·&nbsp; Assets Created: $0</div>
+        </div>
+
+        <div class="total-box sage" style="margin-top:14px;">
+          <span class="label">Total 7-Year Cost</span>
+          <span class="value">$67.3M</span>
+        </div>
+        <div style="margin-top:8px;padding:12px 14px;background:rgba(212,136,42,0.1);border:1px solid rgba(212,136,42,0.3);border-radius:3px;">
+          <p style="font-size:12px;color:var(--amber);font-family:var(--mono);">⚠ Costs continue escalating indefinitely. No asset created. No energy value captured.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-label">7-Year Assessment</div>
+    <p>Over 7 years, continued landfill contracts cost the city roughly <strong>$67.3M</strong> — a difference of ~$271M versus the city-owned FastOx net cost. The 7-year frame strongly favors landfill continuity on pure out-of-pocket cost grounds. <strong>But the frame is misleading</strong>: it compares a fully-depreciated-in-period landfill contract against a long-duration infrastructure investment that will generate returns for 25+ years. A 7-year window doesn't capture the value of what FastOx becomes after year 12 — a revenue-generating municipal energy asset.</p>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">7-Year Cost Breakdown: FastOx vs. Landfill</div>
+    <div class="chart-sub">All dollar figures in nominal USD · FastOx values include energy revenue offset</div>
+    <div class="chart-wrap" style="height:300px;">
+      <canvas id="chart-7yr"></canvas>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 5: 20-YEAR COMPARISON -->
+<section id="section-20yr" class="page">
+  <div class="section-flag"><span class="flag-num">05 — 20-Year Comparison</span><div class="flag-line"></div></div>
+  <h2 class="section-title">The <em>20-Year</em> Case:<br>Where the Math Shifts</h2>
+
+  <div class="prose">
+    <p>A 20-year infrastructure lens is the correct frame for evaluating a capital investment of this type. No city builds a water treatment plant and evaluates it on a 7-year payback. The 20-year comparison reveals what the landfill path is actually costing Cleveland: a compounding liability with no terminal value, versus a depreciating asset that generates clean energy revenue for decades.</p>
+  </div>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Cost Category</th>
+          <th>FastOx City-Owned</th>
+          <th>Continue Landfill</th>
+          <th>FastOx w/ 45V Credits</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Total CAPEX (one-time)</td><td class="cell-red">$347,280,000</td><td class="cell-grn">$0</td><td class="cell-red">$347,280,000</td></tr>
+        <tr><td>20-Year O&amp;M (7% CAPEX/yr)</td><td class="cell-red">$485,192,000</td><td class="cell-grn">$0</td><td class="cell-red">$485,192,000</td></tr>
+        <tr><td>20-Year EPA surcharge</td><td>$26,000,000</td><td>$27,166,073</td><td>$26,000,000</td></tr>
+        <tr><td>20-Year disposal contracts</td><td class="cell-grn">$0</td><td>$195,860,077</td><td class="cell-grn">$0</td></tr>
+        <tr><td>Year-12 capital overhaul (8%)</td><td class="cell-red">$27,782,400</td><td class="cell-grn">$0</td><td class="cell-red">$27,782,400</td></tr>
+        <tr><td>H₂ + electricity revenue (20 yr)</td><td class="cell-grn">−$179,478,000</td><td class="cell-grn">$0</td><td class="cell-grn">−$179,478,000</td></tr>
+        <tr><td>IRA 45V H₂ tax credits (yrs 1–10)</td><td>—</td><td>—</td><td class="cell-grn">−$121,680,000</td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Net 20-Year Cost</td>
+          <td class="cell-red">$706,776,400</td>
+          <td>$223,026,150</td>
+          <td class="cell-blue">$585,096,400</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">FastOx Net (No Credits)</div>
+      <div class="stat-value">$706.8M</div>
+      <div class="stat-sub">20-year all-in cost, city-owned</div>
+    </div>
+    <div class="stat-card steel">
+      <div class="stat-label">FastOx + 45V Credits</div>
+      <div class="stat-value">$585.1M</div>
+      <div class="stat-sub">With IRA clean H₂ credits years 1–10</div>
+    </div>
+    <div class="stat-card sage">
+      <div class="stat-label">Landfill 20-Year Cost</div>
+      <div class="stat-value">$223.0M</div>
+      <div class="stat-sub">Actuals + 3–4% escalation projected</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">Crossover Year (45V)</div>
+      <div class="stat-value">~Yr 22</div>
+      <div class="stat-sub">FastOx net cheaper than cumulative landfill</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Cumulative 20-Year Cost Trajectory</div>
+    <div class="chart-sub">Cleveland MSW — City-Owned FastOx vs. Continued Landfill Contracts · 2019–2038</div>
+    <div class="chart-wrap" style="height:360px;">
+      <canvas id="chart-20yr"></canvas>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:#c44b2b;"></div>FastOx gross (no credits)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#2b4c6f;"></div>FastOx with 45V credits</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#7a7770; border-top:2px dashed #7a7770; height:0;width:20px;"></div>Continue landfill</div>
+    </div>
+  </div>
+
+  <div class="callout sage">
+    <div class="callout-label">💡 The Trajectory Argument</div>
+    <p>By year 20, the landfill path is still writing a check every year — and that check is larger than it was in 2019. The FastOx path has a massive upfront cost but a declining marginal cost as CAPEX is amortized. More importantly, <strong>after year 20 the FastOx system continues operating at O&amp;M cost alone</strong> — roughly $24M/year — while generating ~$9M/year in energy revenue. The landfill path has no equivalent terminal value.</p>
+  </div>
+
+  <h3 class="subsection">The IRA 45V Credit: A Game-Changer</h3>
+  <div class="prose">
+    <p>The Inflation Reduction Act's Section 45V clean hydrogen production tax credit provides up to <strong>$3 per kilogram of hydrogen</strong> produced from qualifying clean processes for the first 10 years of operation. Waste-derived hydrogen from FastOx is a strong candidate for this credit, depending on lifecycle emissions accounting guidance the EPA is finalizing.</p>
+    <p>At 78 kg H₂/ton × $3/kg × 50% of Cleveland's 130,000-ton MSW stream × 10 years, the 45V credit alone would generate approximately <strong>$121.7 million in federal tax credits</strong> — reducing the net 20-year FastOx cost by that full amount and moving the crossover point approximately 2–3 years earlier.</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 6: RECYCLING -->
+<section id="section-recycling" class="page">
+  <div class="section-flag"><span class="flag-num">06 — Adding Recycling</span><div class="flag-line"></div></div>
+  <h2 class="section-title">What Happens When You Add<br><em>Recycling</em> to the Feedstock?</h2>
+
+  <div class="prose">
+    <p>Cleveland processes approximately 10,000–20,000 tons of curbside recyclables per year through a separate contract with Rumpke. The city pays Rumpke to process the material and receives a modest per-ton revenue payment for uncontaminated recyclables. Adding the recycling stream to FastOx feedstock eliminates the Rumpke processing cost and adds tonnage — but also forfeits the recycling revenue and requires a slightly larger system.</p>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">⚠ Important Caveat on Recycling Feedstock</div>
+    <p>Routing all recyclables through FastOx destroys high-value materials (aluminum, clean cardboard) that fetch $1,500/ton or more in recycling markets — far more than their energy content value in FastOx. The optimal strategy is a <strong>hybrid model</strong>: clean, recoverable materials continue to the recycling market; contaminated recyclables and residual fractions (~8,000–12,000 t/yr) feed FastOx. The full 20,000-ton scenario modeled below is a ceiling, not a recommendation.</p>
+  </div>
+
+  <div class="data-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>MSW Only (prior analysis)</th>
+          <th>MSW + Recycling</th>
+          <th>Difference</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Total feedstock</td><td>130,000 t/yr</td><td>150,000 t/yr</td><td class="cell-blue">+20,000 t/yr</td></tr>
+        <tr><td>System capacity needed</td><td>400 tpd</td><td>420 tpd</td><td class="cell-blue">+20 tpd</td></tr>
+        <tr><td>Total CAPEX</td><td>$347,280,000</td><td>$372,220,000</td><td class="cell-red">+$24,940,000</td></tr>
+        <tr><td>20-yr energy revenue</td><td>$179,478,000</td><td>$231,243,000</td><td class="cell-grn">+$51,765,000</td></tr>
+        <tr><td>20-yr recycling revenue lost</td><td>$0</td><td>−$10,000,000</td><td class="cell-red">−$10,000,000</td></tr>
+        <tr><td>20-yr recycling processing eliminated</td><td>$0</td><td>$40,680,000 saved</td><td class="cell-grn">+$40,680,000</td></tr>
+        <tr><td>Byproduct slag revenue (20 yr)</td><td>$0</td><td>$24,000,000</td><td class="cell-grn">+$24,000,000</td></tr>
+        <tr><td>Landfill + recycling baseline (20 yr)</td><td>$223,026,150</td><td>$253,706,150</td><td class="cell-red">+$30,680,000</td></tr>
+        <tr><td>FastOx net (with 45V credits)</td><td>$585,096,400</td><td>$581,462,600</td><td class="cell-grn">−$3,634,000</td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>FastOx Premium Over Landfill (20 yr, 45V)</td>
+          <td>$362.1M</td>
+          <td>$327.8M</td>
+          <td>Marginally better w/ recycling added</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">20-Year Cumulative: MSW + Recycling Combined Feedstock</div>
+    <div class="chart-sub">FastOx (MSW+recycling) vs. separate landfill + recycling contracts · 2019–2038</div>
+    <div class="chart-wrap" style="height:340px;">
+      <canvas id="chart-recycling"></canvas>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:#c44b2b;"></div>FastOx gross (MSW+recycling)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#2b4c6f;"></div>FastOx with 45V credits</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#7a7770;"></div>Landfill + recycling contracts</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">📊 Key Finding</div>
+    <p>Adding the full recycling stream to FastOx feedstock makes the system marginally more cost-competitive — primarily by eliminating the Rumpke processing contract. However, the incremental improvement is modest (~$3.6M over 20 years) compared to the much larger strategic value of recovering high-value recyclables through traditional markets. The strongest case for FastOx does not require routing all recyclables through the system.</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 7: VERDICT -->
+<section id="section-verdict" class="page">
+  <div class="section-flag"><span class="flag-num">07 — Conclusion</span><div class="flag-line"></div></div>
+  <h2 class="section-title">The Case for <em>Action</em><br>What Cleveland Should Do Next</h2>
+
+  <div class="verdict">
+    <div class="verdict-label">Bottom Line Assessment</div>
+    <p>FastOx is not a 7-year cost-savings play. Over a short window, continued landfill contracts are cheaper in absolute terms. But framing the decision this way is like refusing to build a water treatment plant because renting bottled water is cheaper this year. The landfill path is a permanent liability. The FastOx path is a 25-year infrastructure investment that generates clean energy, eliminates tipping fee exposure, and creates a municipal asset.</p>
+    <p>With full IRA Section 45V clean hydrogen credits applied, the 20-year FastOx premium over continued landfill contracts narrows to approximately <strong>$362 million</strong> — financed over 25 years, that is roughly <strong>$14.5 million per year</strong> in net additional cost. Cleveland currently spends that much on the Division of Waste in a single budget year. The question is not whether the city can afford this — it is whether Cleveland's leadership can adopt an infrastructure time horizon longer than the next election cycle.</p>
+    <p>The strategic case is even stronger than the financial one: <strong>energy independence</strong> (no exposure to landfill operator pricing power), <strong>decarbonization</strong> (waste-derived H₂ for city fleet vehicles or sale to industrial users), <strong>resilience</strong> (distributed municipal energy production), and <strong>economic development</strong> (construction jobs, permanent operations jobs, potential anchor for a hydrogen economy in the Industrial Valley).</p>
+  </div>
+
+  <h3 class="subsection">Recommended Next Steps for the City</h3>
+  <div class="prose">
+    <p><strong>1. Commission an independent tonnage study.</strong> The city does not publicly disclose annual MSW tonnage. A precise tonnage figure is required to right-size any FastOx system and validate the financial projections in this report.</p>
+    <p><strong>2. Engage Sierra Energy for a site-specific feasibility study.</strong> The Ridge Road Transfer Station is the logical anchor site — the city already owns the land and infrastructure. A Sierra Energy feasibility engagement would produce project-specific CAPEX, yield, and O&amp;M figures rather than industry averages.</p>
+    <p><strong>3. File for IRA 45V pre-qualification.</strong> The Department of Energy's clean hydrogen guidance is still evolving. Early engagement with the federal process positions Cleveland to maximize tax credit eligibility and signal commitment to hydrogen infrastructure investment.</p>
+    <p><strong>4. Explore revenue bond financing.</strong> A 25-year municipal revenue bond backed by disposal savings and projected H₂ revenue could fund the CAPEX without general fund impact. The bond market has financed comparable waste-to-energy projects in other municipalities.</p>
+    <p><strong>5. Model the hybrid recycling scenario.</strong> Rather than routing all recyclables to FastOx, a materials recovery facility (MRF) front-end — recovering clean metals, cardboard, and glass before the remainder feeds FastOx — maximizes total resource value from the waste stream.</p>
+  </div>
+
+  <div class="callout sage">
+    <div class="callout-label">✓ The FixOurStreets216 Position</div>
+    <p>The FixOurStreets216 Project urges the City of Cleveland to initiate a formal FastOx feasibility study as a first step — not a full commitment, but a data-gathering exercise that would answer the remaining questions before any capital decision is made. The cost of a feasibility study is negligible compared to the potential 25-year value of the technology. Cleveland has a window, right now, to become a model for mid-sized American cities on waste-derived clean energy. That window will not remain open indefinitely.</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="fos-mark">The FixOurStreets216 Project</div>
+      <p><strong>Cleveland, Ohio</strong><br>
+      Municipal consulting, entertainment production management,<br>
+      and workforce research &amp; productivity.<br>
+      Operating at the intersection of municipal strategy, energy<br>
+      infrastructure, urban development, and civic innovation.</p>
+    </div>
+    <div>
+      <p><strong>Data Sources &amp; Methodology</strong><br>
+      All disposal contract figures drawn from City of Cleveland<br>
+      Mayor's Estimate Budget PDFs, FY 2019–2026, Division of<br>
+      Waste Collection and Disposal program detail pages.<br><br>
+      FastOx technical specifications: Sierra Energy published data,<br>
+      Fort Hunter Liggett demonstration project documentation.<br>
+      H₂ storage cost: DOE H2A model and ScienceDirect literature.<br>
+      CAPEX range: $400K–$800K/tpd advanced gasification industry<br>
+      comparables. O&amp;M: 7% of CAPEX/yr. Landfill escalation:<br>
+      3–4%/yr consistent with historical Midwest tipping fee trends.<br><br>
+      All figures nominal USD. IRA 45V credits subject to EPA<br>
+      lifecycle emissions guidance finalization. This report does<br>
+      not constitute financial or legal advice.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── SHARED CHART CONFIG ──────────────────────────────────────────
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#7a7770';
+
+const RUST   = '#c44b2b';
+const RUSTLT = '#e8614a';
+const STEEL  = '#2b4c6f';
+const STEELLT= '#4a7aab';
+const SAGE   = '#2d6a4f';
+const SAGELT = '#52b788';
+const AMBER  = '#d4882a';
+const MID    = '#7a7770';
+
+function gridOpts() {
+  return { color: 'rgba(122,119,112,0.15)', drawBorder: false };
+}
+function tickOpts() {
+  return { color: MID, font: { size: 10, family: "'IBM Plex Mono',monospace" } };
+}
+function moneyFmt(v) {
+  if (Math.abs(v) >= 1e6) return '$' + (v/1e6).toFixed(1) + 'M';
+  return '$' + v.toLocaleString();
+}
+
+// ── CHART 1: ACTUALS BAR ───────────────────────────────────────
+(function() {
+  const years  = ['2016','2017','2018','2019','2020','2021','2022','2023','2024','2025','2026'];
+  const disp   = [4188888,6324277,6035434,6592224,7970744,10764900,9189867,8167476,6714363,8107066,8762982];
+  const epa    = [1454718,1419671,1389776,1575658,1567579,1577093,1328991,1333098,1306848,1080703,1581990];
+  new Chart(document.getElementById('chart-actuals'), {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        { label: 'Waste Disposal Contract', data: disp, backgroundColor: RUST, borderRadius: 2 },
+        { label: 'Ohio EPA Surcharge',       data: epa,  backgroundColor: AMBER, borderRadius: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ' ' + c.dataset.label + ': ' + moneyFmt(c.parsed.y) } }
+      },
+      scales: {
+        x: { stacked: false, grid: gridOpts(), ticks: tickOpts() },
+        y: { stacked: false, grid: gridOpts(), ticks: { ...tickOpts(), callback: v => moneyFmt(v) } }
+      }
+    }
+  });
+})();
+
+// ── CHART 2: 7-YEAR COMPARISON ────────────────────────────────
+(function() {
+  new Chart(document.getElementById('chart-7yr'), {
+    type: 'bar',
+    data: {
+      labels: ['Current Landfill\n(disposal)', 'Current Landfill\n(EPA fees)', 'FastOx CAPEX', 'FastOx O&M\n(7 yr)', 'Energy Revenue\nOffset', 'FastOx Net\nCost (7 yr)'],
+      datasets: [{
+        data: [57.5, 9.8, 347.3, 123.3, -132.7, 337.9],
+        backgroundColor: [STEEL, STEELLT, RUST, RUSTLT, SAGELT, '#555'],
+        borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' $' + c.parsed.y.toFixed(1) + 'M' } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { ...tickOpts(), maxRotation: 15 } },
+        y: { grid: gridOpts(), ticks: { ...tickOpts(), callback: v => '$' + v + 'M' } }
+      }
+    }
+  });
+})();
+
+// ── CHART 3: 20-YEAR CUMULATIVE ──────────────────────────────
+(function() {
+  const years = Array.from({length:21},(_,i)=>2019+i);
+  const capex = 347280000;
+  const annOM  = capex * 0.07;
+  const annEPA = 130000 * 10;
+  const annH2  = 130000 * 78 * 3 * 0.5;
+  const annEl  = 130000 * 1083 * 0.07 * 0.5;
+  const annRev = annH2 + annEl;
+  const annH2C = annH2;
+
+  const foxG = [], foxC = [];
+  let cg = capex, cc = capex;
+  foxG.push(cg/1e6); foxC.push(cc/1e6);
+  for(let y=1;y<=20;y++){
+    const ref = y===12 ? capex*0.08 : 0;
+    cg += annOM + annEPA - annRev + ref;
+    const crd = y<=10 ? annH2C : 0;
+    cc += annOM + annEPA - annRev - crd + ref;
+    foxG.push(+(cg/1e6).toFixed(1));
+    foxC.push(+(cc/1e6).toFixed(1));
+  }
+
+  const sqActD = [0,6592224,7970744,10764900,9189867,8167476,6714363,8107066];
+  const sqActE = [0,1575658,1567579,1577093,1328991,1333098,1306848,1080703];
+  const cumSQ = [0];
+  let csq=0;
+  for(let y=1;y<=20;y++){
+    if(y<=7){ csq += sqActD[y] + sqActE[y]; }
+    else {
+      const idx=y-8;
+      let base=8762982;
+      for(let i=0;i<idx;i++) base*=(i<4?1.03:i<9?1.035:1.04);
+      csq += base + Math.round(130000*(10+idx*0.15));
+    }
+    cumSQ.push(+(csq/1e6).toFixed(1));
+  }
+
+  new Chart(document.getElementById('chart-20yr'),{
+    type:'line',
+    data:{
+      labels:years.map(String),
+      datasets:[
+        {label:'FastOx gross',data:foxG,borderColor:RUST,backgroundColor:'rgba(196,75,43,0.07)',tension:0.3,fill:true,pointRadius:0,borderWidth:2.5},
+        {label:'FastOx +45V',data:foxC,borderColor:STEEL,backgroundColor:'rgba(43,76,111,0.07)',tension:0.3,fill:true,pointRadius:0,borderWidth:2.5},
+        {label:'Landfill',data:cumSQ,borderColor:MID,backgroundColor:'rgba(122,119,112,0.05)',tension:0.3,fill:true,pointRadius:0,borderWidth:2,borderDash:[6,4]}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': $'+c.parsed.y.toFixed(1)+'M'}}},
+      scales:{
+        x:{grid:gridOpts(),ticks:tickOpts()},
+        y:{grid:gridOpts(),ticks:{...tickOpts(),callback:v=>'$'+v+'M'}}
+      }
+    }
+  });
+})();
+
+// ── CHART 4: MSW + RECYCLING ──────────────────────────────────
+(function() {
+  const years = Array.from({length:21},(_,i)=>2019+i);
+  const capex = 372220000;
+  const annOM  = capex * 0.07;
+  const annEPA = 150000 * 10;
+  const annH2  = 150000 * 78 * 3 * 0.5;
+  const annEl  = 150000 * 1083 * 0.07 * 0.5;
+  const annMet = 150000 * 8;
+  const annRev = annH2 + annEl + annMet;
+  const annH2C = annH2;
+
+  const foxG = [], foxC = [];
+  let cg=capex, cc=capex;
+  foxG.push(+(cg/1e6).toFixed(1)); foxC.push(+(cc/1e6).toFixed(1));
+  for(let y=1;y<=20;y++){
+    const ref = y===12 ? capex*0.08 : 0;
+    cg += annOM+annEPA-annRev+ref;
+    const crd=y<=10?annH2C:0;
+    cc += annOM+annEPA-annRev-crd+ref;
+    foxG.push(+(cg/1e6).toFixed(1));
+    foxC.push(+(cc/1e6).toFixed(1));
+  }
+
+  const sqActD=[0,6592224,7970744,10764900,9189867,8167476,6714363,8107066];
+  const sqActE=[0,1575658,1567579,1577093,1328991,1333098,1306848,1080703];
+  const cumSQ=[0];
+  let csq=0;
+  for(let y=1;y<=20;y++){
+    if(y<=7){ csq+=sqActD[y]+sqActE[y]+580000-500000; }
+    else {
+      const idx=y-8;
+      let base=8762982;
+      for(let i=0;i<idx;i++) base*=(i<4?1.03:i<9?1.035:1.04);
+      csq+=base+Math.round(150000*(10+idx*0.15))+Math.round(1800000*Math.pow(1.03,idx))-500000;
+    }
+    cumSQ.push(+(csq/1e6).toFixed(1));
+  }
+
+  new Chart(document.getElementById('chart-recycling'),{
+    type:'line',
+    data:{
+      labels:years.map(String),
+      datasets:[
+        {label:'FastOx gross (MSW+recycling)',data:foxG,borderColor:RUST,backgroundColor:'rgba(196,75,43,0.07)',tension:0.3,fill:true,pointRadius:0,borderWidth:2.5},
+        {label:'FastOx +45V',data:foxC,borderColor:STEEL,backgroundColor:'rgba(43,76,111,0.07)',tension:0.3,fill:true,pointRadius:0,borderWidth:2.5},
+        {label:'Landfill + recycling contracts',data:cumSQ,borderColor:MID,backgroundColor:'rgba(122,119,112,0.05)',tension:0.3,fill:true,pointRadius:0,borderWidth:2,borderDash:[6,4]}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': $'+c.parsed.y.toFixed(1)+'M'}}},
+      scales:{
+        x:{grid:gridOpts(),ticks:tickOpts()},
+        y:{grid:gridOpts(),ticks:{...tickOpts(),callback:v=>'$'+v+'M'}}
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cleveland Green Ammonia Initiative — The FixOurStreets216 Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0f14;
+  --ink-2:#1e2a35;
+  --ink-3:#2e3e4e;
+  --steel:#4a6275;
+  --mist:#8fa4b4;
+  --frost:#c8d8e2;
+  --ice:#e8f2f7;
+  --bg:#f0f4f7;
+  --white:#ffffff;
+  --erie:#0d4f7a;
+  --erie-2:#1468a0;
+  --erie-3:#2a8ec8;
+  --erie-4:#5cb0e0;
+  --erie-pale:#d0eaf8;
+  --ammonia:#1a6640;
+  --ammonia-2:#28914f;
+  --ammonia-3:#3db868;
+  --ammonia-pale:#d0f0de;
+  --amber:#7a4010;
+  --amber-2:#b05c18;
+  --amber-pale:#fde8d0;
+  --alert:#8b1a1a;
+  --alert-pale:#fce8e8;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+  --serif:'IBM Plex Serif',serif;
+  --r:2px;
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+
+/* ── UTILITY ──────────────────────────────────────────── */
+.mono{font-family:var(--mono)}
+.serif{font-family:var(--serif)}
+.label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mist)}
+.label-erie{color:var(--erie-3)}
+.label-green{color:var(--ammonia-2)}
+.label-amber{color:var(--amber-2)}
+.accent-bar{display:inline-block;width:32px;height:3px;background:var(--erie-3);margin-bottom:12px;border-radius:1px}
+.accent-bar.green{background:var(--ammonia-3)}
+.accent-bar.amber{background:var(--amber-2)}
+
+/* ── NAV ──────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--ink);border-bottom:1px solid var(--ink-2)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:48px}
+.nav-brand{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--erie-4);letter-spacing:.06em}
+.nav-links{display:flex;gap:0;overflow-x:auto}
+.nav-links a{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--mist);text-decoration:none;padding:0 14px;height:48px;display:flex;align-items:center;border-right:1px solid var(--ink-2);letter-spacing:.04em;transition:color .15s,background .15s;white-space:nowrap}
+.nav-links a:hover{color:var(--white);background:var(--ink-2)}
+
+/* ── HERO ──────────────────────────────────────────────── */
+.hero{background:var(--ink);min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;opacity:.07;background-image:linear-gradient(var(--erie) 1px,transparent 1px),linear-gradient(90deg,var(--erie) 1px,transparent 1px);background-size:40px 40px}
+.hero-glow{position:absolute;top:-200px;left:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(20,104,160,.35) 0%,transparent 70%);pointer-events:none}
+.hero-glow2{position:absolute;bottom:-100px;right:-50px;width:500px;height:500px;background:radial-gradient(circle,rgba(40,145,79,.2) 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:80px 40px 60px;width:100%}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.hero-eyebrow span{font-family:var(--mono);font-size:11px;color:var(--erie-4);letter-spacing:.1em}
+.hero-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--erie-4)}
+.hero-h1{font-family:var(--mono);font-size:clamp(32px,5vw,64px);font-weight:600;color:var(--white);line-height:1.05;margin-bottom:8px;letter-spacing:-.01em}
+.hero-h1 span{color:var(--erie-4)}
+.hero-sub{font-family:var(--serif);font-size:clamp(16px,2vw,22px);color:var(--mist);font-weight:400;margin-bottom:48px;max-width:640px;font-style:italic}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);max-width:900px}
+.hero-stat{background:rgba(10,15,20,.6);padding:24px 20px;backdrop-filter:blur(4px)}
+.hero-stat .val{font-family:var(--mono);font-size:28px;font-weight:600;color:var(--white);line-height:1;margin-bottom:6px}
+.hero-stat .val span{font-size:16px;color:var(--erie-4)}
+.hero-stat .desc{font-family:var(--mono);font-size:10px;color:var(--mist);letter-spacing:.06em;text-transform:uppercase}
+.hero-footer{background:var(--ink-2);border-top:1px solid rgba(255,255,255,.06);padding:16px 40px;max-width:100%}
+.hero-footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.hero-footer .tag{font-family:var(--mono);font-size:10px;color:var(--steel);letter-spacing:.06em}
+
+/* ── SECTION CHROME ──────────────────────────────────── */
+.section{padding:80px 24px}
+.section-inner{max-width:1200px;margin:0 auto}
+.sec-header{margin-bottom:56px}
+.sec-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--erie-3);margin-bottom:16px;display:block}
+.sec-tag.green{color:var(--ammonia-2)}
+.sec-tag.amber{color:var(--amber-2)}
+.sec-h2{font-family:var(--mono);font-size:clamp(22px,3vw,32px);font-weight:600;color:var(--ink);line-height:1.1;margin-bottom:16px}
+.sec-lead{font-family:var(--serif);font-size:17px;color:var(--steel);max-width:680px;line-height:1.7;font-style:italic}
+
+/* ── PROCESS FLOW ──────────────────────────────────────── */
+#process{background:var(--ink)}
+#process .sec-h2{color:var(--white)}
+#process .sec-lead{color:var(--mist)}
+#process .sec-tag{color:var(--erie-4)}
+.flow-chain{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;border:1px solid rgba(255,255,255,.1)}
+.flow-node{padding:20px 16px;border-right:1px solid rgba(255,255,255,.08);position:relative}
+.flow-node:last-child{border-right:none}
+.flow-node-num{font-family:var(--mono);font-size:10px;color:var(--erie-4);margin-bottom:8px;letter-spacing:.08em}
+.flow-node-title{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--white);margin-bottom:6px;line-height:1.3}
+.flow-node-detail{font-size:11px;color:var(--mist);line-height:1.5}
+.flow-node-chem{font-family:var(--mono);font-size:10px;color:var(--ammonia-3);margin-top:8px;background:rgba(40,145,79,.12);padding:3px 7px;display:inline-block;border-radius:2px}
+.flow-node.highlight{background:rgba(20,104,160,.15)}
+.flow-node.key{background:rgba(40,145,79,.12);border-top:2px solid var(--ammonia-3)}
+.flow-arrow{display:flex;align-items:center;justify-content:center;padding:20px 4px;font-size:18px;color:rgba(255,255,255,.2)}
+
+.param-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px}
+.param-block{border:1px solid rgba(255,255,255,.1);padding:24px}
+.param-block h4{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--erie-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+.param-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.param-row:last-child{border-bottom:none}
+.param-key{color:var(--mist)}
+.param-val{font-family:var(--mono);font-weight:500;color:var(--white)}
+.param-val.green{color:var(--ammonia-3)}
+.param-val.erie{color:var(--erie-4)}
+
+/* ── DATA TABLES ──────────────────────────────────────── */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:24px}
+.data-table th{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 14px;background:var(--ink);color:var(--mist);text-align:left;white-space:nowrap}
+.data-table td{padding:10px 14px;border-bottom:1px solid var(--frost);vertical-align:top}
+.data-table tr:hover td{background:var(--ice)}
+.data-table .num{font-family:var(--mono);font-weight:500;color:var(--erie)}
+.data-table .green{font-family:var(--mono);font-weight:500;color:var(--ammonia)}
+.data-table .amber{font-family:var(--mono);font-weight:500;color:var(--amber-2)}
+.data-table .total td{background:var(--ink)!important;color:var(--white)!important;font-weight:600}
+.data-table .total td.num{color:var(--erie-4)!important;font-family:var(--mono)}
+.table-wrap{overflow-x:auto;border:1px solid var(--frost)}
+
+/* ── CAMPUS ZONES ──────────────────────────────────────── */
+#campus{background:var(--white)}
+.zone-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--frost)}
+.zone-card{background:var(--white);padding:20px;transition:background .15s}
+.zone-card:hover{background:var(--ice)}
+.zone-num{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--erie-3);letter-spacing:.1em;margin-bottom:6px}
+.zone-card h4{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;line-height:1.3}
+.zone-card p{font-size:12px;color:var(--steel);line-height:1.5}
+.zone-capex{font-family:var(--mono);font-size:11px;color:var(--mist);margin-top:8px;padding-top:8px;border-top:1px solid var(--frost)}
+.zone-badge{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 6px;background:var(--erie-pale);color:var(--erie);border-radius:2px;margin-top:4px}
+.zone-badge.green{background:var(--ammonia-pale);color:var(--ammonia)}
+.zone-badge.amber{background:var(--amber-pale);color:var(--amber)}
+
+/* ── PRODUCTS ──────────────────────────────────────────── */
+#products{background:var(--bg)}
+.product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.product-card{background:var(--white);border:1px solid var(--frost);padding:28px}
+.product-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.product-name{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--ink)}
+.product-formula{font-family:var(--mono);font-size:10px;color:var(--mist);margin-top:3px;letter-spacing:.04em}
+.product-n{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--ammonia);line-height:1}
+.product-n small{font-size:11px;color:var(--mist)}
+.product-divider{height:1px;background:var(--frost);margin:16px 0}
+.product-rows .pr{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--ice)}
+.product-rows .pr:last-child{border-bottom:none}
+.pr-key{color:var(--steel)}
+.pr-val{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.product-rev{margin-top:16px;padding:12px;background:var(--ammonia-pale);border-radius:var(--r)}
+.product-rev .rev-label{font-family:var(--mono);font-size:9px;color:var(--ammonia);letter-spacing:.08em;text-transform:uppercase}
+.product-rev .rev-val{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--ammonia)}
+
+/* ── ECONOMICS ──────────────────────────────────────────── */
+#economics{background:var(--ink)}
+#economics .sec-h2{color:var(--white)}
+#economics .sec-lead{color:var(--mist)}
+#economics .sec-tag{color:var(--ammonia-3)}
+.econ-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(255,255,255,.06)}
+.econ-cell{background:var(--ink);padding:20px}
+.econ-cell h4{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ammonia-3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.rev-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rev-bar-label{font-size:11px;color:var(--mist);min-width:200px;font-family:var(--mono)}
+.rev-bar-track{flex:1;height:10px;background:rgba(255,255,255,.07);border-radius:1px;overflow:hidden}
+.rev-bar-fill{height:100%;border-radius:1px;transition:width 1s ease}
+.rev-bar-amt{font-family:var(--mono);font-size:11px;color:var(--white);min-width:48px;text-align:right}
+.capex-rows .cr{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px}
+.capex-rows .cr:last-child{border-bottom:none;padding-top:12px}
+.cr-key{color:var(--mist)}
+.cr-val{font-family:var(--mono);font-weight:500;color:var(--white)}
+.cr-total .cr-key{color:var(--white);font-weight:600}
+.cr-total .cr-val{color:var(--erie-4);font-size:14px}
+.ira-table{width:100%;font-size:12px}
+.ira-table tr td{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);color:var(--mist)}
+.ira-table tr td:last-child{font-family:var(--mono);color:var(--ammonia-3);text-align:right}
+.cop-block{margin-top:24px;border:1px solid rgba(255,255,255,.1);padding:20px}
+.cop-block h4{font-family:var(--mono);font-size:10px;color:var(--amber-2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.cop-row{display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.cop-row:last-child{border-bottom:none}
+
+/* ── FUEL SECTION ──────────────────────────────────────── */
+#fuel{background:var(--white)}
+.fuel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.fuel-card{border:1px solid var(--frost);padding:24px}
+.fuel-icon{width:36px;height:36px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--erie-4);margin-bottom:16px;border-radius:var(--r)}
+.fuel-card h4{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px}
+.fuel-card p{font-size:12px;color:var(--steel);line-height:1.6}
+.fuel-specs{margin-top:14px;padding-top:14px;border-top:1px solid var(--frost)}
+.fuel-spec{font-size:11px;color:var(--mist);margin-bottom:4px;padding-left:10px;border-left:2px solid var(--frost)}
+.fuel-spec strong{color:var(--ink);font-weight:500}
+
+/* ── PHASING ──────────────────────────────────────────── */
+#phasing{background:var(--bg)}
+.phase-timeline{position:relative;padding-left:48px}
+.phase-timeline::before{content:'';position:absolute;left:16px;top:0;bottom:0;width:1px;background:var(--frost)}
+.phase-item{position:relative;margin-bottom:40px}
+.phase-item::before{content:'';position:absolute;left:-40px;top:6px;width:14px;height:14px;background:var(--white);border:2px solid var(--erie-3);border-radius:50%}
+.phase-item.key-phase::before{background:var(--erie-3)}
+.phase-head{display:flex;align-items:baseline;gap:16px;margin-bottom:12px}
+.phase-year{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--erie-3);letter-spacing:.06em}
+.phase-title{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--ink)}
+.phase-body{font-size:13px;color:var(--steel);line-height:1.6;margin-bottom:12px}
+.phase-metrics{display:flex;gap:16px;flex-wrap:wrap}
+.phase-metric{font-family:var(--mono);font-size:11px;padding:4px 10px;background:var(--white);border:1px solid var(--frost);color:var(--ink)}
+.phase-metric.green{border-color:var(--ammonia-pale);background:var(--ammonia-pale);color:var(--ammonia)}
+.phase-metric.erie{border-color:var(--erie-pale);background:var(--erie-pale);color:var(--erie)}
+
+/* ── PERMITS ──────────────────────────────────────────── */
+#regulatory{background:var(--white)}
+.permit-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.permit-card{border:1px solid var(--frost);padding:20px}
+.permit-agency{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--mist);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.permit-title{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px}
+.permit-detail{font-size:12px;color:var(--steel);line-height:1.5}
+.permit-timeline{margin-top:10px;padding-top:10px;border-top:1px solid var(--frost);font-family:var(--mono);font-size:10px;color:var(--amber-2)}
+.callout{border-left:3px solid var(--erie-3);padding:16px 20px;background:var(--erie-pale);margin:24px 0}
+.callout.green{border-color:var(--ammonia-3);background:var(--ammonia-pale)}
+.callout.amber{border-color:var(--amber-2);background:var(--amber-pale)}
+.callout p{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-2);line-height:1.6}
+
+/* ── EDUCATION ──────────────────────────────────────────── */
+#education{background:var(--bg)}
+.edu-pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--frost)}
+.edu-stage{padding:24px 20px;border-right:1px solid var(--frost);background:var(--white)}
+.edu-stage:last-child{border-right:none}
+.edu-level{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--mist);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.edu-inst{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.3}
+.edu-programs li{font-size:12px;color:var(--steel);padding:4px 0;list-style:none;padding-left:12px;border-left:2px solid var(--frost);margin-bottom:4px;line-height:1.4}
+
+/* ── COMPETITIVE ──────────────────────────────────────── */
+#competitive{background:var(--ink)}
+#competitive .sec-h2{color:var(--white)}
+#competitive .sec-lead{color:var(--mist)}
+#competitive .sec-tag{color:var(--ammonia-3)}
+.comp-table{width:100%;border-collapse:collapse;font-size:12px}
+.comp-table th{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:12px 16px;background:rgba(255,255,255,.06);color:var(--mist);text-align:left}
+.comp-table th.ours{color:var(--ammonia-3)}
+.comp-table td{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--mist)}
+.comp-table td.factor{color:var(--white);font-weight:500}
+.comp-table td.ours-val{color:var(--ammonia-3);font-family:var(--mono)}
+.comp-table td.grey-val{color:rgba(255,255,255,.4);font-family:var(--mono)}
+.comp-table tr:hover td{background:rgba(255,255,255,.03)}
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+footer{background:var(--ink-2);border-top:1px solid rgba(255,255,255,.06);padding:40px 24px}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px}
+.footer-col h5{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--mist);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.footer-col p,.footer-col li{font-size:12px;color:var(--steel);line-height:1.6;list-style:none;margin-bottom:4px}
+.footer-bottom{max-width:1200px;margin:32px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.footer-bottom span{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.25);letter-spacing:.04em}
+
+/* ── ANIMATIONS ──────────────────────────────────────────── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-content>*{animation:fadeInUp .6s ease both}
+.hero-content>*:nth-child(1){animation-delay:.1s}
+.hero-content>*:nth-child(2){animation-delay:.2s}
+.hero-content>*:nth-child(3){animation-delay:.3s}
+.hero-content>*:nth-child(4){animation-delay:.4s}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media(max-width:900px){
+  .zone-grid{grid-template-columns:1fr 1fr}
+  .product-grid{grid-template-columns:1fr}
+  .fuel-grid{grid-template-columns:1fr}
+  .econ-grid{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .permit-grid{grid-template-columns:1fr}
+  .edu-pipeline{grid-template-columns:1fr 1fr}
+  .footer-inner{grid-template-columns:1fr}
+  .param-grid{grid-template-columns:1fr}
+  .comp-table{font-size:11px}
+}
+@media(max-width:600px){
+  .hero-stats{grid-template-columns:1fr}
+  .zone-grid{grid-template-columns:1fr}
+  .edu-pipeline{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-brand">The FixOurStreets216 Project · CLE Green Ammonia</span>
+    <div class="nav-links">
+      <a href="#process">Process</a>
+      <a href="#campus">Campus</a>
+      <a href="#products">Products</a>
+      <a href="#fuel">Fuel</a>
+      <a href="#economics">Economics</a>
+      <a href="#phasing">Phasing</a>
+      <a href="#regulatory">Regulatory</a>
+      <a href="#education">Education</a>
+      <a href="#competitive">Competitive</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow"><span>The FixOurStreets216 Project · Cleveland, Ohio</span></div>
+    <h1 class="hero-h1">CLEVELAND<br><span>GREEN AMMONIA</span><br>INITIATIVE</h1>
+    <p class="hero-sub">Lake Erie water → green hydrogen → Haber-Bosch synthesis → agricultural fertilizer + zero-carbon marine fuel. The Great Lakes' first water-to-ammonia manufacturing complex.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="val">165K <span>MT/yr</span></div><div class="desc">NH₃ annual capacity</div></div>
+      <div class="hero-stat"><div class="val">100 <span>MW</span></div><div class="desc">PEM electrolyser farm</div></div>
+      <div class="hero-stat"><div class="val">$302M <span>/yr</span></div><div class="desc">Campus gross revenue</div></div>
+      <div class="hero-stat"><div class="val">1,200<span>+</span></div><div class="desc">Permanent direct jobs</div></div>
+    </div>
+  </div>
+  <div class="hero-footer">
+    <div class="hero-footer-inner">
+      <span class="tag">BURKE LAKEFRONT AIRPORT · 450 ACRES · LAKE ERIE FRONTAGE</span>
+      <span class="tag">DOE HYDROGEN HUB CANDIDATE · IRA 45V ELIGIBLE · OFFSHORE WIND TIE-IN</span>
+      <span class="tag">Compiled by The FixOurStreets216 Project · Terry McNeil, Operating Manager</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS FLOW -->
+<section class="section" id="process">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag">Section 01 — Water-to-Ammonia Process Chain</span>
+      <h2 class="sec-h2">From Lake Erie to Fertilizer</h2>
+      <p class="sec-lead">A fully integrated five-stage conversion chain transforms Lake Erie freshwater into green ammonia and finished fertilizer products — with carbon intensity 18× lower than conventional grey ammonia production.</p>
+    </div>
+
+    <div class="flow-chain">
+      <div class="flow-node">
+        <div class="flow-node-num">01 / INTAKE</div>
+        <div class="flow-node-title">Lake Erie Water Intake</div>
+        <div class="flow-node-detail">Submerged crib 300–600m offshore. Below thermocline. Fish exclusion screens ≤0.15 m/s approach velocity. 800K L/day raw draw.</div>
+        <div class="flow-node-chem">H₂O raw</div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-node-num">02 / TREATMENT</div>
+        <div class="flow-node-title">Water Treatment Train</div>
+        <div class="flow-node-detail">Ion exchange softening → reverse osmosis → deionisation polishing to &lt;1 µS/cm conductivity. Electrolysis-grade feed.</div>
+        <div class="flow-node-chem">H₂O ultrapure</div>
+      </div>
+      <div class="flow-node highlight">
+        <div class="flow-node-num">03 / ELECTROLYSIS</div>
+        <div class="flow-node-title">PEM Electrolyser Farm</div>
+        <div class="flow-node-detail">100 MW proton exchange membrane. 50 kWh/kg system efficiency. 20 MT H₂/day. O₂ byproduct captured for Cleveland Clinic sales + discharge enrichment.</div>
+        <div class="flow-node-chem">2H₂O → 2H₂ + O₂</div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-node-num">04 / N₂ SOURCE</div>
+        <div class="flow-node-title">Air Separation Unit</div>
+        <div class="flow-node-detail">Cryogenic ASU produces 99.99% pure N₂ at ~78 MT/day. Phase 1: pipeline supply (Air Products/Linde). Phase 2: on-site ASU.</div>
+        <div class="flow-node-chem">Air → 99.99% N₂</div>
+      </div>
+      <div class="flow-node key">
+        <div class="flow-node-num">05 / SYNTHESIS</div>
+        <div class="flow-node-title">Haber-Bosch Loop</div>
+        <div class="flow-node-detail">H₂:N₂ = 3:1. Iron catalyst (promoted). 400–500°C, 150–300 bar. Single-pass 15–25% conversion. Recycle loop. 452 MT NH₃/day output.</div>
+        <div class="flow-node-chem">N₂ + 3H₂ ⇌ 2NH₃</div>
+      </div>
+      <div class="flow-node key">
+        <div class="flow-node-num">06 / PRODUCT</div>
+        <div class="flow-node-title">Finishing & Storage</div>
+        <div class="flow-node-detail">Liquid NH₃ condensed at −33°C (atmospheric) or pressurised vessels. Urea prilling, UAN blending, MAP/DAP granulation downstream.</div>
+        <div class="flow-node-chem">NH₃ → Urea, UAN, MAP</div>
+      </div>
+    </div>
+
+    <div class="param-grid">
+      <div class="param-block">
+        <h4>Electrolysis Parameters</h4>
+        <div class="param-row"><span class="param-key">Technology</span><span class="param-val erie">PEM (Proton Exchange Membrane)</span></div>
+        <div class="param-row"><span class="param-key">Installed capacity</span><span class="param-val">100 MW (Phase 2 full build)</span></div>
+        <div class="param-row"><span class="param-key">System efficiency</span><span class="param-val">~50 kWh / kg H₂</span></div>
+        <div class="param-row"><span class="param-key">H₂ daily output</span><span class="param-val">~20 metric tons / day</span></div>
+        <div class="param-row"><span class="param-key">H₂ annual output</span><span class="param-val">~7,000 MT / year</span></div>
+        <div class="param-row"><span class="param-key">Water consumption</span><span class="param-val">9 kg H₂O per kg H₂</span></div>
+        <div class="param-row"><span class="param-key">O₂ byproduct</span><span class="param-val green">~56 MT/day — industrial sale</span></div>
+        <div class="param-row"><span class="param-key">Stack lifetime</span><span class="param-val">80,000–100,000 hours</span></div>
+      </div>
+      <div class="param-block">
+        <h4>Haber-Bosch Synthesis Parameters</h4>
+        <div class="param-row"><span class="param-key">Annual NH₃ capacity</span><span class="param-val green">165,000 metric tons</span></div>
+        <div class="param-row"><span class="param-key">Daily NH₃ output</span><span class="param-val">~452 metric tons / day</span></div>
+        <div class="param-row"><span class="param-key">NH₃ yield from H₂</span><span class="param-val">5.65 kg NH₃ / kg H₂</span></div>
+        <div class="param-row"><span class="param-key">Synthesis pressure</span><span class="param-val">150–300 bar</span></div>
+        <div class="param-row"><span class="param-key">Synthesis temperature</span><span class="param-val">400–500 °C</span></div>
+        <div class="param-row"><span class="param-key">Catalyst</span><span class="param-val">Iron-based (K, Al promoted)</span></div>
+        <div class="param-row"><span class="param-key">Single-pass conversion</span><span class="param-val">15–25% (recycle loop)</span></div>
+        <div class="param-row"><span class="param-key">Carbon intensity</span><span class="param-val green">~0.1 kg CO₂e / kg NH₃</span></div>
+      </div>
+    </div>
+
+    <div class="callout green" style="margin-top:32px">
+      <p>FastOx CO₂ integration advantage: the Sierra Energy FastOx gasifier (Zone 3) converts Cleveland MSW to syngas, producing a CO₂-rich off-gas stream. Captured CO₂ feeds directly to the urea synthesis unit — NH₃ + CO₂ → CO(NH₂)₂ — eliminating external CO₂ purchase and producing granular urea at near-zero feedstock cost. No standalone green ammonia producer in North America can replicate this integration.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CAMPUS ZONES -->
+<section class="section" id="campus">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag">Section 02 — Campus Architecture</span>
+      <h2 class="sec-h2">Burke Water-to-Energy Campus</h2>
+      <p class="sec-lead">Twelve functional zones covering 450 acres on the Lake Erie shoreline at the former Burke Lakefront Airport site. Treating Burke not as a consumption site but as a production site answering Council Member Polensek's demand for jobs, opportunity, and revenue.</p>
+    </div>
+    <div class="zone-grid">
+      <div class="zone-card"><div class="zone-num">ZONE 01</div><h4>Lake Erie Water Intake & Treatment</h4><p>Submerged offshore crib · fish exclusion screens · softening/RO/DI treatment train · 800K L/day capacity · GLWQA compliant</p><div class="zone-capex">CAPEX: $25M <span class="zone-badge">Phase 1</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 02</div><h4>PEM Electrolyser Farm</h4><p>100 MW PEM array on runway 24R reinforced-concrete footprint · 20 MT H₂/day · O₂ capture and sale · ~8,000–12,000 m² floor area</p><div class="zone-capex">CAPEX: $180M <span class="zone-badge">Phase 1–2</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 03</div><h4>FastOx Waste Gasification</h4><p>Sierra Energy FastOx gasifier · Cleveland MSW feedstock · zero-landfill syngas production · CO₂ capture for urea synthesis integration</p><div class="zone-capex">CAPEX: $85M <span class="zone-badge">Phase 2</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 04</div><h4>KARNO Microgrid</h4><p>Hyliion KARNO thermoacoustic linear generators · 50 MW · island-capable black-start · 100% H₂ fuel (Phase 2) · CHP district heat off-take</p><div class="zone-capex">CAPEX: $95M <span class="zone-badge">Phase 2</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 05</div><h4>Grid & Offshore Wind Interconnect</h4><p>FirstEnergy substation tie · LEEDCo Icebreaker Wind submarine cable landing · ~126 MW offshore integration · 5–10 MW solar canopy</p><div class="zone-capex">CAPEX: $45M <span class="zone-badge">Phase 2–4</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 06</div><h4>Haber-Bosch Synthesis Plant</h4><p>165,000 MT/yr NH₃ · iron catalyst reactor loop · ASU nitrogen feed · urea synthesis unit · 150–300 bar · 400–500°C operating conditions</p><div class="zone-capex">CAPEX: $120M <span class="zone-badge green">Core — Phase 2</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 07</div><h4>H₂ & NH₃ Storage Field</h4><p>350 bar H₂ tube storage · refrigerated LNH₃ tanks (−33°C) · 72-hr buffer capacity · grid-scale virtual battery for demand response</p><div class="zone-capex">CAPEX: $75M <span class="zone-badge">Phase 2</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 08</div><h4>Marine Bunkering Pier</h4><p>Great Lakes' first H₂ and LNH₃ bunkering facility · NE corner (Army Corps bulkhead transfer ~2029) · serves IMO 2050 decarbonisation demand</p><div class="zone-capex">CAPEX: $280M <span class="zone-badge">Phase 3</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 09</div><h4>Product Finishing</h4><p>Granular urea prilling tower · UAN (28-32% N) blending station · MAP/DAP (11-52-0) finishing · bulk export terminal · Cuyahoga barge loading</p><div class="zone-capex">CAPEX: $65M <span class="zone-badge green">Phase 3</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 10</div><h4>Public Lakefront Campus</h4><p>Energy Discovery Centre with glass-floor electrolyser observation deck · Great Lakes Science Center partnership · lakefront promenade · hotel · youth sports</p><div class="zone-capex">CAPEX: $180M <span class="zone-badge amber">Phase 3</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 11</div><h4>Clean Energy R&D Institute</h4><p>Case Western Reserve + Cleveland Clinic co-operation · live PEM and KARNO testbeds · DOE grant anchor · advanced mfg. of electrolyser components</p><div class="zone-capex">CAPEX: $220M <span class="zone-badge">Phase 3</span></div></div>
+      <div class="zone-card"><div class="zone-num">ZONE 12</div><h4>Educational Pipeline Hub</h4><p>CMSD → Tri-C → CSU → CWRU living laboratory · K-12 STEM · 2-yr technician credentials · engineering degrees · PhD electrochemistry research</p><div class="zone-capex">CAPEX: $90M <span class="zone-badge amber">Phase 3</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag green">Section 03 — Fertilizer Product Slate</span>
+      <h2 class="sec-h2">From Ammonia to Agricultural Inputs</h2>
+      <p class="sec-lead">Four nitrogen fertilizer products targeting distinct market segments across the Ohio–Indiana–Michigan corn belt — the largest single nitrogen market in North America, currently served entirely by Gulf Coast grey ammonia.</p>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-card-top">
+          <div><div class="product-name">Anhydrous Ammonia</div><div class="product-formula">NH₃ &nbsp;·&nbsp; 82% N &nbsp;·&nbsp; Corn belt fall application</div></div>
+          <div class="product-n">82%<small> N</small></div>
+        </div>
+        <div class="product-divider"></div>
+        <div class="product-rows">
+          <div class="pr"><span class="pr-key">Annual volume</span><span class="pr-val">~60,000 MT</span></div>
+          <div class="pr"><span class="pr-key">Market price (commodity)</span><span class="pr-val">$700–$900 / MT</span></div>
+          <div class="pr"><span class="pr-key">Green premium</span><span class="pr-val">+$120–$180 / MT</span></div>
+          <div class="pr"><span class="pr-key">Storage</span><span class="pr-val">Pressurised / −33°C refrigerated</span></div>
+          <div class="pr"><span class="pr-key">Primary market</span><span class="pr-val">Ohio / Indiana pre-plant N</span></div>
+          <div class="pr"><span class="pr-key">Distribution</span><span class="pr-val">Nurse tank, pipeline to terminal</span></div>
+        </div>
+        <div class="product-rev"><div class="rev-label">Annual Revenue Contribution</div><div class="rev-val">~$48M / year</div></div>
+      </div>
+      <div class="product-card">
+        <div class="product-card-top">
+          <div><div class="product-name">Granular Urea</div><div class="product-formula">CO(NH₂)₂ &nbsp;·&nbsp; 46% N &nbsp;·&nbsp; Bulk rail / barge export</div></div>
+          <div class="product-n">46%<small> N</small></div>
+        </div>
+        <div class="product-divider"></div>
+        <div class="product-rows">
+          <div class="pr"><span class="pr-key">Annual volume</span><span class="pr-val">~60,000 MT</span></div>
+          <div class="pr"><span class="pr-key">Market price</span><span class="pr-val">$400–$600 / MT</span></div>
+          <div class="pr"><span class="pr-key">CO₂ feedstock source</span><span class="pr-val">FastOx off-gas capture — ~$0 cost</span></div>
+          <div class="pr"><span class="pr-key">Synthesis reaction</span><span class="pr-val">2NH₃ + CO₂ → CO(NH₂)₂ + H₂O</span></div>
+          <div class="pr"><span class="pr-key">Form</span><span class="pr-val">Prilled or granular — ambient storage</span></div>
+          <div class="pr"><span class="pr-key">Distribution advantage</span><span class="pr-val">Rail, truck, Cuyahoga barge</span></div>
+        </div>
+        <div class="product-rev"><div class="rev-label">Annual Revenue Contribution</div><div class="rev-val">~$30M / year</div></div>
+      </div>
+      <div class="product-card">
+        <div class="product-card-top">
+          <div><div class="product-name">UAN Solution</div><div class="product-formula">Urea + NH₄NO₃ &nbsp;·&nbsp; 28–32% N &nbsp;·&nbsp; Precision liquid</div></div>
+          <div class="product-n">28–32%<small> N</small></div>
+        </div>
+        <div class="product-divider"></div>
+        <div class="product-rows">
+          <div class="pr"><span class="pr-key">Annual volume</span><span class="pr-val">~30,000 MT N equivalent</span></div>
+          <div class="pr"><span class="pr-key">Market price</span><span class="pr-val">$280–$400 / MT N</span></div>
+          <div class="pr"><span class="pr-key">Application method</span><span class="pr-val">Dribble / coulter inject / aerial</span></div>
+          <div class="pr"><span class="pr-key">Market growth driver</span><span class="pr-val">Precision VRA technology adoption</span></div>
+          <div class="pr"><span class="pr-key">Distribution</span><span class="pr-val">Direct tanker truck to farm gate</span></div>
+          <div class="pr"><span class="pr-key">Handling advantage</span><span class="pr-val">No pressure / refrigeration required</span></div>
+        </div>
+        <div class="product-rev"><div class="rev-label">Annual Revenue Contribution</div><div class="rev-val">~$28M / year</div></div>
+      </div>
+      <div class="product-card">
+        <div class="product-card-top">
+          <div><div class="product-name">MAP / DAP</div><div class="product-formula">NH₄H₂PO₄ / (NH₄)₂HPO₄ &nbsp;·&nbsp; 11-52-0 / 18-46-0</div></div>
+          <div class="product-n">N+P<small></small></div>
+        </div>
+        <div class="product-divider"></div>
+        <div class="product-rows">
+          <div class="pr"><span class="pr-key">Annual volume</span><span class="pr-val">~20,000 MT</span></div>
+          <div class="pr"><span class="pr-key">Market price</span><span class="pr-val">$600–$750 / MT</span></div>
+          <div class="pr"><span class="pr-key">External feedstock</span><span class="pr-val">Phosphoric acid (Mosaic / CF Industries)</span></div>
+          <div class="pr"><span class="pr-key">Synthesis</span><span class="pr-val">NH₃ + H₃PO₄ → NH₄H₂PO₄</span></div>
+          <div class="pr"><span class="pr-key">Market position</span><span class="pr-val">First domestic green MAP — GL region</span></div>
+          <div class="pr"><span class="pr-key">Form</span><span class="pr-val">Granulated — bulk bag / bulk truck</span></div>
+        </div>
+        <div class="product-rev"><div class="rev-label">Annual Revenue Contribution</div><div class="rev-val">~$13M / year</div></div>
+      </div>
+    </div>
+    <div class="callout green" style="margin-top:24px">
+      <p>Green premium certification pathway: Verified under the Green Ammonia Certification standard (Ammonia Energy Association). Target off-take partners with Scope 3 supply chain commitments include General Mills, Kellogg's, ADM, and Cargill — all of which source significant grain volumes from Ohio and Indiana farms. Premium of $120–180/MT above commodity on 100,000 MT N-equivalent = ~$15M/year incremental revenue at zero additional production cost.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FUEL -->
+<section class="section" id="fuel">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag">Section 04 — Ammonia as Zero-Carbon Fuel</span>
+      <h2 class="sec-h2">Marine, Industrial & Grid Fuel Applications</h2>
+      <p class="sec-lead">Green ammonia is not only a fertilizer feedstock. It is the most practical zero-carbon energy carrier for applications that cannot be electrified: deep-sea shipping, industrial process heat, and dispatchable grid generation.</p>
+    </div>
+    <div class="fuel-grid">
+      <div class="fuel-card">
+        <div class="fuel-icon">⚓</div>
+        <h4>Great Lakes Marine Bunkering</h4>
+        <p>Zone 8 marine pier — Great Lakes' first green hydrogen and liquid ammonia bunkering facility. Serves the IMO 2050 decarbonisation mandate for the Great Lakes bulk carrier, container, and passenger ferry fleet.</p>
+        <div class="fuel-specs">
+          <div class="fuel-spec"><strong>Location:</strong> NE corner of Burke — Army Corps bulkhead transfer ~2029</div>
+          <div class="fuel-spec"><strong>Products:</strong> Compressed H₂ + cryogenic LNH₃ (−33°C)</div>
+          <div class="fuel-spec"><strong>Target customers:</strong> US Steel lake freighters, Algoma Central vessels, Cleveland–Ontario ferry</div>
+          <div class="fuel-spec"><strong>Revenue:</strong> ~$22M/year at full build</div>
+          <div class="fuel-spec"><strong>First-mover:</strong> No Great Lakes port currently offers green marine bunkering</div>
+        </div>
+      </div>
+      <div class="fuel-card">
+        <div class="fuel-icon">🏭</div>
+        <h4>Industrial Corridor Pipeline Fuel</h4>
+        <p>NH₃ pipeline from Burke into the Northeast Ohio industrial corridor. Ammonia is a direct substitute for natural gas in industrial process burners and turbines rated for hydrogen-ammonia blends.</p>
+        <div class="fuel-specs">
+          <div class="fuel-spec"><strong>Kawasaki L30A:</strong> 100% ammonia fuel capable — commercially available gas turbine</div>
+          <div class="fuel-spec"><strong>Industrial Valley campus:</strong> pipeline connection to KARNO/turbine installations</div>
+          <div class="fuel-spec"><strong>Opportunity Corridor IPGD:</strong> KARNO + Mainspring LGen ammonia-blend capable</div>
+          <div class="fuel-spec"><strong>Regulatory driver:</strong> Ohio EPA Subpart OOO — NH₃ replaces natural gas with no equipment change</div>
+          <div class="fuel-spec"><strong>Carbon credit:</strong> Ohio Scope 1 elimination for industrial buyers</div>
+        </div>
+      </div>
+      <div class="fuel-card">
+        <div class="fuel-icon">⚡</div>
+        <h4>Grid-Scale Dispatchable Generation</h4>
+        <p>Ammonia cracked to H₂ at point of use, fed to fuel cells or H₂-capable turbines for dispatchable zero-carbon grid power. The 72-hour NH₃ buffer tank acts as a virtual battery for demand response and PJM capacity market participation.</p>
+        <div class="fuel-specs">
+          <div class="fuel-spec"><strong>Energy stored:</strong> 72-hr buffer ≈ 500 MWh equivalent</div>
+          <div class="fuel-spec"><strong>KARNO operation:</strong> 200 kW modules operable on H₂/NH₃ blend</div>
+          <div class="fuel-spec"><strong>Grid service:</strong> PJM capacity market + ancillary services + demand response</div>
+          <div class="fuel-spec"><strong>NH₃ cracking:</strong> Ruthenium catalyst, 400°C → H₂ for fuel cell or turbine</div>
+          <div class="fuel-spec"><strong>Revenue:</strong> Grid power sales ~$35M/year (KARNO + grid export)</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:32px">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Fuel Application</th><th>Technology</th><th>NH₃ Consumption</th><th>CO₂ Displacement</th><th>Revenue/Cost Basis</th></tr></thead>
+          <tbody>
+            <tr><td>Marine bunkering — Great Lakes</td><td>Direct LNH₃ fuel or H₂ crack-to-fuel-cell</td><td class="num">~15,000 MT/yr</td><td class="green">~28,000 MT CO₂e/yr</td><td class="num">~$22M/yr revenue</td></tr>
+            <tr><td>Industrial corridor pipeline</td><td>Burner / Kawasaki L30A / KARNO blend</td><td class="num">~20,000 MT/yr</td><td class="green">~38,000 MT CO₂e/yr</td><td class="num">Industrial gas contracts</td></tr>
+            <tr><td>Grid dispatch (KARNO + surplus)</td><td>KARNO thermoacoustic / H₂ turbine</td><td class="num">~10,000 MT/yr</td><td class="green">~19,000 MT CO₂e/yr</td><td class="num">~$35M/yr PJM revenue</td></tr>
+            <tr><td>NH₃ virtual battery (demand response)</td><td>Crack-to-H₂ + PEM fuel cell</td><td class="num">72-hr buffer pool</td><td class="green">Displacement basis</td><td class="num">PJM capacity payments</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ECONOMICS -->
+<section class="section" id="economics">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag green">Section 05 — Financial Model</span>
+      <h2 class="sec-h2">Project Economics</h2>
+      <p class="sec-lead">Stabilized gross revenue of $302M/year (energy campus core) to $994M/year (full campus including hyperscale data center). CAPEX $1.64B across four phases, with IRA incentive stack reducing net equity requirement substantially.</p>
+    </div>
+    <div class="econ-grid">
+      <div class="econ-cell">
+        <h4>Annual Revenue Streams — Stabilized</h4>
+        <div class="rev-bar-row"><span class="rev-bar-label">Anhydrous ammonia</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:52%;background:#2a8ec8"></div></div><span class="rev-bar-amt">$48M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">Granular urea</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:32%;background:#2a8ec8"></div></div><span class="rev-bar-amt">$30M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">UAN solution</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:30%;background:#2a8ec8"></div></div><span class="rev-bar-amt">$28M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">Grid power (KARNO + export)</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:38%;background:#5cb0e0"></div></div><span class="rev-bar-amt">$35M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">Marine bunkering</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:24%;background:#5cb0e0"></div></div><span class="rev-bar-amt">$22M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">Green premium certification</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:16%;background:#3db868"></div></div><span class="rev-bar-amt">$15M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">Research grants (DOE/corporate)</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:16%;background:#3db868"></div></div><span class="rev-bar-amt">$15M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">Public campus (hotel/sports)</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:16%;background:#b05c18"></div></div><span class="rev-bar-amt">$15M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">MAP / DAP</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:14%;background:#2a8ec8"></div></div><span class="rev-bar-amt">$13M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">H₂ industrial sales</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:13%;background:#5cb0e0"></div></div><span class="rev-bar-amt">$12M</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-label">O₂ sales (Cleveland Clinic)</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:9%;background:#3db868"></div></div><span class="rev-bar-amt">$8M</span></div>
+        <div class="rev-bar-row" style="border-top:1px solid rgba(255,255,255,.15);padding-top:10px;margin-top:6px"><span class="rev-bar-label" style="color:#fff;font-weight:600">TOTAL ENERGY CAMPUS CORE</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:100%;background:linear-gradient(90deg,#2a8ec8,#3db868)"></div></div><span class="rev-bar-amt" style="color:#3db868;font-size:13px">$302M</span></div>
+      </div>
+      <div class="econ-cell">
+        <h4>Capital Cost by Component</h4>
+        <div class="capex-rows">
+          <div class="cr"><span class="cr-key">PEM electrolyser farm (100 MW)</span><span class="cr-val">$180M</span></div>
+          <div class="cr"><span class="cr-key">Haber-Bosch synthesis loop</span><span class="cr-val">$120M</span></div>
+          <div class="cr"><span class="cr-key">Marine bunkering pier (Zone 8)</span><span class="cr-val">$280M</span></div>
+          <div class="cr"><span class="cr-key">Clean Energy R&D Institute (Zone 11)</span><span class="cr-val">$220M</span></div>
+          <div class="cr"><span class="cr-key">Public campus (Zone 10)</span><span class="cr-val">$180M</span></div>
+          <div class="cr"><span class="cr-key">KARNO microgrid (50 MW)</span><span class="cr-val">$95M</span></div>
+          <div class="cr"><span class="cr-key">FastOx gasifier</span><span class="cr-val">$85M</span></div>
+          <div class="cr"><span class="cr-key">Air separation unit (ASU)</span><span class="cr-val">$55M</span></div>
+          <div class="cr"><span class="cr-key">H₂ compression & storage (350 bar)</span><span class="cr-val">$40M</span></div>
+          <div class="cr"><span class="cr-key">H₂ & NH₃ storage field (72-hr)</span><span class="cr-val">$75M</span></div>
+          <div class="cr"><span class="cr-key">Product finishing (urea/UAN/MAP)</span><span class="cr-val">$65M</span></div>
+          <div class="cr"><span class="cr-key">Water intake & treatment</span><span class="cr-val">$25M</span></div>
+          <div class="cr"><span class="cr-key">Educational pipeline hub</span><span class="cr-val">$90M</span></div>
+          <div class="cr"><span class="cr-key">Infra, engineering, contingency</span><span class="cr-val">$130M</span></div>
+          <div class="cr cr-total"><span class="cr-key">TOTAL CAMPUS CAPEX</span><span class="cr-val num" style="color:#5cb0e0;font-size:14px">~$1.64B</span></div>
+        </div>
+      </div>
+      <div class="econ-cell">
+        <h4>Federal Incentive Stack (IRA 2022)</h4>
+        <table class="ira-table">
+          <tr><td>45V Clean H₂ PTC — full green tier ($3.00/kg H₂)</td><td>~$22M / year</td></tr>
+          <tr><td>48C Advanced Manufacturing ITC (30% of electrolyser CAPEX)</td><td>~$54M one-time</td></tr>
+          <tr><td>ITC Energy Community Adder (+10% brownfield)</td><td>~$18M one-time</td></tr>
+          <tr><td>DOE Midwest Clean H₂ Hub grant</td><td>$8–20M direct</td></tr>
+          <tr><td>Ohio Job Creation Tax Credit (JCTC)</td><td>TBD — county agreement</td></tr>
+          <tr><td>NMTC / CDFI (Opportunity Zone — education zones)</td><td>Phase 3 eligibility</td></tr>
+        </table>
+      </div>
+      <div class="econ-cell">
+        <div class="cop-block">
+          <h4>Cost of Production — NH₃ (per metric ton)</h4>
+          <div class="cop-row"><span style="color:var(--mist)">Electricity (at $0.045/kWh, 10 MWh/MT NH₃)</span><span style="font-family:var(--mono);color:var(--white)">$450</span></div>
+          <div class="cop-row"><span style="color:var(--mist)">Water treatment</span><span style="font-family:var(--mono);color:var(--white)">$8</span></div>
+          <div class="cop-row"><span style="color:var(--mist)">O&M — labor, catalyst, maintenance</span><span style="font-family:var(--mono);color:var(--white)">$75</span></div>
+          <div class="cop-row"><span style="color:var(--mist)">Capital recovery (20-yr amortization)</span><span style="font-family:var(--mono);color:var(--white)">~$120</span></div>
+          <div class="cop-row" style="border-top:1px solid rgba(255,255,255,.15);padding-top:10px;margin-top:6px"><span style="color:var(--white);font-weight:600">Breakeven — pre-IRA</span><span style="font-family:var(--mono);color:var(--amber-2);font-size:15px">~$653/MT</span></div>
+          <div class="cop-row"><span style="color:var(--white);font-weight:600">Breakeven with 45V PTC</span><span style="font-family:var(--mono);color:#3db868;font-size:15px">~$520/MT</span></div>
+          <div class="cop-row"><span style="color:var(--mist)">Post-Icebreaker Wind (elec. &lt;$0.03/kWh)</span><span style="font-family:var(--mono);color:#3db868;font-size:15px">~$400/MT</span></div>
+          <div class="cop-row"><span style="color:var(--mist)">Market price (green, 2025–2026)</span><span style="font-family:var(--mono);color:var(--erie-4)">$750–$1,000/MT</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASING -->
+<section class="section" id="phasing">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag">Section 06 — Development Phasing</span>
+      <h2 class="sec-h2">Five-Phase Development Plan</h2>
+      <p class="sec-lead">From pre-FEED permitting in 2026 to full Icebreaker Wind integration by 2037. Each phase is revenue-positive before the next begins — no phase requires the next to be funded.</p>
+    </div>
+    <div class="phase-timeline">
+      <div class="phase-item">
+        <div class="phase-head"><span class="phase-year">2026–2028</span><span class="phase-title">Phase 0 — Pre-FEED & Permitting</span></div>
+        <div class="phase-body">Feasibility study, FEED engineering, NEPA/Ohio EPA permitting. Great Lakes Compact water withdrawal application (Ohio DNR — 2–3 year lead time). FAA airport closure coordination. DOE Hydrogen Hub designation application. PHMSA ammonia storage design review.</div>
+        <div class="phase-metrics"><span class="phase-metric">Cost: $8–12M</span><span class="phase-metric">No revenue phase</span><span class="phase-metric">Permits: GL Compact · Ohio EPA · FAA</span></div>
+      </div>
+      <div class="phase-item key-phase">
+        <div class="phase-head"><span class="phase-year">2028–2030</span><span class="phase-title">Phase 1 — 25 MW Pilot Plant</span></div>
+        <div class="phase-body">25 MW PEM electrolyser on Runway 24R footprint. Phase 1 Haber-Bosch unit at 40,000 MT NH₃/year. Anhydrous ammonia only — no downstream conversion. N₂ from pipeline (Air Products — defers ASU capital). Validates process integration and establishes offtake contracts with Ohio co-ops.</div>
+        <div class="phase-metrics"><span class="phase-metric erie">CAPEX: ~$160M</span><span class="phase-metric green">Revenue: ~$30M/yr</span><span class="phase-metric green">Jobs: ~120 direct</span></div>
+      </div>
+      <div class="phase-item key-phase">
+        <div class="phase-head"><span class="phase-year">2030–2033</span><span class="phase-title">Phase 2 — Scale to 100 MW</span></div>
+        <div class="phase-body">Expand electrolyser to full 100 MW. Commission on-site ASU (nitrogen independence from pipeline). Expand Haber-Bosch to 165,000 MT/yr. Commission urea synthesis with FastOx CO₂ integration. FastOx operational on Cleveland MSW. KARNO microgrid at 50 MW on H₂/syngas blend.</div>
+        <div class="phase-metrics"><span class="phase-metric erie">Incremental CAPEX: ~$340M</span><span class="phase-metric green">Revenue ramp: ~$100M/yr</span><span class="phase-metric green">Jobs: ~400 direct</span></div>
+      </div>
+      <div class="phase-item key-phase">
+        <div class="phase-head"><span class="phase-year">2033–2035</span><span class="phase-title">Phase 3 — Full Product Slate & Public Campus</span></div>
+        <div class="phase-body">UAN blending and urea prilling tower commissioned. MAP/DAP finishing unit. Cuyahoga River barge terminal operational. Zone 8 marine bunkering pier opens — Great Lakes' first green marine fuel hub. Green ammonia certification achieved. Public lakefront campus, Energy Discovery Centre, Clean Energy Research Institute all open.</div>
+        <div class="phase-metrics"><span class="phase-metric erie">Incremental CAPEX: ~$870M</span><span class="phase-metric green">Revenue: ~$302M/yr</span><span class="phase-metric green">Jobs: 1,200+ direct</span></div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-head"><span class="phase-year">2033–2037</span><span class="phase-title">Phase 4 — Icebreaker Wind Integration</span></div>
+        <div class="phase-body">LEEDCo Icebreaker Wind (126 MW, 6 turbines, 13 km offshore) submarine cable lands at Burke. Dedicated offshore power drives electricity cost below $0.03/kWh. Full 45V green hydrogen certification under IRA. NH₃ production cost drops to ~$400/MT — competitive with Gulf Coast grey ammonia without any subsidy.</div>
+        <div class="phase-metrics"><span class="phase-metric">Offshore CAPEX: ~$280M (LEEDCo/PPA)</span><span class="phase-metric green">COP: ~$400/MT NH₃ unsubsidized</span><span class="phase-metric green">Offshore wind: 126 MW dedicated</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGULATORY -->
+<section class="section" id="regulatory">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag amber">Section 07 — Regulatory Pathway</span>
+      <h2 class="sec-h2">Permit Inventory & Political Strategy</h2>
+      <p class="sec-lead">Eight primary permits across five agencies. The Great Lakes Compact withdrawal is the longest lead-time item — a pre-application conference with Ohio DNR is the first recommended action.</p>
+    </div>
+    <div class="permit-grid">
+      <div class="permit-card"><div class="permit-agency">Ohio DNR · 2–3 years</div><div class="permit-title">Great Lakes Compact Water Withdrawal</div><div class="permit-detail">Consumptive use determination required. Ecological benefit argument (O₂ discharge enrichment — net-positive lake water impact) is centerpiece of application. Approval requires all eight GL states plus two Canadian provinces.</div><div class="permit-timeline">⏱ START IMMEDIATELY — longest lead-time item</div></div>
+      <div class="permit-card"><div class="permit-agency">Ohio EPA · 1–2 years</div><div class="permit-title">NPDES Discharge Permit</div><div class="permit-detail">Required for any return flow to Lake Erie. Key issue: thermal discharge limits and dissolved oxygen requirements. Dissolved oxygen enrichment via electrolysis O₂ byproduct injection targets 12–14 mg/L discharge DO — above baseline lake conditions.</div><div class="permit-timeline">⏱ File at Phase 0 FEED completion</div></div>
+      <div class="permit-card"><div class="permit-agency">Ohio EPA DAP · 18 months</div><div class="permit-title">Air Construction Permit (NH₃)</div><div class="permit-detail">Fugitive NH₃ emissions from storage tanks, loading operations, and process venting. Title V major source determination likely at 165,000 MT/yr scale. BACT analysis required for synthesis plant.</div><div class="permit-timeline">⏱ File concurrent with Phase 1 design</div></div>
+      <div class="permit-card"><div class="permit-agency">DOT PHMSA · 12 months</div><div class="permit-title">NH₃ Storage Design — 49 CFR Part 193</div><div class="permit-detail">Pressurised and refrigerated anhydrous ammonia storage tank design code compliance. Pressure relief, emergency shutdown, leak detection, and security system requirements for large-volume NH₃ storage at lakefront site.</div><div class="permit-timeline">⏱ Parallel with Phase 1 detailed design</div></div>
+      <div class="permit-card"><div class="permit-agency">FERC · 2–3 years</div><div class="permit-title">Grid Interconnection (Offshore Wind)</div><div class="permit-detail">Icebreaker Wind submarine cable FERC interconnection and PPA filing. Phase 4 trigger. Queue position filing should begin no later than Phase 2 to preserve interconnection slot for Phase 4 timeline.</div><div class="permit-timeline">⏱ Queue filing: Phase 2 commencement</div></div>
+      <div class="permit-card"><div class="permit-agency">FAA / Congress · Legislative</div><div class="permit-title">Burke Airport Closure</div><div class="permit-detail">Grant Assurance 25 requires Congressional action or FAA waiver. Political reframe is essential: the ask is not "close an airport for a park" — it is "close an airport to build a DOE Hydrogen Hub anchor site and CHIPS Act data center." This is an ask Congress can champion.</div><div class="permit-timeline">⏱ Congressional outreach begins Phase 0</div></div>
+      <div class="permit-card"><div class="permit-agency">Cuyahoga County / City · 12 months</div><div class="permit-title">Industrial Zoning Amendment</div><div class="permit-detail">Burke Airport overlay district amendment to permit heavy industrial, chemical processing, and energy infrastructure. Coordinated with FAA closure timeline. City Council legislative action required.</div><div class="permit-timeline">⏱ File with Phase 0 FEED submission</div></div>
+      <div class="permit-card"><div class="permit-agency">US Army Corps · 18 months</div><div class="permit-title">Section 404 — Barge Terminal</div><div class="permit-detail">Cuyahoga River dredging, bulkhead construction, and in-water work for Zone 8 marine bunkering pier. Army Corps confined disposal area transfer to Port authority (~2029) precedes permit filing. Section 408 modification of existing federal project may also apply.</div><div class="permit-timeline">⏱ File Phase 2 — construction Phase 3</div></div>
+    </div>
+    <div class="callout" style="margin-top:32px">
+      <p>The FixOurStreets216 Project's core political insight: every prior Burke closure attempt has asked Congress and the FAA to close an airport for recreational or residential development — an ask that offers Congress nothing. The correct ask is to close Burke to build a nationally significant clean energy infrastructure project. DOE Hydrogen Hub + CHIPS Act data center + IMO 2050 marine fuel hub = three federal programs with Congressional champions Cleveland can activate simultaneously.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section class="section" id="education">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag green">Section 08 — Educational Pipeline</span>
+      <h2 class="sec-h2">CMSD → Tri-C → CSU → CWRU</h2>
+      <p class="sec-lead">A structured credential pipeline from Cleveland Metropolitan School District through Case Western Reserve University, using the Burke campus as a shared living laboratory — connecting Cleveland's communities to the green hydrogen economy's high-wage jobs.</p>
+    </div>
+    <div class="edu-pipeline">
+      <div class="edu-stage">
+        <div class="edu-level">K-12 · CMSD</div>
+        <div class="edu-inst">Cleveland Metropolitan School District</div>
+        <ul class="edu-programs">
+          <li>Burke campus field science visits — electrolyser, KARNO, Haber-Bosch loop tours</li>
+          <li>Paid summer apprenticeships — CMSD juniors/seniors in electrolyser ops and facilities</li>
+          <li>STEM teacher professional development — summer embeds in campus operations</li>
+          <li>Feeder schools: East Technical High School, John Marshall School of Engineering</li>
+        </ul>
+      </div>
+      <div class="edu-stage">
+        <div class="edu-level">2-Year AAS · Tri-C</div>
+        <div class="edu-inst">Cuyahoga Community College</div>
+        <ul class="edu-programs">
+          <li>Electrolyser Operations Technician AAS — PEM stack maintenance, H₂ compression, water treatment</li>
+          <li>Energy Systems Technician — KARNO/microgrid maintenance, power electronics, storage systems</li>
+          <li>Data Center Facilities Tech — cooling, power distribution, NOC operations (60 MW campus DC)</li>
+          <li>On-site hands-on training lab access at Burke electrolyser and microgrid facilities</li>
+        </ul>
+      </div>
+      <div class="edu-stage">
+        <div class="edu-level">4-Year / Graduate · CSU</div>
+        <div class="edu-inst">Cleveland State University</div>
+        <ul class="edu-programs">
+          <li>Midwest Hydrogen Center of Excellence — Energy Policy Center partnership with Burke as research site</li>
+          <li>Chemical Engineering co-op — Haber-Bosch unit and synthesis plant placements</li>
+          <li>Energy Policy Center — grid integration, H₂ economy, Great Lakes water management curriculum</li>
+          <li>Co-op program — electrolyser farm, synthesis plant, and port operations placements</li>
+        </ul>
+      </div>
+      <div class="edu-stage">
+        <div class="edu-level">PhD Research · CWRU</div>
+        <div class="edu-inst">Case Western Reserve University</div>
+        <ul class="edu-programs">
+          <li>Great Lakes Energy Institute — 80-yr electrochemistry tradition anchored at Burke live testbeds</li>
+          <li>$300M Interdisciplinary Science & Engineering Building (Oct. 2024 groundbreak) — 60+ PIs in climate, mfg., and materials science</li>
+          <li>6 Electrochemical Society Fellows — next-gen PEM stack R&D on operating Burke equipment</li>
+          <li>First PhD cohort with Burke dissertation research begins 2031 — DOE grant anchor $15M+/yr</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETITIVE -->
+<section class="section" id="competitive">
+  <div class="section-inner">
+    <div class="sec-header">
+      <span class="sec-tag green">Section 09 — Competitive Analysis</span>
+      <h2 class="sec-h2">Cleveland vs. Gulf Coast Grey Ammonia</h2>
+      <p class="sec-lead">By 2035, the Burke campus will be the lowest-cost green nitrogen fertilizer producer in North America — with a cost structure permanently below Gulf Coast grey ammonia on a delivered, risk-adjusted basis after the Icebreaker Wind tie-in.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th class="ours">Cleveland Green (Burke Campus)</th>
+            <th>Gulf Coast Grey (CF/Nutrien/Koch)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="factor">Primary feedstock</td><td class="ours-val">Lake Erie water + renewable power</td><td class="grey-val">Natural gas (Henry Hub index)</td></tr>
+          <tr><td class="factor">Carbon intensity</td><td class="ours-val">~0.1 kg CO₂e / kg NH₃</td><td class="grey-val">~1.8 kg CO₂e / kg NH₃</td></tr>
+          <tr><td class="factor">Production cost (current)</td><td class="ours-val">~$520/MT (with 45V PTC)</td><td class="grey-val">~$350–500/MT (gas price dependent)</td></tr>
+          <tr><td class="factor">Production cost (post-Icebreaker, no subsidy)</td><td class="ours-val">~$400/MT unsubsidized</td><td class="grey-val">~$350–500/MT (volatile with gas)</td></tr>
+          <tr><td class="factor">Green premium capture</td><td class="ours-val">$120–180/MT above commodity price</td><td class="grey-val">None — commodity pricing only</td></tr>
+          <tr><td class="factor">Natural gas price exposure</td><td class="ours-val">Zero — no fossil fuel input</td><td class="grey-val">100% — cost follows Henry Hub</td></tr>
+          <tr><td class="factor">Corn belt delivery cost</td><td class="ours-val">Cuyahoga barge — $15–25/MT</td><td class="grey-val">300–600 mi rail/truck — $40–80/MT</td></tr>
+          <tr><td class="factor">Scope 3 certification</td><td class="ours-val">Full green certification available</td><td class="grey-val">Not achievable without plant rebuild</td></tr>
+          <tr><td class="factor">CO₂ price exposure (future carbon tax)</td><td class="ours-val">Zero exposure — no CO₂ produced</td><td class="grey-val">High — 1.8 kg CO₂ per kg NH₃</td></tr>
+          <tr><td class="factor">2022 gas spike scenario ($14/MMBtu)</td><td class="ours-val">No cost impact</td><td class="grey-val">NH₃ spot price hit $1,400/MT</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout green" style="margin-top:24px">
+      <p>The long-term competitive moat: Icebreaker Wind power + 45V PTC (through 2032 minimum) + Scope 3 green premium + Great Lakes distribution advantage creates a cost structure that is permanently below Gulf Coast grey ammonia on a delivered, risk-adjusted basis. When carbon pricing advances, Cleveland's zero-carbon certification becomes a regulatory moat that Gulf Coast producers cannot replicate without shutting down and rebuilding from scratch.</p>
+    </div>
+
+    <!-- RECOMMENDATIONS -->
+    <div style="margin-top:56px">
+      <span class="sec-tag" style="display:block;margin-bottom:16px">Section 10 — Recommended Immediate Actions</span>
+      <h2 class="sec-h2" style="color:var(--white)">Three Actions, Starting Now</h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.06);margin-top:32px">
+        <div style="background:var(--ink);padding:28px">
+          <div style="font-family:var(--mono);font-size:28px;font-weight:600;color:var(--erie-4);margin-bottom:16px">01</div>
+          <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--white);margin-bottom:12px">File GL Compact Pre-Application</div>
+          <p style="font-size:12px;color:var(--mist);line-height:1.6">The Great Lakes Compact permit is the longest lead-time item — 2–3 years minimum. A pre-application conference with Ohio DNR costs nothing and starts the clock. Lead with the O₂ discharge enrichment ecological benefit argument.</p>
+          <div style="margin-top:16px;font-family:var(--mono);font-size:10px;color:var(--erie-4);letter-spacing:.08em">AGENCY: OHIO DNR · COST: $0</div>
+        </div>
+        <div style="background:var(--ink);padding:28px">
+          <div style="font-family:var(--mono);font-size:28px;font-weight:600;color:var(--ammonia-3);margin-bottom:16px">02</div>
+          <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--white);margin-bottom:12px">Apply for DOE H₂ Hub Feasibility Grant</div>
+          <p style="font-size:12px;color:var(--mist);line-height:1.6">DOE Hydrogen Hub includes pre-development and feasibility study grants. A successful application validates the concept with federal credibility, funds the FEED study ($8–12M), and begins the formal DOE relationship leading to hub designation.</p>
+          <div style="margin-top:16px;font-family:var(--mono);font-size:10px;color:var(--ammonia-3);letter-spacing:.08em">AGENCY: DOE · GRANT: $8–20M</div>
+        </div>
+        <div style="background:var(--ink);padding:28px">
+          <div style="font-family:var(--mono);font-size:28px;font-weight:600;color:var(--amber-2);margin-bottom:16px">03</div>
+          <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--white);margin-bottom:12px">Brief City Council & Congressional Delegation</div>
+          <p style="font-size:12px;color:var(--mist);line-height:1.6">Present the reframed Burke concept to Cleveland City Council, the Mayor's office, and Senators Brown/Vance. The ask is DOE Hydrogen Hub + CHIPS Act data center + IMO 2050 marine fuel hub — not a park. Three federal programs, three Congressional champions.</p>
+          <div style="margin-top:16px;font-family:var(--mono);font-size:10px;color:var(--amber-2);letter-spacing:.08em">TARGETS: CITY COUNCIL · USSENATE · USHOUSE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h5>The FixOurStreets216 Project</h5>
+      <p>Operating Manager: Terry McNeil</p>
+      <p>Cleveland, Ohio</p>
+      <p>Municipal consulting · Digital design</p>
+      <p>Entertainment production management</p>
+      <p>Workforce research & productivity</p>
+    </div>
+    <div class="footer-col">
+      <h5>Document Contents</h5>
+      <li>Water-to-Ammonia Process Chain</li>
+      <li>Burke Campus Zone Architecture</li>
+      <li>Fertilizer Product Slate</li>
+      <li>Marine & Industrial Fuel Applications</li>
+      <li>Financial Model & IRA Incentives</li>
+      <li>Five-Phase Development Plan</li>
+      <li>Regulatory Permit Inventory</li>
+      <li>CMSD–CWRU Educational Pipeline</li>
+      <li>Competitive Analysis vs. Gulf Coast</li>
+    </div>
+    <div class="footer-col">
+      <h5>Source Conversations</h5>
+      <li>Ammonia Synthesis from Freshwater (Mar 2026)</li>
+      <li>Water-to-Energy Campus at Burke (May 2026)</li>
+      <li>Lake Erie Deep-Water Cooling (Apr 2026)</li>
+      <li>Burke Lakefront Redevelopment Plans (May 2026)</li>
+      <li>Mapping Water-to-Energy Campus Zones (Apr 2026)</li>
+      <li>Cleveland Advanced Manufacturing Zones (May 2026)</li>
+      <li>Cleveland Fertilizer Manufacturing Plant (Jun 2026)</li>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Compiled by The FixOurStreets216 Project · Cleveland, Ohio · 2026</span>
+    <span>ALL FIGURES ARE CONCEPT-STAGE ESTIMATES · NOT FOR INVESTMENT PURPOSES</span>
+  </div>
+</footer>
+
+</body>
+</html>

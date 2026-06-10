@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>City of Cleveland Green Fuel Initiative — The FixOurStreets216 Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & TOKENS ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#070b0f;
+  --ink-2:#10171e;
+  --ink-3:#18222b;
+  --line:#1f2a33;
+  --bg:#eef2f5;
+  --paper:#f8fafb;
+  --frost:#d6e0e7;
+  --mist:#8ea0af;
+  --steel:#52697a;
+  --text:#0a1014;
+
+  --water:#1f93d4;
+  --water-2:#5cb6e6;
+  --water-pale:#d6edfa;
+
+  --ember:#e07a2c;
+  --ember-2:#f0a154;
+  --ember-pale:#fbe7d3;
+
+  --h2:#2fbf76;
+  --h2-2:#5cd998;
+  --h2-pale:#d4f3e2;
+
+  --disp:'Archivo',sans-serif;
+  --sans:'IBM Plex Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'IBM Plex Serif',serif;
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.62;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── UTILITY ────────────────────────────────────────────── */
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.kicker{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.lead{font-family:var(--serif);font-style:italic;font-size:clamp(16px,2vw,20px);line-height:1.66}
+
+/* ── NAV ────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,11,15,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1180px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:50px}
+.nav-brand{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;letter-spacing:.04em;white-space:nowrap}
+.nav-brand b{color:var(--h2-2);font-weight:600}
+.nav-links{display:flex;gap:26px}
+.nav-links a{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--mist);text-decoration:none;letter-spacing:.03em;transition:color .15s}
+.nav-links a:hover{color:#fff}
+
+/* ── HERO ───────────────────────────────────────────────── */
+.hero{background:var(--ink);position:relative;overflow:hidden;padding:120px 0 0}
+.hero-grid{position:absolute;inset:0;opacity:.05;background-image:linear-gradient(var(--water) 1px,transparent 1px),linear-gradient(90deg,var(--water) 1px,transparent 1px);background-size:46px 46px;mask-image:linear-gradient(180deg,#000,transparent 80%)}
+.hero-glow-w{position:absolute;top:-160px;left:-120px;width:560px;height:560px;background:radial-gradient(circle,rgba(31,147,212,.30),transparent 70%);pointer-events:none}
+.hero-glow-e{position:absolute;top:-120px;right:-120px;width:520px;height:520px;background:radial-gradient(circle,rgba(224,122,44,.22),transparent 70%);pointer-events:none}
+.hero-glow-h{position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);width:760px;height:520px;background:radial-gradient(circle,rgba(47,191,118,.22),transparent 70%);pointer-events:none}
+.hero-inner{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 28px}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.hero-eyebrow::before{content:'';width:26px;height:1px;background:var(--h2-2)}
+.hero-eyebrow .kicker{color:var(--h2-2)}
+.hero-h1{font-family:var(--disp);font-weight:800;font-size:clamp(33px,8.2vw,104px);line-height:.92;letter-spacing:-.02em;color:#fff;text-transform:uppercase}
+.hero-h1 .one{color:var(--h2-2)}
+.hero-sub{margin-top:24px;max-width:620px;color:var(--mist);font-family:var(--serif);font-style:italic;font-size:clamp(16px,2.1vw,21px);line-height:1.62}
+.hero-sub b{color:var(--frost);font-weight:400}
+
+/* confluence diagram */
+.confluence{position:relative;z-index:2;max-width:1180px;margin:48px auto 0;padding:0 28px}
+.conf-svg{width:100%;height:auto;display:block}
+.conf-cap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:8px}
+.conf-cap span{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--steel)}
+
+.flow{stroke-dasharray:7 9;animation:flow 1.1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+
+.hero-strip{position:relative;z-index:2;margin-top:46px;border-top:1px solid var(--line);background:var(--ink-2)}
+.hero-strip-inner{max-width:1180px;margin:0 auto;padding:18px 28px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.hero-strip span{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--steel)}
+
+/* ── SECTION CHROME ─────────────────────────────────────── */
+.section{padding:92px 0}
+.sec-head{max-width:760px;margin-bottom:56px}
+.sec-head .kicker{display:block;margin-bottom:16px;color:var(--steel)}
+.sec-h2{font-family:var(--disp);font-weight:800;font-size:clamp(26px,4vw,44px);line-height:1.02;letter-spacing:-.018em;text-transform:uppercase}
+.sec-head .lead{margin-top:18px;color:var(--steel)}
+
+/* ── THESIS BAND ────────────────────────────────────────── */
+.thesis{background:var(--paper);border-top:1px solid var(--frost);border-bottom:1px solid var(--frost)}
+.thesis .wrap{padding-top:64px;padding-bottom:64px;display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:center}
+.thesis-num{font-family:var(--mono);font-size:13px;color:var(--mist);writing-mode:vertical-rl;letter-spacing:.2em}
+.thesis-body .lead{font-size:clamp(18px,2.4vw,26px);font-style:normal;font-family:var(--disp);font-weight:600;line-height:1.3;letter-spacing:-.01em;color:var(--text)}
+.thesis-body .lead em{font-family:var(--serif);font-style:italic;font-weight:400}
+.thesis-body .lead .w{color:var(--water)}
+.thesis-body .lead .e{color:var(--ember)}
+.thesis-body .lead .h{color:var(--h2);border-bottom:2px solid var(--h2)}
+.thesis-note{margin-top:18px;font-size:14px;color:var(--steel);max-width:680px}
+
+/* ── PATHWAYS ───────────────────────────────────────────── */
+#pathways{background:var(--bg)}
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.path-card{background:var(--paper);border:1px solid var(--frost);border-top:4px solid;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s}
+.path-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px -24px rgba(7,11,15,.4)}
+.path-card.water{border-top-color:var(--water)}
+.path-card.waste{border-top-color:var(--ember)}
+.path-top{padding:28px 28px 0}
+.path-rail{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.path-idx{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.water .path-idx{color:var(--water)}
+.waste .path-idx{color:var(--ember)}
+.path-chip{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:2px}
+.water .path-chip{background:var(--water-pale);color:#0d5a86}
+.waste .path-chip{background:var(--ember-pale);color:#8a410f}
+.path-card h3{font-family:var(--disp);font-weight:800;font-size:26px;line-height:1.04;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:6px}
+.path-where{font-family:var(--mono);font-size:11px;color:var(--mist);letter-spacing:.04em;margin-bottom:18px}
+.path-desc{font-size:14px;color:var(--steel);line-height:1.62;margin-bottom:22px}
+/* mini process line */
+.path-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+.path-flow .step{font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--text);background:var(--bg);border:1px solid var(--frost);padding:5px 9px;white-space:nowrap}
+.path-flow .step.out{color:#1a7a4a;background:var(--h2-pale);border-color:var(--h2-pale);font-weight:600}
+.path-flow .arr{color:var(--mist);font-size:11px}
+/* stats */
+.path-stats{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--frost)}
+.path-stat{padding:18px 28px;border-bottom:1px solid var(--frost)}
+.path-stat:nth-child(odd){border-right:1px solid var(--frost)}
+.path-stat .v{font-family:var(--mono);font-weight:600;font-size:24px;line-height:1}
+.water .path-stat .v{color:var(--water)}
+.waste .path-stat .v{color:var(--ember)}
+.path-stat .v small{font-size:13px;color:var(--mist);font-weight:500}
+.path-stat .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);margin-top:7px;line-height:1.35}
+.path-cta{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;text-decoration:none;color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;transition:filter .15s;margin-top:auto}
+.water .path-cta{background:var(--water)}
+.waste .path-cta{background:var(--ember)}
+.path-cta:hover{filter:brightness(1.08)}
+.path-cta .ar{font-size:16px;transition:transform .15s}
+.path-cta:hover .ar{transform:translateX(4px)}
+
+/* ── COMMON MOLECULE (dark) ─────────────────────────────── */
+#molecule{background:var(--ink);color:#fff}
+#molecule .kicker{color:var(--h2-2)}
+#molecule .sec-h2{color:#fff}
+#molecule .lead{color:var(--mist)}
+.mol-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;border:1px solid var(--line)}
+.mol-col{padding:32px 30px}
+.mol-col .tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.mol-col.w .tag{color:var(--water-2)}
+.mol-col.e .tag{color:var(--ember-2)}
+.mol-col h4{font-family:var(--disp);font-weight:700;font-size:18px;color:#fff;margin-bottom:10px;line-height:1.15}
+.mol-col p{font-size:13px;color:var(--mist);line-height:1.6}
+.mol-col ul{list-style:none;margin-top:14px}
+.mol-col li{font-family:var(--mono);font-size:11px;color:var(--frost);padding:6px 0 6px 14px;border-left:2px solid var(--line);margin-bottom:4px;line-height:1.4}
+.mol-center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 26px;background:rgba(47,191,118,.07);border-left:1px solid var(--line);border-right:1px solid var(--line);min-width:200px}
+.mol-h2{font-family:var(--disp);font-weight:900;font-size:52px;color:var(--h2-2);line-height:1;letter-spacing:-.02em}
+.mol-h2 sub{font-size:24px;vertical-align:baseline}
+.mol-center .ml{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--h2);margin-top:10px;text-align:center}
+.mol-center .md{font-size:12px;color:var(--mist);text-align:center;margin-top:14px;line-height:1.5}
+.mol-foot{margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line)}
+.mol-off{background:var(--ink-2);padding:20px}
+.mol-off .of-t{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--h2-2);margin-bottom:8px}
+.mol-off p{font-size:12px;color:var(--mist);line-height:1.55}
+
+/* ── ALIGNMENT (light) ──────────────────────────────────── */
+#alignment{background:var(--bg)}
+.align-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.align-card{background:var(--paper);border:1px solid var(--frost);padding:24px 22px}
+.align-card .ac-tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);margin-bottom:14px}
+.align-card h4{font-family:var(--disp);font-weight:700;font-size:16px;line-height:1.12;margin-bottom:9px;text-transform:uppercase;letter-spacing:-.005em}
+.align-card p{font-size:12.5px;color:var(--steel);line-height:1.58}
+.align-card .badge{display:inline-block;margin-top:14px;font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:2px;background:var(--h2-pale);color:#1a7a4a;letter-spacing:.03em}
+.align-card .badge.both{background:var(--bg);color:var(--steel);border:1px solid var(--frost)}
+
+/* ── CLOSING CALL (dark) ────────────────────────────────── */
+#next{background:var(--ink);color:#fff;border-top:1px solid var(--line)}
+#next .kicker{color:var(--ember-2)}
+#next .sec-h2{color:#fff}
+.next-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);margin-top:8px}
+.next-step{background:var(--ink-2);padding:30px 28px}
+.next-step .ns-n{font-family:var(--disp);font-weight:900;font-size:34px;line-height:1;margin-bottom:16px}
+.next-step:nth-child(1) .ns-n{color:var(--water-2)}
+.next-step:nth-child(2) .ns-n{color:var(--h2-2)}
+.next-step:nth-child(3) .ns-n{color:var(--ember-2)}
+.next-step h4{font-family:var(--mono);font-size:13px;font-weight:600;color:#fff;margin-bottom:10px;line-height:1.3}
+.next-step p{font-size:12.5px;color:var(--mist);line-height:1.6}
+.next-step .ns-meta{margin-top:16px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--steel)}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer{background:var(--ink-2);border-top:1px solid var(--line);padding:48px 0 0}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:36px}
+.foot-col h5{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--mist);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.foot-col p,.foot-col li,.foot-col a{font-size:12.5px;color:var(--steel);line-height:1.7;list-style:none;text-decoration:none;display:block}
+.foot-col a:hover{color:var(--frost)}
+.foot-brand{font-family:var(--disp);font-weight:800;font-size:20px;color:#fff;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:6px}
+.foot-bottom{max-width:1180px;margin:40px auto 0;padding:22px 28px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.foot-bottom span{font-family:var(--mono);font-size:10px;color:#3e4d59;letter-spacing:.04em}
+
+/* ── ANIM ───────────────────────────────────────────────── */
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.hero-inner>*,.confluence{animation:rise .7s ease both}
+.hero-inner>*:nth-child(1){animation-delay:.05s}
+.hero-inner>*:nth-child(2){animation-delay:.13s}
+.hero-inner>*:nth-child(3){animation-delay:.21s}
+.confluence{animation-delay:.32s}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media(max-width:860px){
+  .nav-links{display:none}
+  .nav-sub{display:none}
+  .path-grid{grid-template-columns:1fr}
+  .mol-grid{grid-template-columns:1fr}
+  .mol-center{border-left:none;border-right:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .mol-foot{grid-template-columns:1fr}
+  .align-grid{grid-template-columns:1fr 1fr}
+  .next-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+  .thesis .wrap{grid-template-columns:1fr;gap:20px}
+  .thesis-num{writing-mode:horizontal-tb}
+}
+@media(max-width:480px){
+  .hero-h1{letter-spacing:-.03em}
+  .align-grid{grid-template-columns:1fr}
+  .path-stats{grid-template-columns:1fr}
+  .path-stat:nth-child(odd){border-right:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .flow{stroke-dasharray:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-brand">The FixOurStreets216 Project<span class="nav-sub">&nbsp;·&nbsp; <b>Green Fuel Initiative</b></span></span>
+    <div class="nav-links">
+      <a href="#pathways">Pathways</a>
+      <a href="#molecule">Common Molecule</a>
+      <a href="#alignment">Alignment</a>
+      <a href="#next">Next Steps</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow-w"></div>
+  <div class="hero-glow-e"></div>
+  <div class="hero-glow-h"></div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span class="kicker">City of Cleveland · Concept Study · Researched by The FixOurStreets216 Project</span></div>
+    <h1 class="hero-h1">Two&nbsp;Feedstocks.<br><span class="one">One&nbsp;Fuel.</span></h1>
+    <p class="hero-sub">Cleveland already pays to pull water from Lake Erie and to bury its trash. <b>Both inputs can instead become green hydrogen — the molecule behind clean fuel, fertilizer, and marine power.</b></p>
+  </div>
+
+  <!-- SIGNATURE: confluence of two feedstock streams into one fuel -->
+  <div class="confluence">
+    <svg class="conf-svg" viewBox="0 0 1120 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two feedstock streams — Lake Erie water and municipal solid waste — converging into green hydrogen fuel">
+      <defs>
+        <linearGradient id="gw" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#5cb6e6"/><stop offset="1" stop-color="#1f93d4"/>
+        </linearGradient>
+        <linearGradient id="ge" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f0a154"/><stop offset="1" stop-color="#e07a2c"/>
+        </linearGradient>
+        <radialGradient id="gh" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#5cd998"/><stop offset="1" stop-color="#2fbf76"/>
+        </radialGradient>
+      </defs>
+
+      <!-- WATER stream: from top-left, curving to center -->
+      <path d="M120,28 C120,120 560,90 560,150" fill="none" stroke="#173a4d" stroke-width="14" stroke-linecap="round"/>
+      <path d="M120,28 C120,120 560,90 560,150" fill="none" stroke="url(#gw)" stroke-width="3.5" stroke-linecap="round" class="flow"/>
+      <!-- WASTE stream: from top-right, curving to center -->
+      <path d="M1000,28 C1000,120 560,90 560,150" fill="none" stroke="#4a2f17" stroke-width="14" stroke-linecap="round"/>
+      <path d="M1000,28 C1000,120 560,90 560,150" fill="none" stroke="url(#ge)" stroke-width="3.5" stroke-linecap="round" class="flow"/>
+      <!-- merged stream: center down to fuel node -->
+      <path d="M560,150 L560,196" fill="none" stroke="#16432f" stroke-width="16" stroke-linecap="round"/>
+      <path d="M560,150 L560,196" fill="none" stroke="url(#gh)" stroke-width="4" stroke-linecap="round" class="flow"/>
+
+      <!-- source labels -->
+      <g font-family="'IBM Plex Mono',monospace">
+        <circle cx="120" cy="28" r="7" fill="#1f93d4"/>
+        <text x="120" y="20" fill="#5cb6e6" font-size="13" font-weight="600" text-anchor="middle">LAKE ERIE WATER</text>
+        <text x="120" y="-2" fill="#52697a" font-size="10" text-anchor="middle"></text>
+
+        <circle cx="1000" cy="28" r="7" fill="#e07a2c"/>
+        <text x="1000" y="20" fill="#f0a154" font-size="13" font-weight="600" text-anchor="middle">MUNICIPAL SOLID WASTE</text>
+
+        <!-- junction -->
+        <circle cx="560" cy="150" r="11" fill="#10171e" stroke="#2fbf76" stroke-width="2"/>
+        <circle cx="560" cy="150" r="4" fill="#5cd998"/>
+
+        <!-- fuel node -->
+        <circle cx="560" cy="208" r="28" fill="url(#gh)"/>
+        <text x="560" y="214" fill="#06301d" font-size="22" font-weight="800" text-anchor="middle" font-family="'Archivo',sans-serif">H₂</text>
+        <text x="560" y="250" fill="#2fbf76" font-size="12" font-weight="600" text-anchor="middle">GREEN FUEL</text>
+      </g>
+    </svg>
+    <div class="conf-cap">
+      <span>Electrolysis pathway → green hydrogen → ammonia</span>
+      <span>FastOx gasification pathway → syngas → hydrogen</span>
+    </div>
+  </div>
+
+  <div class="hero-strip">
+    <div class="hero-strip-inner">
+      <span>TWO STANDALONE FEASIBILITY STUDIES · ONE SHARED MOLECULE</span>
+      <span>DOE HYDROGEN HUB CANDIDATE · IRA 45V ELIGIBLE</span>
+      <span>Compiled by The FixOurStreets216 Project · Terry McNeil, Operating Manager</span>
+    </div>
+  </div>
+</header>
+
+<!-- THESIS -->
+<section class="thesis">
+  <div class="wrap">
+    <div class="thesis-num">THE PREMISE</div>
+    <div class="thesis-body">
+      <p class="lead">The city spends real money on two things every year: drawing and treating <span class="w">Lake Erie water</span>, and paying contractors to <span class="e">landfill its waste</span>. Each is treated as a cost. Each can instead be run as a feedstock — and both roads end at the same place: <span class="h">green hydrogen</span>.</p>
+      <p class="thesis-note">The Green Fuel Initiative is not a single plant. It is a framing: two independent, federally-fundable projects that share inputs Cleveland already controls, share a common output molecule, and share the same logistics and incentive structure. Each has its own full feasibility study below.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PATHWAYS -->
+<section class="section" id="pathways">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">The Two Pathways</span>
+      <h2 class="sec-h2">Same Output. Different Front Door.</h2>
+      <p class="lead">One pathway starts with the lake. One starts with the dumpster. Open either report for the full process chain, financial model, and phasing.</p>
+    </div>
+
+    <div class="path-grid">
+
+      <!-- WATER CARD -->
+      <article class="path-card water">
+        <div class="path-top">
+          <div class="path-rail">
+            <span class="path-idx">Pathway 01 — Water</span>
+            <span class="path-chip">Burke Lakefront · 450 acres</span>
+          </div>
+          <h3>Cleveland Green Ammonia</h3>
+          <div class="path-where">Lake Erie freshwater → green hydrogen → green ammonia</div>
+          <p class="path-desc">A water-to-ammonia manufacturing complex on the Burke Lakefront. Lake Erie water is treated and split by a 100&nbsp;MW electrolyser farm into green hydrogen, then synthesized into ammonia for agricultural fertilizer and zero-carbon marine fuel — at roughly 1/18th the carbon intensity of conventional grey ammonia.</p>
+          <div class="path-flow">
+            <span class="step">H₂O intake</span><span class="arr">→</span>
+            <span class="step">PEM electrolysis</span><span class="arr">→</span>
+            <span class="step">Haber-Bosch</span><span class="arr">→</span>
+            <span class="step out">NH₃ fuel + fertilizer</span>
+          </div>
+        </div>
+        <div class="path-stats">
+          <div class="path-stat"><div class="v">165K<small> MT/yr</small></div><div class="l">Green NH₃ capacity</div></div>
+          <div class="path-stat"><div class="v">100<small> MW</small></div><div class="l">PEM electrolyser farm</div></div>
+          <div class="path-stat"><div class="v">$302M<small> /yr</small></div><div class="l">Campus gross revenue</div></div>
+          <div class="path-stat"><div class="v">1,200<small>+</small></div><div class="l">Permanent direct jobs</div></div>
+        </div>
+        <a class="path-cta" href="./FOS216_Cleveland_Green_Ammonia.html">Open the Green Ammonia report <span class="ar">→</span></a>
+      </article>
+
+      <!-- WASTE CARD -->
+      <article class="path-card waste">
+        <div class="path-top">
+          <div class="path-rail">
+            <span class="path-idx">Pathway 02 — Waste</span>
+            <span class="path-chip">City-owned · vs. landfill contracts</span>
+          </div>
+          <h3>MSW &amp; FastOx Gasification</h3>
+          <div class="path-where">Municipal solid waste → FastOx syngas → hydrogen</div>
+          <p class="path-desc">A data-driven case for moving Cleveland's municipal solid waste off perpetual landfill contracts and into a city-owned Sierra Energy FastOx gasifier — built on seven years of actuals from the city's own budget books. Waste becomes clean hydrogen instead of a recurring disposal bill.</p>
+          <div class="path-flow">
+            <span class="step">MSW intake</span><span class="arr">→</span>
+            <span class="step">FastOx gasifier</span><span class="arr">→</span>
+            <span class="step">Syngas cleanup</span><span class="arr">→</span>
+            <span class="step out">H₂ + clean fuel</span>
+          </div>
+        </div>
+        <div class="path-stats">
+          <div class="path-stat"><div class="v">78<small> kg</small></div><div class="l">H₂ yield per ton MSW</div></div>
+          <div class="path-stat"><div class="v">~100<small>%</small></div><div class="l">Landfill diversion</div></div>
+          <div class="path-stat"><div class="v">$3<small>/kg</small></div><div class="l">IRA 45V credit (10 yr)</div></div>
+          <div class="path-stat"><div class="v">$67.3M</div><div class="l">Spent burying waste, '19–'25</div></div>
+        </div>
+        <a class="path-cta" href="./FOS216_FastOx_MSW_Report.html">Open the FastOx MSW report <span class="ar">→</span></a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- COMMON MOLECULE -->
+<section class="section" id="molecule">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Why It's One Initiative</span>
+      <h2 class="sec-h2">Two Roads to the Same Molecule</h2>
+      <p class="lead">Electrolysis and gasification look nothing alike on the front end. They land on the same product: hydrogen — and hydrogen is what makes both projects fundable under the same federal programs.</p>
+    </div>
+
+    <div class="mol-grid">
+      <div class="mol-col w">
+        <div class="tag">From Water · Electrolysis</div>
+        <h4>Split the molecule with clean power</h4>
+        <p>Renewable electricity drives a PEM electrolyser that splits ultra-pure Lake Erie water into hydrogen and oxygen. No carbon in the reaction.</p>
+        <ul>
+          <li>Input: freshwater + renewable power</li>
+          <li>Reaction: 2H₂O → 2H₂ + O₂</li>
+          <li>Byproduct: oxygen (saleable)</li>
+        </ul>
+      </div>
+
+      <div class="mol-center">
+        <div class="mol-h2">H<sub>2</sub></div>
+        <div class="ml">The shared output</div>
+        <div class="md">Both pathways converge here — then route to ammonia, marine fuel, and grid-balancing offtake.</div>
+      </div>
+
+      <div class="mol-col e">
+        <div class="tag">From Waste · Gasification</div>
+        <h4>Pull the molecule out of trash</h4>
+        <p>The FastOx gasifier heats municipal solid waste in a low-oxygen environment to produce hydrogen-rich syngas — diverting waste from the landfill instead of paying to bury it.</p>
+        <ul>
+          <li>Input: municipal solid waste</li>
+          <li>Output: H₂-rich syngas + slag</li>
+          <li>Yield: ~78 kg H₂ per ton MSW</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mol-foot">
+      <div class="mol-off">
+        <div class="of-t">Offtake A — Fertilizer</div>
+        <p>Hydrogen → ammonia → green nitrogen fertilizer barged to the Corn Belt at a Great Lakes cost advantage.</p>
+      </div>
+      <div class="mol-off">
+        <div class="of-t">Offtake B — Marine Fuel</div>
+        <p>Green ammonia as a zero-carbon bunker fuel for Great Lakes shipping ahead of IMO 2050 targets.</p>
+      </div>
+      <div class="mol-off">
+        <div class="of-t">Offtake C — Direct H₂</div>
+        <p>Hydrogen for transit fleets, industrial users, and grid-balancing — sold under the same 45V credit structure.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALIGNMENT -->
+<section class="section" id="alignment">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Federal &amp; Structural Alignment</span>
+      <h2 class="sec-h2">The Two Projects Share an Incentive Stack</h2>
+      <p class="lead">Because both pathways produce clean hydrogen, the same federal programs, logistics, and ownership model carry across — so one initiative can pursue them in parallel rather than competing for attention.</p>
+    </div>
+
+    <div class="align-grid">
+      <div class="align-card">
+        <div class="ac-tag">U.S. Dept. of Energy</div>
+        <h4>Hydrogen Hub</h4>
+        <p>Both pathways strengthen a Cleveland bid for DOE Hydrogen Hub designation and feasibility funding — diverse feedstocks make a stronger hub case.</p>
+        <span class="badge both">Both pathways</span>
+      </div>
+      <div class="align-card">
+        <div class="ac-tag">Inflation Reduction Act</div>
+        <h4>45V Clean H₂ Credit</h4>
+        <p>The production tax credit for clean hydrogen — up to $3/kg — applies to electrolytic and waste-derived hydrogen alike, for up to ten years.</p>
+        <span class="badge both">Both pathways</span>
+      </div>
+      <div class="align-card">
+        <div class="ac-tag">Logistics</div>
+        <h4>Great Lakes Access</h4>
+        <p>Cuyahoga barge and Port of Cleveland frontage give both projects a delivered-cost edge over inland and Gulf Coast producers.</p>
+        <span class="badge both">Both pathways</span>
+      </div>
+      <div class="align-card">
+        <div class="ac-tag">Ownership</div>
+        <h4>Public Benefit</h4>
+        <p>Each can be structured for municipal or public-private ownership — turning two recurring costs into city-controlled revenue and jobs.</p>
+        <span class="badge">Civic model</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT STEPS -->
+<section class="section" id="next">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">The Ask</span>
+      <h2 class="sec-h2">What Cleveland Should Do Next</h2>
+      <p class="lead" style="color:var(--mist)">Three low-cost, high-signal moves that advance both pathways at once.</p>
+    </div>
+    <div class="next-grid">
+      <div class="next-step">
+        <div class="ns-n">01</div>
+        <h4>Commission a joint feasibility scope</h4>
+        <p>Fund a unified pre-feasibility scope covering both pathways. The shared hydrogen output, incentive stack, and logistics mean one study can frame both — at a fraction of the cost of two siloed efforts.</p>
+        <div class="ns-meta">OWNER: CITY + FOS216 · COST: LOW</div>
+      </div>
+      <div class="next-step">
+        <div class="ns-n">02</div>
+        <h4>Open the DOE Hydrogen Hub conversation</h4>
+        <p>A pre-application conversation with DOE costs nothing and starts the federal relationship. Two complementary feedstocks make a more credible hub narrative than either alone.</p>
+        <div class="ns-meta">AGENCY: DOE · COST: $0</div>
+      </div>
+      <div class="next-step">
+        <div class="ns-n">03</div>
+        <h4>Brief Council &amp; the delegation</h4>
+        <p>Present both reports to City Council, the Mayor's office, and the congressional delegation as one initiative: turn the water bill and the landfill bill into a domestic green-fuel industry.</p>
+        <div class="ns-meta">TARGETS: COUNCIL · MAYOR · DELEGATION</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <div class="foot-brand">The FixOurStreets216 Project</div>
+        <p>Operating Manager: Terry McNeil</p>
+        <p>Cleveland, Ohio</p>
+        <p>Municipal consulting · Digital design</p>
+        <p>Entertainment production management</p>
+        <p>Workforce research &amp; productivity</p>
+      </div>
+      <div class="foot-col">
+        <h5>Initiative Reports</h5>
+        <a href="./FOS216_Cleveland_Green_Ammonia.html">↳ Cleveland Green Ammonia Initiative</a>
+        <a href="./FOS216_FastOx_MSW_Report.html">↳ MSW &amp; FastOx Gasification Analysis</a>
+      </div>
+      <div class="foot-col">
+        <h5>Shared Framework</h5>
+        <li>Common output: green hydrogen (H₂)</li>
+        <li>DOE Hydrogen Hub candidacy</li>
+        <li>IRA 45V clean-hydrogen credit</li>
+        <li>Great Lakes logistics advantage</li>
+        <li>Municipal / public-benefit ownership</li>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>Compiled by The FixOurStreets216 Project · Cleveland, Ohio · 2026</span>
+      <span>ALL FIGURES ARE CONCEPT-STAGE ESTIMATES · NOT FOR INVESTMENT PURPOSES</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
