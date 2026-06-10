@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{
   --ink:#16271c;          /* deep turf */
@@ -80,19 +82,44 @@ h1 em{font-style:normal;color:var(--blade-2)}
 .hero .btn-ghost{color:var(--linen);border-color:rgba(245,243,234,.55)}
 .hero .btn-ghost:hover{background:var(--linen);color:var(--ink);border-color:var(--linen)}
 
-/* route field signature */
-.route-field{position:relative;z-index:2;margin-top:54px}
-.route-svg{width:100%;height:auto;display:block;overflow:visible}
-.route-line{fill:none;stroke:var(--paint);stroke-width:3;stroke-linecap:round;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 2.6s ease forwards .35s}
-.route-line.shadow{stroke:rgba(0,0,0,.25);transform:translateY(2px);animation-delay:.3s}
-@keyframes draw{to{stroke-dashoffset:0}}
-.stop{opacity:0;animation:pop .4s ease forwards}
-.stop circle{fill:var(--linen);stroke:var(--paint);stroke-width:3}
-.stop text{font-family:var(--mono);font-size:13px;font-weight:600;fill:var(--ink);text-anchor:middle}
-.depot circle{fill:var(--paint);stroke:var(--linen)}
-.depot text{fill:#fff}
-@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.route-tag{position:absolute;font-family:var(--mono);font-size:10.5px;letter-spacing:.5px;color:#bcd3b3;text-transform:uppercase}
+/* ward map signature (interactive) */
+.ward-field{position:relative;z-index:2;margin-top:50px}
+.ward-frame{
+  position:relative;border:1px solid rgba(167,201,89,.3);border-radius:5px;overflow:hidden;
+  background:#10221a;box-shadow:0 18px 50px rgba(0,0,0,.4);
+}
+.ward-map{width:100%;height:683px}
+.leaflet-container{background:#10221a;font-family:var(--body)}
+.wf-tag{
+  position:absolute;top:14px;left:14px;z-index:600;font-family:var(--mono);
+  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--blade-2);
+  background:rgba(16,34,26,.82);border:1px solid rgba(167,201,89,.25);
+  padding:6px 11px;border-radius:2px;pointer-events:none;
+}
+.wf-readout{
+  position:absolute;left:14px;bottom:14px;right:14px;z-index:600;
+  background:rgba(16,34,26,.9);border:1px solid rgba(167,201,89,.25);border-left:3px solid var(--paint);
+  border-radius:3px;padding:11px 14px;backdrop-filter:blur(4px);
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+}
+.wf-ward{font-family:var(--disp);font-weight:800;font-size:26px;line-height:1;color:var(--paint);min-width:42px}
+.wf-info{flex:1;min-width:0}
+.wf-name{font-family:var(--body);font-weight:600;font-size:15px;color:var(--linen)}
+.wf-sub{font-family:var(--mono);font-size:11px;letter-spacing:.4px;color:#bcd3b3;margin-top:2px}
+.wf-empty{font-size:14px;color:#bcd3b3}
+.wf-status{
+  position:absolute;inset:0;z-index:550;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:24px;background:#10221a;transition:opacity .4s;
+}
+.wf-status.hide{opacity:0;pointer-events:none}
+.wf-status p{font-family:var(--mono);font-size:11.5px;letter-spacing:.5px;color:#bcd3b3;line-height:1.7;max-width:42ch}
+.wf-spin{width:28px;height:28px;border-radius:50%;border:3px solid rgba(167,201,89,.25);border-top-color:var(--blade-2);margin:0 auto 14px;animation:wfrot 1s linear infinite}
+@keyframes wfrot{to{transform:rotate(360deg)}}
+.wf-label span{font-family:var(--disp);font-weight:700;font-size:13px;color:#dfeed3;text-shadow:0 1px 4px #000c,0 0 10px #0008;letter-spacing:.04em}
+.wf-label small{display:block;font-family:var(--mono);font-size:8px;color:#a7c489;letter-spacing:.1em;text-shadow:0 1px 3px #000}
+.leaflet-tooltip.wf-tip{background:rgba(16,34,26,.95);border:1px solid var(--paint);color:var(--linen);border-radius:4px;font-family:var(--body);font-size:12px;padding:6px 9px;box-shadow:0 4px 16px #000a}
+.leaflet-tooltip.wf-tip::before{display:none}
+.wf-tip b{font-family:var(--disp);color:var(--blade-2)}
 
 /* ── stat band ── */
 .stats{background:var(--linen-2);border-bottom:1px solid var(--line)}
@@ -180,8 +207,7 @@ footer .brand small{color:#7d9072}
   .fgrid{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){
-  .route-line{animation:none;stroke-dashoffset:0}
-  .stop{animation:none;opacity:1}
+  .wf-spin{animation:none}
   html{scroll-behavior:auto}
 }
 :focus-visible{outline:3px solid var(--paint);outline-offset:2px}
@@ -222,18 +248,20 @@ footer .brand small{color:#7d9072}
       <a class="btn btn-ghost" href="#how">See how a route comes together</a>
     </div>
 
-    <div class="route-field">
-      <svg class="route-svg" viewBox="0 0 880 200" role="img" aria-label="An optimized mowing route weaving between vacant lots.">
-        <path class="route-line shadow" d="M40 150 C 150 60, 230 60, 310 120 S 470 180, 560 110 S 720 50, 840 90"/>
-        <path class="route-line" d="M40 150 C 150 60, 230 60, 310 120 S 470 180, 560 110 S 720 50, 840 90"/>
-        <g class="depot stop" style="animation-delay:.4s"><circle cx="40" cy="150" r="17"/><text x="40" y="155">HQ</text></g>
-        <g class="stop" style="animation-delay:1.0s"><circle cx="180" cy="78" r="15"/><text x="180" y="83">1</text></g>
-        <g class="stop" style="animation-delay:1.4s"><circle cx="310" cy="120" r="15"/><text x="310" y="125">2</text></g>
-        <g class="stop" style="animation-delay:1.8s"><circle cx="445" cy="158" r="15"/><text x="445" y="163">3</text></g>
-        <g class="stop" style="animation-delay:2.2s"><circle cx="560" cy="110" r="15"/><text x="560" y="115">4</text></g>
-        <g class="stop" style="animation-delay:2.6s"><circle cx="700" cy="62" r="15"/><text x="700" y="67">5</text></g>
-        <g class="stop" style="animation-delay:3.0s"><circle cx="840" cy="90" r="15"/><text x="840" y="95">6</text></g>
-      </svg>
+    <div class="ward-field">
+      <div class="ward-frame">
+        <div class="wf-tag">Click your ward</div>
+        <div class="ward-map" id="wardMap" role="application" aria-label="Cleveland 2026 council wards — click a ward to select it."></div>
+        <div class="wf-readout" id="wfReadout">
+          <span class="wf-empty">Pick a ward to see who represents it — and to scope the optimizer to that ward.</span>
+        </div>
+        <div class="wf-status" id="wfStatus">
+          <div>
+            <div class="wf-spin"></div>
+            <p>Loading 2026 Cleveland ward boundaries…</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -422,6 +450,153 @@ footer .brand small{color:#7d9072}
       cta.appendChild(b);
     }
   }
+})();
+
+/* ============================================================
+   Interactive ward map (hero)
+   Loads Cleveland's 2026 council ward boundaries and lets the
+   visitor click a ward. The selected ward is reported below the
+   map AND handed to onWardSelect() — the single place to wire up
+   whatever you want a ward click to do.
+   ============================================================ */
+(function(){
+  if(typeof L === "undefined") return;  // Leaflet failed to load — leave the frame as-is
+
+  var WARDS_URL =
+    "https://services3.arcgis.com/dty2kHktVXHrqO8i/arcgis/rest/services/" +
+    "Cleveland_Wards_1_2_25_Topocleaned_pop20/FeatureServer/0/query" +
+    "?where=1%3D1&outFields=*&outSR=4326&f=geojson";
+
+  var COUNCIL = {
+    1:"Joseph T. Jones", 2:"Kevin L. Bishop", 3:"Deborah Gray", 4:"Kris Harsh",
+    5:"Richard A. Starr", 6:"Blaine A. Griffin", 7:"Austin N. Davis",
+    8:"Stephanie D. Howse-Jones", 9:"Kevin Conwell", 10:"Michael D. Polensek",
+    11:"Nikki Hudson", 12:"Tanmay Shah", 13:"Brian Kazy", 14:"Jasmin Santana",
+    15:"Charles J. Slife"
+  };
+  var TITLES = { 6:"Council President" };
+
+  // Sage-to-forest fill ramp; selected ward uses the page's surveyor-orange action color.
+  var RAMP = ["#234a30","#2f6a3e","#27613f","#3c8350","#2d6747",
+              "#356f44","#234a30","#326b4c","#2a5f3d","#3c8350",
+              "#27613f","#2f6a3e","#2d6747","#356f44","#234a30"];
+  var SEL_FILL = "#e2571f", SEL_LINE = "#f3b58e", WARD_LINE = "#5d9a78", HOVER_LINE = "#a7c957";
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  var map = L.map("wardMap", {
+    zoomControl:false, attributionControl:false,
+    dragging:false, scrollWheelZoom:false, doubleClickZoom:false,
+    touchZoom:false, boxZoom:false, keyboard:false
+  }).setView([41.4822,-81.6697], 11);
+  L.control.attribution({position:"bottomright", prefix:false}).addTo(map);
+
+  var selected = null;
+  var wardNum = function(props, key){ return parseInt(String(props[key]).replace(/\D/g,""),10); };
+
+  function wardStyle(n, isSel){
+    return {
+      color: isSel ? SEL_LINE : WARD_LINE,
+      weight: isSel ? 2.5 : 1,
+      fillColor: isSel ? SEL_FILL : RAMP[(n-1) % RAMP.length],
+      fillOpacity: isSel ? .62 : .8,
+      opacity: 1
+    };
+  }
+
+  /* ----- the hook: do whatever you want with a ward click here ----- */
+  function onWardSelect(n, props){
+    var member = COUNCIL[n] || "—";
+    var title  = TITLES[n] || "Council Member";
+    var pop    = props && props.__pop;
+    $("wfReadout").innerHTML =
+      '<span class="wf-ward">' + n + '</span>' +
+      '<span class="wf-info">' +
+        '<span class="wf-name">' + member + '</span>' +
+        '<span class="wf-sub">' + title.toUpperCase() +
+          (pop ? '  ·  POP 2020 ' + Number(pop).toLocaleString() : '') + '</span>' +
+      '</span>';
+
+    // Demo wiring (easy to change): scope the hero's Launch button to this ward.
+    var cta = document.querySelector('.hero .btn-paint');
+    if(cta){
+      cta.textContent = 'Open Ward ' + n + ' in the optimizer →';
+      cta.href = 'FOS_GIS_Route_Optimizer.html?ward=' + n;
+    }
+
+    // Anything else can listen for this instead of editing the function:
+    document.dispatchEvent(new CustomEvent('ward:select', { detail:{ ward:n, properties:props } }));
+  }
+
+  function detectFields(features){
+    var sample = features[0].properties || {};
+    var keys = Object.keys(sample);
+    var wardKey = keys.find(function(k){ return /^ward(s)?([ _-]?(no|num|number|id))?$/i.test(k); });
+    if(!wardKey) wardKey = keys.find(function(k){
+      return /ward/i.test(k) && features.every(function(f){
+        var v = parseInt(String(f.properties[k]).replace(/\D/g,""),10); return v>=1 && v<=15;
+      });
+    });
+    if(!wardKey) wardKey = keys.find(function(k){
+      return features.every(function(f){ var v=parseInt(f.properties[k],10); return v>=1 && v<=15; });
+    });
+    var popKey = keys.find(function(k){ return /pop/i.test(k) && !/per|pct|density/i.test(k); });
+    return { wardKey:wardKey, popKey:popKey };
+  }
+
+  fetch(WARDS_URL)
+    .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+    .then(function(gj){
+      if(!gj.features || !gj.features.length) throw new Error("No features");
+      var f0 = detectFields(gj.features), wardKey = f0.wardKey, popKey = f0.popKey;
+
+      var layer = L.geoJSON(gj, {
+        style: function(f){ return wardStyle(wardNum(f.properties, wardKey) || 1, false); },
+        onEachFeature: function(f, lyr){
+          var n = wardNum(f.properties, wardKey);
+          var pop = popKey ? f.properties[popKey] : null;
+          f.properties.__pop = pop;
+          var member = COUNCIL[n] || "—";
+          lyr.bindTooltip(
+            '<b>Ward ' + n + '</b><br>' + (TITLES[n] || "Council Member") + ' ' + member,
+            { className:"wf-tip", sticky:true }
+          );
+          lyr.on("mouseover", function(){ if(lyr!==selected) lyr.setStyle({weight:2, color:HOVER_LINE}); });
+          lyr.on("mouseout",  function(){ if(lyr!==selected) lyr.setStyle(wardStyle(n,false)); });
+          lyr.on("click", function(){
+            if(selected){
+              var sn = wardNum(selected.feature.properties, wardKey);
+              selected.setStyle(wardStyle(sn,false));
+            }
+            selected = lyr;
+            lyr.setStyle(wardStyle(n,true));
+            lyr.bringToFront();
+            onWardSelect(n, f.properties);
+          });
+
+          // centroid ward label
+          var best=null, bestLen=-1;
+          var polys = f.geometry.type==="Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
+          polys.forEach(function(p){ if(p[0].length>bestLen){ bestLen=p[0].length; best=p[0]; } });
+          var sx=0, sy=0; best.forEach(function(c){ sx+=c[0]; sy+=c[1]; });
+          L.marker([sy/best.length, sx/best.length], {
+            icon: L.divIcon({ className:"wf-label",
+              html:'<span>W'+n+'</span><small>'+((COUNCIL[n]||"").split(" ").slice(-1)[0]||"").toUpperCase()+'</small>',
+              iconSize:[58,28], iconAnchor:[29,14] }),
+            interactive:false, keyboard:false
+          }).addTo(map);
+        }
+      }).addTo(map);
+
+      map.fitBounds(layer.getBounds(), { padding:[18,6] });
+      $("wfStatus").classList.add("hide");
+    })
+    .catch(function(err){
+      var s = $("wfStatus");
+      s.innerHTML = '<p>Couldn\u2019t reach the City of Cleveland Open Data service.<br>' +
+        'This map pulls live 2026 ward boundaries, so it needs a connection. ' +
+        'Open this file directly in a browser if a preview window is blocking it.</p>';
+    });
 })();
 </script>
 </body>

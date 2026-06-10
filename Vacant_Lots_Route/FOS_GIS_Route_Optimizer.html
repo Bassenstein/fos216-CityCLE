@@ -47,6 +47,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 .mapwrap{flex:1;position:relative;overflow:hidden}
 #map{width:100%;height:100%}
 .map-overlay{position:absolute;top:10px;right:10px;z-index:500;display:flex;flex-direction:column;gap:5px}
+#ward-banner{position:absolute;top:10px;left:10px;z-index:600;display:flex;align-items:center;gap:10px;background:rgba(22,27,37,.94);border:1px solid var(--accent);border-radius:7px;padding:7px 8px 7px 12px;box-shadow:0 4px 16px #0008;max-width:calc(100% - 20px)}
+#ward-banner .wb-ward{font-weight:800;color:var(--accent);font-size:13px;letter-spacing:.4px;white-space:nowrap}
+#ward-banner .wb-meta{font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ward-banner .wb-clear{background:rgba(255,79,106,.12);color:var(--red);border:1px solid rgba(255,79,106,.3);border-radius:4px;font-size:10px;font-weight:600;padding:3px 7px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+#ward-banner .wb-clear:hover{background:rgba(255,79,106,.22)}
 .mctrl{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;cursor:pointer;color:var(--text2);transition:all .15s;text-align:center;white-space:nowrap}
 .mctrl:hover,.mctrl.active{border-color:var(--accent);color:var(--accent)}
 .legend{background:rgba(22,27,37,.92);border:1px solid var(--border);border-radius:7px;padding:9px 11px;position:absolute;bottom:18px;left:10px;z-index:500}
@@ -502,7 +507,9 @@ input[type=file].photo-input{display:none}
 let lots=[], crews=[], routeStops=[], selId=null;
 let map, markers={}, routeLine=null, depotMk=null;
 let tile1, tile2, usingSat=false;
-let AF={p:'all',s:'all'}, SQ='';
+let AF={p:'all',s:'all',ward:'all'}, SQ='';
+let WARD_FEATURES=null, WARD_KEY=null, wardLayer=null, PENDING_WARD=null;
+const WARD_COUNCIL={1:"Joseph T. Jones",2:"Kevin L. Bishop",3:"Deborah Gray",4:"Kris Harsh",5:"Richard A. Starr",6:"Blaine A. Griffin",7:"Austin N. Davis",8:"Stephanie D. Howse-Jones",9:"Kevin Conwell",10:"Michael D. Polensek",11:"Nikki Hudson",12:"Tanmay Shah",13:"Brian Kazy",14:"Jasmin Santana",15:"Charles J. Slife"};
 let MS={routes:true,nums:true,dark:true};
 let photoCache={}; // lotId -> {before:{dataUrl,ts,name}, after:{dataUrl,ts,name}}
 
@@ -867,6 +874,93 @@ function initMap(){
 }
 
 // ═══════════════════════════════════════
+// WARD BOUNDARIES (2026) — shared with the ward map / landing page
+// ═══════════════════════════════════════
+const WARDS_URL="https://services3.arcgis.com/dty2kHktVXHrqO8i/arcgis/rest/services/Cleveland_Wards_1_2_25_Topocleaned_pop20/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson";
+
+function loadWards(){
+  return fetch(WARDS_URL)
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(gj=>{
+      WARD_FEATURES=(gj.features||[]).filter(f=>f.geometry);
+      if(!WARD_FEATURES.length) throw new Error('no ward features');
+      const keys=Object.keys(WARD_FEATURES[0].properties||{});
+      WARD_KEY=keys.find(k=>/^ward(s)?([ _-]?(no|num|number|id))?$/i.test(k));
+      if(!WARD_KEY) WARD_KEY=keys.find(k=>/ward/i.test(k) && WARD_FEATURES.every(f=>{const v=parseInt(String(f.properties[k]).replace(/\D/g,''),10);return v>=1&&v<=15;}));
+      if(!WARD_KEY) WARD_KEY=keys.find(k=>WARD_FEATURES.every(f=>{const v=parseInt(f.properties[k],10);return v>=1&&v<=15;}));
+      assignWards();
+      if(PENDING_WARD!=null){ applyWard(PENDING_WARD); PENDING_WARD=null; }
+    })
+    .catch(err=>{ console.warn('Ward boundaries unavailable:',err.message); });
+}
+function wardNumProp(props){ return parseInt(String(props[WARD_KEY]).replace(/\D/g,''),10); }
+function pointInRing(x,y,ring){
+  let inside=false;
+  for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+    const xi=ring[i][0],yi=ring[i][1],xj=ring[j][0],yj=ring[j][1];
+    if(((yi>y)!==(yj>y)) && (x < (xj-xi)*(y-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
+}
+function geomContains(geom,lng,lat){
+  const polys=geom.type==='Polygon'?[geom.coordinates]:geom.coordinates;
+  for(const poly of polys){
+    if(pointInRing(lng,lat,poly[0])){
+      let hole=false;
+      for(let i=1;i<poly.length;i++){ if(pointInRing(lng,lat,poly[i])){hole=true;break;} }
+      if(!hole) return true;
+    }
+  }
+  return false;
+}
+function wardForPoint(lng,lat){
+  if(!WARD_FEATURES) return null;
+  for(const f of WARD_FEATURES){ if(geomContains(f.geometry,lng,lat)) return wardNumProp(f.properties); }
+  return null;
+}
+function assignWards(){ if(WARD_FEATURES) lots.forEach(l=>{ l.ward=wardForPoint(l.lng,l.lat); }); }
+
+function highlightWard(n){
+  if(wardLayer){ map.removeLayer(wardLayer); wardLayer=null; }
+  if(!WARD_FEATURES) return;
+  const f=WARD_FEATURES.find(ft=>wardNumProp(ft.properties)===+n);
+  if(!f) return;
+  wardLayer=L.geoJSON(f,{style:{color:'#00d4aa',weight:2.5,fill:true,fillColor:'#00d4aa',fillOpacity:.06,dashArray:'6 4',opacity:.95},interactive:false}).addTo(map);
+}
+function showWardBanner(n){
+  const mw=document.getElementById('mapwrap'); if(!mw) return;
+  let b=document.getElementById('ward-banner');
+  if(!b){ b=document.createElement('div'); b.id='ward-banner'; mw.appendChild(b); }
+  const cnt=lots.filter(l=>String(l.ward)===String(n)).length;
+  const member=WARD_COUNCIL[n]?(' · '+WARD_COUNCIL[n]):'';
+  b.innerHTML=`<span class="wb-ward">WARD ${n}</span>`+
+    `<span class="wb-meta">${cnt} lot${cnt!==1?'s':''}${member}</span>`+
+    `<button class="wb-clear" onclick="clearWardFilter()">✕ Clear</button>`;
+}
+function applyWard(n){
+  if(!(+n>=1&&+n<=15)) return;
+  assignWards();
+  AF.ward=String(+n);
+  highlightWard(+n);
+  showWardBanner(+n);
+  refreshMarkers();
+  if(wardLayer) map.fitBounds(wardLayer.getBounds(),{padding:[40,40]});
+  notify(`Scoped to Ward ${+n}`,'blue');
+}
+function clearWardFilter(){
+  AF.ward='all';
+  if(wardLayer){ map.removeLayer(wardLayer); wardLayer=null; }
+  const b=document.getElementById('ward-banner'); if(b) b.remove();
+  refreshMarkers(); fitAll();
+}
+function applyWardFromURL(){
+  const w=new URLSearchParams(location.search).get('ward');
+  const n=parseInt(w,10);
+  if(!(n>=1&&n<=15)) return;
+  if(WARD_FEATURES) applyWard(n); else PENDING_WARD=n;
+}
+
+// ═══════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════
 const ADDRS=[
@@ -1035,6 +1129,10 @@ function filtered(){
   return lots.filter(l=>{
     if(AF.p!=='all'&&l.priority!==AF.p) return false;
     if(AF.s!=='all'&&l.status!==AF.s) return false;
+    if(AF.ward!=='all'){
+      if(l.ward===undefined && WARD_FEATURES) l.ward=wardForPoint(l.lng,l.lat);
+      if(String(l.ward)!==String(AF.ward)) return false;
+    }
     if(SQ){const q=SQ.toLowerCase();if(!l.address.toLowerCase().includes(q)&&!l.parcelId.toLowerCase().includes(q)&&!l.neighborhood.toLowerCase().includes(q)) return false;}
     return true;
   });
@@ -1396,6 +1494,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
   await initDB();
   initMap();
   loadSample();
+  loadWards();
+  applyWardFromURL();
   updatePhotoBadge();
 });
 
