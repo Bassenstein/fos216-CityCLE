@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ward Maintenance Teams — The FixOurStreets216 Project</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root {
+    --bg:#0d1117; --surface:#161b22; --surface2:#1c2330; --border:#2a3441;
+    --accent:#f0a500; --accent2:#3b82f6; --green:#22c55e; --red:#ef4444;
+    --text:#e6edf3; --text-muted:#7d8590; --text-dim:#4b5563;
+    --mono:'JetBrains Mono','Fira Mono','Courier New',monospace;
+    --sans:'Inter','Segoe UI',system-ui,sans-serif; --r:6px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;display:flex;flex-direction:column;}
+
+  .hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;flex-shrink:0;z-index:600;position:relative;}
+  .hdr-l{display:flex;align-items:center;gap:14px;}
+  .badge{background:var(--accent);color:#000;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:3px;}
+  .hdr-title{font-size:13px;font-weight:600;}
+  .hdr-sub{font-size:11px;color:var(--text-muted);font-family:var(--mono);}
+  .hdr-r{display:flex;align-items:center;gap:10px;}
+  .live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+  .shell{display:flex;flex:1;overflow:hidden;}
+
+  /* SIDEBAR */
+  .sidebar{width:260px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+  .sb-section{padding:14px 0 8px;}
+  .sb-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--text-dim);text-transform:uppercase;padding:0 14px 8px;}
+  .tc{padding:8px 14px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+  .tc:hover{background:var(--surface2);}
+  .tc.active{background:var(--surface2);border-left-color:var(--accent2);}
+  .tc-top{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;}
+  .tc-co{font-size:11px;color:var(--accent);font-style:italic;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tc-meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:1px;}
+  .tag{font-family:var(--mono);font-size:10px;padding:2px 5px;border-radius:3px;font-weight:600;white-space:nowrap;}
+  .tag-active{background:rgba(34,197,94,.15);color:var(--green);}
+  .tag-standby{background:rgba(240,165,0,.15);color:var(--accent);}
+  .tag-deployed{background:rgba(59,130,246,.15);color:var(--accent2);}
+  .tag-overflow{background:rgba(239,68,68,.15);color:var(--red);}
+  .sb-footer{padding:12px 14px 16px;border-top:1px solid var(--border);margin-top:auto;}
+  .sf-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;}
+  .sf-lbl{color:var(--text-muted);}
+
+  /* MAP */
+  .map-col{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+  #map{flex:1;background:radial-gradient(1200px 800px at 60% 40%,#122036 0%,#0d1117 60%);}
+  .leaflet-container{background:transparent;font-family:var(--sans);}
+  .map-legend{position:absolute;bottom:14px;left:14px;z-index:500;background:#0e1a2bf2;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--text-muted);backdrop-filter:blur(6px);}
+  .ml-row{display:flex;align-items:center;gap:7px;margin-top:5px;}
+  .ml-sw{width:12px;height:12px;border-radius:3px;border:1px solid rgba(255,255,255,.1);}
+
+  /* MAP TOOLTIP */
+  .leaflet-tooltip.wt-tip{background:#0e1a2bf2;border:1px solid var(--accent);color:var(--text);border-radius:6px;font-family:var(--sans);font-size:12px;padding:9px 12px;box-shadow:0 4px 16px #000a;min-width:200px;}
+  .leaflet-tooltip.wt-tip::before{display:none;}
+  .tip-ward{font-size:16px;font-weight:700;color:var(--accent);font-family:var(--mono);}
+  .tip-nbhd{font-size:11px;color:var(--text-muted);margin-top:1px;}
+  .tip-co{font-size:12px;font-weight:600;color:var(--text);margin-top:5px;}
+  .tip-meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;}
+  .tip-red{color:var(--red);}
+  .tip-amb{color:var(--accent);}
+  .tip-grn{color:var(--green);}
+
+  /* ward labels */
+  .ward-label{background:none;border:none;box-shadow:none;}
+  .ward-label span{font-size:13px;font-weight:700;color:#dbe7f5;text-shadow:0 1px 4px #000c,0 0 12px #0008;}
+  .ward-label small{display:block;font-family:var(--mono);font-size:8px;color:#9db2cc;letter-spacing:.08em;}
+  .big-labels .ward-label span{font-size:20px;}
+  .big-labels .ward-label small{font-size:10px;}
+
+  /* RIGHT PANEL */
+  .right-panel{width:320px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+  .rp-section{border-bottom:1px solid var(--border);}
+  .rp-head{padding:11px 14px;font-size:11px;font-weight:700;letter-spacing:.03em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+  .rp-head:hover{background:var(--surface2);}
+  .rp-body{padding:12px 14px;}
+
+  .alert{background:rgba(239,68,68,.08);border-left:3px solid var(--red);padding:10px 12px;font-size:12px;margin:10px 14px;border-radius:0 var(--r) var(--r) 0;line-height:1.5;}
+  .alert strong{color:var(--red);}
+
+  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px 12px;}
+  .sbox{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;}
+  .sval{font-family:var(--mono);font-size:22px;font-weight:700;line-height:1;margin-bottom:2px;}
+  .slbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;}
+  .sbox.red .sval{color:var(--red);}
+  .sbox.amber .sval{color:var(--accent);}
+  .sbox.green .sval{color:var(--green);}
+  .sbox.blue .sval{color:var(--accent2);}
+
+  /* TEAM DETAIL */
+  .team-detail{padding:12px 14px;}
+  .td-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+  .td-id{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+  .td-name{font-size:13px;font-weight:700;margin-top:2px;}
+  .td-nbhd{font-size:11px;color:var(--accent);margin-top:1px;font-style:italic;}
+  .td-area{font-size:11px;color:var(--text-muted);margin-top:1px;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+  .ig-cell{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:7px 10px;}
+  .ig-lbl{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+  .ig-val{font-size:12px;font-weight:600;}
+  .crew-row{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+  .crew{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:6px 10px;}
+  .av{width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-muted);flex-shrink:0;font-family:var(--mono);}
+  .cname{font-size:11px;font-weight:600;}
+  .crole{font-size:10px;color:var(--text-muted);font-family:var(--mono);}
+  .equip{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+  .chip{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:3px 7px;font-size:10px;font-family:var(--mono);color:var(--text-muted);}
+  .dispatch-btn{width:100%;padding:9px;background:var(--accent2);color:#fff;border:none;border-radius:var(--r);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.03em;transition:background .15s;}
+  .dispatch-btn:hover{background:#2563eb;}
+  .dispatch-btn.standby{background:rgba(240,165,0,.18);color:var(--accent);border:1px solid rgba(240,165,0,.4);}
+  .dispatch-btn.standby:hover{background:rgba(240,165,0,.3);}
+  .dispatch-btn.ok{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.3);}
+
+  /* LOG */
+  .log-list{display:flex;flex-direction:column;}
+  .log{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(42,52,65,.5);}
+  .log:last-child{border-bottom:none;}
+  .log-t{font-family:var(--mono);font-size:10px;color:var(--text-dim);flex-shrink:0;width:36px;padding-top:2px;}
+  .log-d{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+  .log-txt{font-size:11px;color:var(--text-muted);line-height:1.5;}
+  .log-txt strong{color:var(--text);}
+
+  /* BUTTONS */
+  .btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+  .btn-p{background:var(--accent2);color:#fff;}
+  .btn-p:hover{background:#2563eb;}
+  .btn-g{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+  .btn-g:hover{color:var(--text);border-color:var(--text-muted);}
+  .btn-active{color:var(--accent) !important;border-color:var(--accent) !important;}
+
+  /* MODAL */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:center;justify-content:center;}
+  .modal-bg.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:500px;max-width:95vw;padding:22px;max-height:90vh;overflow-y:auto;}
+  .modal-title{font-size:15px;font-weight:700;margin-bottom:3px;}
+  .modal-sub{font-size:12px;color:var(--text-muted);margin-bottom:18px;}
+  .fl{margin-bottom:12px;}
+  .flbl{display:block;font-size:10px;font-family:var(--mono);color:var(--text-muted);margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase;}
+  .fi{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--sans);font-size:13px;padding:7px 10px;outline:none;transition:border-color .15s;}
+  .fi:focus{border-color:var(--accent2);}
+  .fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .mactions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+  /* ── BEFORE / AFTER PHOTO SECTION ── */
+  .ba-job{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+  .ba-job-head{padding:8px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+  .ba-addr{font-size:11px;font-weight:600;}
+  .ba-ts{font-family:var(--mono);font-size:10px;color:var(--text-muted);}
+  .ba-photos{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .ba-slot{position:relative;cursor:pointer;overflow:hidden;aspect-ratio:4/3;background:var(--bg);}
+  .ba-slot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s;}
+  .ba-slot:hover img{transform:scale(1.04);}
+  .ba-slot-label{position:absolute;top:0;left:0;right:0;padding:5px 8px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;}
+  .ba-slot-label.before{background:rgba(239,68,68,.75);color:#fff;}
+  .ba-slot-label.after{background:rgba(34,197,94,.75);color:#fff;}
+  .ba-slot.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed var(--border);cursor:pointer;transition:border-color .15s;}
+  .ba-slot.empty:hover{border-color:var(--accent2);}
+  .ba-slot.empty .upload-icon{font-size:22px;opacity:.4;}
+  .ba-slot.empty .upload-txt{font-size:10px;font-family:var(--mono);color:var(--text-dim);}
+  .ba-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .ba-job-footer{padding:7px 12px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);}
+  .ba-status{font-family:var(--mono);font-size:10px;font-weight:700;}
+  .ba-status.verified{color:var(--green);}
+  .ba-status.pending{color:var(--accent);}
+  .ba-status.incomplete{color:var(--red);}
+  .ba-verify-btn{font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--r);cursor:pointer;border:none;transition:all .15s;}
+  .ba-verify-btn.can-verify{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.35);}
+  .ba-verify-btn.can-verify:hover{background:rgba(34,197,94,.3);}
+  .ba-verify-btn.verified{background:transparent;color:var(--text-dim);border:1px solid var(--border);cursor:default;}
+  .ba-add-job{width:100%;padding:8px;background:transparent;border:1px dashed var(--border);border-radius:var(--r);color:var(--text-muted);font-size:11px;font-family:var(--mono);cursor:pointer;transition:all .15s;letter-spacing:.04em;}
+  .ba-add-job:hover{border-color:var(--accent2);color:var(--accent2);}
+  .ba-empty-state{text-align:center;padding:20px 14px;font-size:12px;color:var(--text-muted);line-height:1.6;}
+  .ba-summary{display:flex;gap:8px;margin-bottom:10px;}
+  .ba-sum-box{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:7px 10px;text-align:center;}
+  .ba-sum-val{font-family:var(--mono);font-size:16px;font-weight:700;line-height:1;}
+  .ba-sum-lbl{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+
+  /* LIGHTBOX */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:2000;display:none;flex-direction:column;align-items:center;justify-content:center;}
+  .lightbox.open{display:flex;}
+  .lb-header{position:absolute;top:0;left:0;right:0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(#000a,transparent);}
+  .lb-title{font-size:13px;font-weight:600;}
+  .lb-meta{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+  .lb-close{background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;line-height:1;padding:4px 8px;}
+  .lb-close:hover{color:var(--accent);}
+  .lb-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:60px 24px 80px;width:100%;max-width:1100px;}
+  .lb-pane{display:flex;flex-direction:column;gap:8px;}
+  .lb-pane-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-align:center;padding:5px 0;border-radius:var(--r);}
+  .lb-pane-label.before{background:rgba(239,68,68,.2);color:var(--red);border:1px solid rgba(239,68,68,.35);}
+  .lb-pane-label.after{background:rgba(34,197,94,.2);color:var(--green);border:1px solid rgba(34,197,94,.35);}
+  .lb-img-wrap{border-radius:var(--r);overflow:hidden;background:var(--surface2);border:1px solid var(--border);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;}
+  .lb-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+  .lb-no-img{font-size:12px;color:var(--text-dim);font-family:var(--mono);}
+  .lb-footer{position:absolute;bottom:0;left:0;right:0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(transparent,#000a);}
+  .lb-job-info{font-size:12px;color:var(--text-muted);}
+  .lb-job-info strong{color:var(--text);}
+  .lb-actions{display:flex;gap:10px;}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="badge">FOS216</div>
+    <div>
+      <div class="hdr-title">Ward Maintenance Teams · Contractor Network</div>
+      <div class="hdr-sub">15 Wards · Ord. No. 1-2025 · Overflow Supplement · Route Optimizer</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="live"><span class="dot"></span> LIVE · Mowing Season Active</div>
+    <button class="btn btn-g" id="btnBase">Street Basemap</button>
+    <button class="btn btn-g" id="btnLabels">Ward Labels</button>
+    <button class="btn btn-p" onclick="openModal()">+ Register Contractor</button>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label" id="sbCountLabel">Contractor Teams (15)</div>
+      <div id="teamList"></div>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-label" style="padding:0 0 8px;">Network Fleet</div>
+      <div class="sf-row"><span class="sf-lbl">Contractor Teams</span><span style="font-family:var(--mono);">15</span></div>
+      <div class="sf-row"><span class="sf-lbl">NPR Trucks (city-supplied)</span><span style="font-family:var(--mono);">15</span></div>
+      <div class="sf-row"><span class="sf-lbl">Wright Auto Stander ZK</span><span style="font-family:var(--mono);">30 (2 per team)</span></div>
+      <div class="sf-row"><span class="sf-lbl">Teams Deployed</span><span style="font-family:var(--mono);color:var(--green);">3</span></div>
+      <div class="sf-row"><span class="sf-lbl">On Standby</span><span style="font-family:var(--mono);color:var(--accent);">12</span></div>
+    </div>
+  </aside>
+
+  <!-- MAP -->
+  <div class="map-col">
+    <div id="map"></div>
+    <div class="map-legend">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--text-dim);text-transform:uppercase;margin-bottom:2px;">Overflow Status · 2026 Wards</div>
+      <div class="ml-row"><div class="ml-sw" style="background:rgba(239,68,68,.55);"></div> Overflow ≥ 35 days</div>
+      <div class="ml-row"><div class="ml-sw" style="background:rgba(240,165,0,.5);"></div> Approaching 30–34 days</div>
+      <div class="ml-row"><div class="ml-sw" style="background:rgba(59,130,246,.5);"></div> On cycle — contractor assigned</div>
+      <div class="ml-row"><div class="ml-sw" style="background:rgba(34,197,94,.35);"></div> On cycle — clear</div>
+      <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-family:var(--mono);font-size:9px;color:var(--text-dim);">SOURCE: Cleveland Open Data · Ord. No. 1-2025</div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <aside class="right-panel">
+
+    <div class="alert">
+      <strong>3 wards past overflow threshold.</strong><br>
+      Wards 1, 5 &amp; 9 at ≥ 35 days. Ward 7 approaching at 33d —
+      <strong>MidCity Turf LLC</strong> on standby.
+    </div>
+
+    <div class="stat-row">
+      <div class="sbox red"><div class="sval">3</div><div class="slbl">Overflowed</div></div>
+      <div class="sbox amber"><div class="sval">4</div><div class="slbl">Approaching</div></div>
+      <div class="sbox green"><div class="sval">8</div><div class="slbl">On Cycle</div></div>
+      <div class="sbox blue"><div class="sval">3</div><div class="slbl">Deployed</div></div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-head" onclick="toggleSection('detailBody')">
+        <span id="detailTitle">— Click a ward on the map —</span>
+        <span style="font-size:10px;color:var(--text-dim);">▾</span>
+      </div>
+      <div id="detailBody" class="team-detail">
+        <div style="font-size:12px;color:var(--text-muted);">Click any ward on the map to view the assigned contractor and dispatch controls.</div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-head" onclick="toggleSection('baBody')">
+        <span>📷 Before &amp; After · Work Verification</span>
+        <span id="baBadge" style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">▾</span>
+      </div>
+      <div id="baBody" class="rp-body">
+        <div id="baSummary" class="ba-summary" style="display:none;"></div>
+        <div id="baJobList">
+          <div class="ba-empty-state">
+            Select a ward on the map to view or upload verification photos for that contractor team's lots.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-head" onclick="toggleSection('logBody')">
+        Dispatch Log — Today
+        <span style="font-size:10px;color:var(--text-dim);">▾</span>
+      </div>
+      <div id="logBody" class="rp-body" style="padding-top:4px;">
+        <div class="log-list" id="logList">
+          <div class="log"><div class="log-t">07:14</div><div class="log-d" style="background:var(--red)"></div><div class="log-txt"><strong>Cuyahoga Green Svcs</strong> dispatched — Ward 1, 38d. Route loaded.</div></div>
+          <div class="log"><div class="log-t">07:14</div><div class="log-d" style="background:var(--red)"></div><div class="log-txt"><strong>Lakefront Lawn Co.</strong> dispatched — Ward 5, 36d.</div></div>
+          <div class="log"><div class="log-t">07:30</div><div class="log-d" style="background:var(--accent)"></div><div class="log-txt"><strong>MidCity Turf LLC</strong> on standby — Ward 7, 33d threshold watch.</div></div>
+          <div class="log"><div class="log-t">08:45</div><div class="log-d" style="background:var(--accent2)"></div><div class="log-txt"><strong>Superior Grounds</strong> dispatched — Ward 9, 35d. Cityworks order issued.</div></div>
+          <div class="log"><div class="log-t">10:02</div><div class="log-d" style="background:var(--green)"></div><div class="log-txt">Ward 3 cleared by VL Team 7 — <strong>South Broadway Outdoor</strong> backlog cancelled.</div></div>
+          <div class="log"><div class="log-t">11:18</div><div class="log-d" style="background:var(--accent2)"></div><div class="log-txt"><strong>Tremont Groundsworks</strong> activated — Ward 14, VL team 2d behind. Optimizer handoff confirmed.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-head" onclick="toggleSection('rulesBody')">
+        Overflow Trigger Rules
+        <span style="font-size:10px;color:var(--text-dim);">▸</span>
+      </div>
+      <div id="rulesBody" class="rp-body" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.6;">
+        <p style="margin-bottom:7px;"><strong style="color:var(--accent);">01</strong> — Ward ≥ 35 days triggers overflow. Assigned contractor dispatched automatically via Route Optimizer.</p>
+        <p style="margin-bottom:7px;"><strong style="color:var(--accent);">02</strong> — Contractor teams use the same route optimizer as Vacant Lot teams. Routes are generated automatically.</p>
+        <p style="margin-bottom:7px;"><strong style="color:var(--accent);">03</strong> — Contractors work overflow lots in parallel with Vacant Lot teams. Released to standby when backlog clears.</p>
+        <p><strong style="color:var(--accent);">04</strong> — Cityworks AMS work orders created at dispatch. Completed lots removed from both queues in real time.</p>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightboxOutside(event)">
+  <div class="lb-header">
+    <div>
+      <div class="lb-title" id="lbTitle">—</div>
+      <div class="lb-meta" id="lbMeta">—</div>
+    </div>
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+  </div>
+  <div class="lb-compare">
+    <div class="lb-pane">
+      <div class="lb-pane-label before">BEFORE</div>
+      <div class="lb-img-wrap" id="lbBefore"><span class="lb-no-img">No photo uploaded</span></div>
+    </div>
+    <div class="lb-pane">
+      <div class="lb-pane-label after">AFTER</div>
+      <div class="lb-img-wrap" id="lbAfter"><span class="lb-no-img">No photo uploaded</span></div>
+    </div>
+  </div>
+  <div class="lb-footer">
+    <div class="lb-job-info" id="lbJobInfo">—</div>
+    <div class="lb-actions">
+      <button class="btn btn-g" onclick="closeLightbox()">Close</button>
+      <button class="btn btn-p" id="lbVerifyBtn" onclick="verifyFromLightbox()">✓ Mark Verified</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModalOut(event)">
+  <div class="modal">
+    <div class="modal-title">Register Contractor Team</div>
+    <div class="modal-sub">Contractor will be integrated into the Route Optimizer and Cityworks AMS automatically.</div>
+    <div class="fl"><label class="flbl">Company Name</label><input class="fi" type="text" placeholder="e.g. Riverside Lawn Services LLC"></div>
+    <div class="fg2">
+      <div class="fl"><label class="flbl">Supervisor / Contact</label><input class="fi" type="text" placeholder="Full name"></div>
+      <div class="fl"><label class="flbl">Phone</label><input class="fi" type="text" placeholder="(216) 555-0000"></div>
+    </div>
+    <div class="fg2">
+      <div class="fl"><label class="flbl">Operator 1</label><input class="fi" type="text" placeholder="Full name"></div>
+      <div class="fl"><label class="flbl">Operator 2</label><input class="fi" type="text" placeholder="Full name"></div>
+    </div>
+    <div class="fg2">
+      <div class="fl"><label class="flbl">Primary Ward (2026)</label>
+        <select class="fi" id="newWardSel">
+          <option value="">— Flexible / Unassigned —</option>
+        </select>
+      </div>
+      <div class="fl"><label class="flbl">Truck Unit #</label><input class="fi" type="text" placeholder="e.g. NPR-16"></div>
+    </div>
+    <div class="fl"><label class="flbl">Service Area / Neighborhood</label><input class="fi" type="text" placeholder="e.g. 4200 Clark Ave, Cleveland 44109"></div>
+    <div class="mactions">
+      <button class="btn btn-g" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-p" onclick="addContractor()">Register Team</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 2026 WARD DATA (Ord. No. 1-2025, 15 wards) ─────────────────────────
+   Council members confirmed from Nov 2025 election results.
+   Neighborhoods per Cleveland City Council official ward descriptions.  */
+
+const COUNCIL = {
+  1:  { member:"Joe Jones",              title:"Council Member",   neighborhoods:"Lee–Miles, Lee–Harvard, Lee–Seville, parts of Mt. Pleasant & Union–Miles" },
+  2:  { member:"Kevin L. Bishop",        title:"Council Member",   neighborhoods:"Union–Miles, parts of Broadway–Slavic Village" },
+  3:  { member:"Deborah Gray",           title:"Council Member",   neighborhoods:"Mt. Pleasant, Buckeye–Shaker Square, Broadway–Slavic Village" },
+  4:  { member:"Kris Harsh",             title:"Council Member",   neighborhoods:"Old Brooklyn" },
+  5:  { member:"Richard A. Starr",       title:"Council Member",   neighborhoods:"Central, Kinsman, parts of Downtown & Industrial Valley" },
+  6:  { member:"Blaine A. Griffin",      title:"Council President", neighborhoods:"Fairfax, University Circle, Buckeye–Woodhill, Little Italy" },
+  7:  { member:"Austin N. Davis",        title:"Council Member",   neighborhoods:"Downtown, Ohio City, Tremont, the Flats, parts of Detroit–Shoreway" },
+  8:  { member:"Stephanie Howse-Jones",  title:"Council Member",   neighborhoods:"Asia Town, Hough, St. Clair–Superior, parts of Downtown, Glenville & Midtown" },
+  9:  { member:"Kevin Conwell",          title:"Council Member",   neighborhoods:"Glenville, Forest Hills, part of University Circle" },
+  10: { member:"Michael D. Polensek",    title:"Council Member",   neighborhoods:"North Collinwood, South Collinwood" },
+  11: { member:"Nikki Hudson",           title:"Council Member",   neighborhoods:"Detroit–Shoreway, Edgewater, Cudell, West Boulevard, Brookside–Old Brooklyn" },
+  12: { member:"Tanmay Shah",            title:"Council Member",   neighborhoods:"Parts of Edgewater, Cudell, West Boulevard & Jefferson" },
+  13: { member:"Brian Kazy",             title:"Council Member",   neighborhoods:"Jefferson, Bellaire–Puritas, Rockport" },
+  14: { member:"Jasmin Santana",         title:"Majority Leader",  neighborhoods:"Clark–Fulton, parts of Brooklyn Centre, Stockyards, Tremont & Cuyahoga Valley" },
+  15: { member:"Charles J. Slife",       title:"Majority Whip",    neighborhoods:"West Park — Kamm's Corners & Hopkins" },
+};
+
+const wardData = {
+  1:  { lots:712, days:38, status:'overflow'   },
+  2:  { lots:534, days:22, status:'ok'         },
+  3:  { lots:489, days:26, status:'ok'         },
+  4:  { lots:601, days:19, status:'ok'         },
+  5:  { lots:780, days:36, status:'overflow'   },
+  6:  { lots:445, days:28, status:'ok'         },
+  7:  { lots:523, days:33, status:'approaching'},
+  8:  { lots:398, days:17, status:'ok'         },
+  9:  { lots:667, days:35, status:'overflow'   },
+  10: { lots:512, days:30, status:'approaching'},
+  11: { lots:434, days:21, status:'ok'         },
+  12: { lots:478, days:31, status:'approaching'},
+  13: { lots:389, days:16, status:'ok'         },
+  14: { lots:545, days:32, status:'approaching'},
+  15: { lots:612, days:24, status:'ok'         },
+};
+
+/* Contractors aligned to 2026 ward neighborhoods */
+const contractors = [
+  { id:'WT-01', name:'Cuyahoga Green Services',    contact:'M. Okafor',     op1:'D. Harris',    op2:'R. Perez',    ward:1,  truck:'NPR-01', status:'deployed' },
+  { id:'WT-02', name:'Miles–Harvard Lawn Co.',     contact:'T. Sobanski',   op1:'J. Estrada',   op2:'K. Brown',    ward:2,  truck:'NPR-02', status:'active'   },
+  { id:'WT-03', name:'South Broadway Outdoor LLC', contact:'J. Kowalczyk',  op1:'T. Nelson',    op2:'K. Carter',   ward:3,  truck:'NPR-03', status:'standby'  },
+  { id:'WT-04', name:'Old Brooklyn Grounds Co.',   contact:'A. Williams',   op1:'C. Nguyen',    op2:'P. Moore',    ward:4,  truck:'NPR-04', status:'standby'  },
+  { id:'WT-05', name:'Lakefront Lawn Co.',         contact:'D. Jackson',    op1:'M. Santos',    op2:'T. Greene',   ward:5,  truck:'NPR-05', status:'deployed' },
+  { id:'WT-06', name:'Fairfax Turf Services',      contact:'L. Simmons',    op1:'B. Flores',    op2:'J. Hall',     ward:6,  truck:'NPR-06', status:'standby'  },
+  { id:'WT-07', name:'MidCity Turf LLC',           contact:'B. Kowalski',   op1:'F. Davis',     op2:'L. Rivera',   ward:7,  truck:'NPR-07', status:'standby'  },
+  { id:'WT-08', name:'Glenville Outdoor Svcs',     contact:'M. Patterson',  op1:'C. Adams',     op2:'R. Young',    ward:8,  truck:'NPR-08', status:'standby'  },
+  { id:'WT-09', name:'Superior Grounds LLC',       contact:'G. Novak',      op1:'H. Bell',      op2:'N. White',    ward:9,  truck:'NPR-09', status:'deployed' },
+  { id:'WT-10', name:'North Collinwood Lawn Care', contact:'R. Thompson',   op1:'W. Collins',   op2:'O. Lewis',    ward:10, truck:'NPR-10', status:'active'   },
+  { id:'WT-11', name:'West Side Landscape Group',  contact:'C. Brennan',    op1:'S. Torres',    op2:'D. Lee',      ward:11, truck:'NPR-11', status:'standby'  },
+  { id:'WT-12', name:'Cudell & Jefferson Mowing',  contact:'P. Czerwinski', op1:'V. Reyes',     op2:'A. Brooks',   ward:12, truck:'NPR-12', status:'standby'  },
+  { id:'WT-13', name:'Puritas Lawn & Grounds',     contact:'F. O\'Brien',   op1:'M. Diaz',      op2:'S. Johnson',  ward:13, truck:'NPR-13', status:'standby'  },
+  { id:'WT-14', name:'Tremont Groundsworks',       contact:'S. Valenti',    op1:'A. Clark',     op2:'E. Murphy',   ward:14, truck:'NPR-14', status:'active'   },
+  { id:'WT-15', name:'West Park Grounds Co.',      contact:'A. Garofalo',   op1:'D. Mitchell',  op2:'P. Wilson',   ward:15, truck:'NPR-15', status:'standby'  },
+];
+
+/* ── MAP SETUP ──────────────────────────────────────────────────────────── */
+/* 2026 ward boundaries — item 792495301e504d04b6f39ec604107534 */
+const WARDS_URL =
+  "https://services3.arcgis.com/dty2kHktVXHrqO8i/arcgis/rest/services/" +
+  "Cleveland_Wards_1_2_25_Topocleaned_pop20/FeatureServer/0/query" +
+  "?where=1%3D1&outFields=*&outSR=4326&f=geojson";
+
+const map = L.map("map", { zoomControl:false, doubleClickZoom:false, attributionControl:false })
+  .setView([41.482, -81.670], 11);
+L.control.zoom({ position:"bottomright" }).addTo(map);
+
+let wardLayer = null, labelGroup = L.layerGroup().addTo(map);
+let baseLayer = null, baseOn = false, bigLabels = false;
+let selectedLayer = null;
+
+function wardFillColor(n) {
+  const w = wardData[n];
+  if (!w) return 'rgba(39,73,109,0.7)';
+  if (w.status === 'overflow')    return 'rgba(239,68,68,0.55)';
+  if (w.status === 'approaching') return 'rgba(240,165,0,0.50)';
+  const assigned = contractors.some(c => c.ward === n);
+  return assigned ? 'rgba(59,130,246,0.45)' : 'rgba(34,197,94,0.30)';
+}
+function wardBorderColor(n) {
+  const w = wardData[n];
+  if (!w) return '#5d7da0';
+  if (w.status === 'overflow')    return 'rgba(239,68,68,0.85)';
+  if (w.status === 'approaching') return 'rgba(240,165,0,0.75)';
+  return '#5d7da0';
+}
+function wardStyle(n, sel) {
+  return {
+    fillColor: wardFillColor(n), fillOpacity: 1,
+    color: sel ? '#ffd27a' : wardBorderColor(n),
+    weight: sel ? 2.5 : 1.2, opacity: 1
+  };
+}
+
+function detectFields(features) {
+  const keys = Object.keys(features[0].properties || {});
+  let wk = keys.find(k => /^ward(s)?([ _-]?(no|num|number|id))?$/i.test(k));
+  if (!wk) wk = keys.find(k => /ward/i.test(k) && features.every(f => {
+    const v = parseInt(String(f.properties[k]).replace(/\D/g,''), 10);
+    return v >= 1 && v <= 15;
+  }));
+  if (!wk) wk = keys.find(k => features.every(f => {
+    const v = parseInt(f.properties[k], 10); return v >= 1 && v <= 15;
+  }));
+  const pk = keys.find(k => /pop/i.test(k) && !/per|pct|density/i.test(k));
+  return { wk, pk };
+}
+const getWardNum = (props, key) => parseInt(String(props[key]).replace(/\D/g,''), 10);
+
+fetch(WARDS_URL)
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(gj => {
+    if (!gj.features?.length) throw new Error('No features returned');
+    const { wk } = detectFields(gj.features);
+
+    wardLayer = L.geoJSON(gj, {
+      style: f => wardStyle(getWardNum(f.properties, wk), false),
+      onEachFeature: (f, layer) => {
+        const n   = getWardNum(f.properties, wk);
+        const wd  = wardData[n] || {};
+        const cInfo = COUNCIL[n] || {};
+        const ct  = contractors.find(c => c.ward === n);
+        const daysCls = wd.status === 'overflow' ? 'tip-red' : wd.status === 'approaching' ? 'tip-amb' : 'tip-grn';
+
+        layer.bindTooltip(`
+          <div class="tip-ward">Ward ${n}</div>
+          <div class="tip-nbhd">${cInfo.neighborhoods || ''}</div>
+          <div class="tip-co">${ct ? ct.name : '— No contractor assigned —'}</div>
+          <div class="tip-meta">
+            <span class="${daysCls}">${wd.days || '—'}d since cut</span>
+            <span>·</span><span>${wd.lots || '—'} lots</span>
+            <span>·</span><span>${cInfo.member || '—'}</span>
+          </div>`,
+          { className:'wt-tip', sticky:true });
+
+        layer.on('mouseover', () => { if (layer !== selectedLayer) layer.setStyle({ weight:2.2, color:'#9db9d8' }); });
+        layer.on('mouseout',  () => { if (layer !== selectedLayer) layer.setStyle(wardStyle(n, false)); });
+        layer.on('click', () => {
+          if (selectedLayer) {
+            const sn = getWardNum(selectedLayer.feature.properties, wk);
+            selectedLayer.setStyle(wardStyle(sn, false));
+          }
+          selectedLayer = layer;
+          layer.setStyle(wardStyle(n, true));
+          layer.bringToFront();
+          showDetail(n);
+          highlightSidebar(n);
+        });
+
+        /* centroid label */
+        const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+        let best = null, bestLen = -1;
+        polys.forEach(p => { if (p[0].length > bestLen) { bestLen = p[0].length; best = p[0]; }});
+        let sx = 0, sy = 0; best.forEach(c => { sx += c[0]; sy += c[1]; });
+        L.marker([sy/best.length, sx/best.length], {
+          icon: L.divIcon({
+            className:'ward-label',
+            html:`<span>W${n}</span><small>${(cInfo.member||'').split(' ').slice(-1)[0].toUpperCase()}</small>`,
+            iconSize:[60,28], iconAnchor:[30,14]
+          }),
+          interactive:false, keyboard:false
+        }).addTo(labelGroup);
+      }
+    }).addTo(map);
+
+    map.fitBounds(wardLayer.getBounds(), { padding:[30,30] });
+  })
+  .catch(err => {
+    document.getElementById('detailBody').innerHTML =
+      `<div style="font-size:12px;color:var(--red);line-height:1.6;">
+        Map data unavailable — requires internet access to the City of Cleveland Open Data portal (ArcGIS).<br>
+        <small style="color:var(--text-muted);">Open this file directly in your browser while connected.<br>${err.message}</small>
+      </div>`;
+  });
+
+/* ── MAP CONTROLS ─────────────────────────────────────────────────────── */
+document.getElementById('btnBase').onclick = function () {
+  baseOn = !baseOn;
+  if (baseOn) {
+    if (!baseLayer) baseLayer = L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      { maxZoom:19, attribution:'© OpenStreetMap © CARTO' });
+    baseLayer.addTo(map); baseLayer.bringToBack();
+  } else if (baseLayer) { map.removeLayer(baseLayer); }
+  this.classList.toggle('btn-active', baseOn);
+};
+document.getElementById('btnLabels').onclick = function () {
+  bigLabels = !bigLabels;
+  document.body.classList.toggle('big-labels', bigLabels);
+  this.classList.toggle('btn-active', bigLabels);
+};
+
+/* ── SIDEBAR ──────────────────────────────────────────────────────────── */
+function buildSidebar() {
+  const list = document.getElementById('teamList');
+  list.innerHTML = '';
+  contractors.forEach(c => {
+    const wd = wardData[c.ward] || {};
+    const tagMap = { deployed:'tag-deployed', active:'tag-active', standby:'tag-standby' };
+    const txtMap = { deployed:'Deployed', active:'Active', standby:'Standby' };
+    const div = document.createElement('div');
+    div.className = 'tc'; div.id = `tc-${c.ward}`;
+    div.innerHTML = `
+      <div class="tc-top">${c.id} · Ward ${c.ward} <span class="tag ${tagMap[c.status]||'tag-standby'}">${txtMap[c.status]||'Standby'}</span></div>
+      <div class="tc-co">${c.name}</div>
+      <div class="tc-meta">${wd.days||'—'}d · ${wd.lots||'—'} lots · ${c.truck}</div>`;
+    div.addEventListener('click', () => { showDetail(c.ward); flyToWard(c.ward); });
+    list.appendChild(div);
+  });
+
+  const sel = document.getElementById('newWardSel');
+  sel.innerHTML = '<option value="">— Flexible / Unassigned —</option>';
+  Object.entries(COUNCIL).forEach(([n, info]) => {
+    const wd = wardData[n] || {};
+    const opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = `Ward ${n} — ${info.neighborhoods.split(',')[0]} (${wd.days||'—'}d)`;
+    sel.appendChild(opt);
+  });
+}
+
+function highlightSidebar(wn) {
+  document.querySelectorAll('.tc').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById(`tc-${wn}`);
+  if (el) { el.classList.add('active'); el.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+}
+
+function flyToWard(wn) {
+  if (!wardLayer) return;
+  wardLayer.eachLayer(layer => {
+    if (!layer.feature) return;
+    const props = layer.feature.properties;
+    const keys  = Object.keys(props);
+    const wk = keys.find(k => /ward/i.test(k));
+    if (!wk) return;
+    const n = parseInt(String(props[wk]).replace(/\D/g,''), 10);
+    if (n === wn) { map.fitBounds(layer.getBounds(), { padding:[60,60], maxZoom:13 }); layer.fire('click'); }
+  });
+}
+
+/* ── DETAIL PANEL ─────────────────────────────────────────────────────── */
+function initials(name) { return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+
+function showDetail(wn) {
+  const c    = contractors.find(x => x.ward === wn);
+  const wd   = wardData[wn] || {};
+  const info = COUNCIL[wn] || {};
+  if (!c) {
+    document.getElementById('detailTitle').textContent = `Ward ${wn} — Unassigned`;
+    document.getElementById('detailBody').innerHTML =
+      `<div style="font-size:12px;color:var(--text-muted);">No contractor assigned to Ward ${wn}.<br>
+       <button class="btn btn-p" style="margin-top:10px;" onclick="openModal()">+ Register Contractor</button></div>`;
+    return;
+  }
+  const daysCss  = wd.status==='overflow' ? 'var(--red)' : wd.status==='approaching' ? 'var(--accent)' : 'var(--green)';
+  const btnCls   = wd.status==='overflow' ? '' : wd.status==='approaching' ? 'standby' : 'ok';
+  const btnLabel = wd.status==='overflow'    ? '⚡ Dispatch — Overflow Active'
+                 : wd.status==='approaching' ? '⚠ Place on Standby'
+                 : '✓ On Cycle — Monitor Only';
+  const tagMap = { deployed:'tag-deployed', active:'tag-active', standby:'tag-standby' };
+  const txtMap = { deployed:'Deployed', active:'Active', standby:'Standby' };
+
+  document.getElementById('detailTitle').textContent = `${c.id} · ${c.name}`;
+  document.getElementById('detailBody').innerHTML = `
+    <div class="td-header">
+      <div>
+        <div class="td-id">${c.id} · ${c.truck}</div>
+        <div class="td-name">${c.name}</div>
+        <div class="td-nbhd">${info.neighborhoods ? info.neighborhoods.split(',').slice(0,2).join(',') : ''}</div>
+      </div>
+      <span class="tag ${tagMap[c.status]||'tag-standby'}">${txtMap[c.status]||'Standby'}</span>
+    </div>
+    <div class="info-grid">
+      <div class="ig-cell"><div class="ig-lbl">2026 Ward</div><div class="ig-val" style="color:var(--accent);">${wn}</div></div>
+      <div class="ig-cell"><div class="ig-lbl">Days Since Cut</div><div class="ig-val" style="color:${daysCss};">${wd.days}d</div></div>
+      <div class="ig-cell"><div class="ig-lbl">Lots in Ward</div><div class="ig-val">${wd.lots}</div></div>
+      <div class="ig-cell"><div class="ig-lbl">Council Member</div><div class="ig-val" style="font-size:10px;line-height:1.3;">${info.member||'—'}<br><span style="color:var(--text-muted);font-size:9px;">${info.title||''}</span></div></div>
+    </div>
+    <div class="crew-row">
+      <div class="crew"><div class="av">${initials(c.contact)}</div><div><div class="cname">${c.contact}</div><div class="crole">Driver / Supervisor</div></div></div>
+      <div class="crew"><div class="av">${initials(c.op1)}</div><div><div class="cname">${c.op1}</div><div class="crole">Mower Operator</div></div></div>
+      <div class="crew"><div class="av">${initials(c.op2)}</div><div><div class="cname">${c.op2}</div><div class="crole">Mower Operator</div></div></div>
+    </div>
+    <div class="equip">
+      <div class="chip">🚛 ${c.truck}</div><div class="chip">🤖 ZK ×2</div>
+      <div class="chip">⛽ 25-gal</div><div class="chip">✂️ Trimmer ×2</div>
+      <div class="chip">📡 Optimizer</div>
+    </div>
+    <button class="dispatch-btn ${btnCls}" onclick="dispatchTeam(${wn})">${btnLabel}</button>`;
+  buildBASection(wn);
+}
+
+function dispatchTeam(wn) {
+  const c  = contractors.find(x => x.ward === wn);
+  const wd = wardData[wn] || {};
+  if (!c) return;
+  const now = new Date();
+  const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const dot = wd.status==='overflow' ? 'var(--red)' : wd.status==='approaching' ? 'var(--accent)' : 'var(--green)';
+  const msg = wd.status==='overflow'
+    ? `dispatched — Ward ${wn}, ${wd.days}d. Route optimizer loading.`
+    : wd.status==='approaching'
+    ? `on standby — Ward ${wn}, ${wd.days}d threshold watch.`
+    : `monitoring Ward ${wn} — ${wd.days}d. No overflow action needed.`;
+  const entry = document.createElement('div');
+  entry.className = 'log';
+  entry.innerHTML = `<div class="log-t">${t}</div><div class="log-d" style="background:${dot}"></div><div class="log-txt"><strong>${c.name}</strong> ${msg}</div>`;
+  document.getElementById('logList').prepend(entry);
+  if (wd.status === 'overflow') {
+    c.status = 'deployed';
+    buildSidebar(); showDetail(wn);
+  }
+}
+
+/* ── COLLAPSIBLES ─────────────────────────────────────────────────────── */
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? '' : 'none';
+}
+
+/* ── MODAL ────────────────────────────────────────────────────────────── */
+function openModal()  { document.getElementById('modalBg').classList.add('open'); }
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+function closeModalOut(e) { if (e.target === document.getElementById('modalBg')) closeModal(); }
+function addContractor() {
+  const n = contractors.length + 1;
+  contractors.push({ id:`WT-${String(n).padStart(2,'0')}`, name:'New Contractor Team',
+    contact:'TBD', op1:'TBD', op2:'TBD', ward:0, truck:`NPR-${n}`, status:'standby' });
+  document.getElementById('sbCountLabel').textContent = `Contractor Teams (${contractors.length})`;
+  buildSidebar(); closeModal();
+}
+
+/* ── BEFORE & AFTER PHOTO SYSTEM ──────────────────────────────────────────
+   photoStore: { [wardNum]: [ { id, address, ts, before:dataURL|null,
+                                after:dataURL|null, verified:bool } ] }      */
+const photoStore = {};
+let currentPhotoWard = null;
+let lightboxJobId    = null;
+
+/* Seed a couple of example jobs for Ward 1 (deployed / overflow) */
+photoStore[1] = [
+  { id:'job-1-1', address:'3412 E. 131st St.', ts:'Today 07:22', before:null, after:null, verified:false },
+  { id:'job-1-2', address:'3501 E. 128th St.', ts:'Today 08:44', before:null, after:null, verified:false },
+];
+photoStore[9] = [
+  { id:'job-9-1', address:'1122 Parkwood Dr.',  ts:'Today 09:05', before:null, after:null, verified:false },
+];
+
+function buildBASection(wn) {
+  currentPhotoWard = wn;
+  const jobs = photoStore[wn] || [];
+  const jobList = document.getElementById('baJobList');
+  const summary = document.getElementById('baSummary');
+
+  if (!jobs.length) {
+    summary.style.display = 'none';
+    jobList.innerHTML = `
+      <div class="ba-empty-state">
+        No job records yet for Ward ${wn}.<br>
+        <button class="ba-add-job" style="margin-top:10px;" onclick="addBAJob(${wn})">+ Add Lot / Job Record</button>
+      </div>`;
+    return;
+  }
+
+  /* summary counts */
+  const verified   = jobs.filter(j => j.verified).length;
+  const complete   = jobs.filter(j => j.before && j.after).length;
+  const total      = jobs.length;
+  summary.style.display = 'flex';
+  summary.innerHTML = `
+    <div class="ba-sum-box"><div class="ba-sum-val">${total}</div><div class="ba-sum-lbl">Jobs</div></div>
+    <div class="ba-sum-box"><div class="ba-sum-val" style="color:var(--accent);">${complete}</div><div class="ba-sum-lbl">Photos</div></div>
+    <div class="ba-sum-box"><div class="ba-sum-val" style="color:var(--green);">${verified}</div><div class="ba-sum-lbl">Verified</div></div>`;
+
+  jobList.innerHTML = jobs.map(j => {
+    const statusCls = j.verified ? 'verified' : (j.before && j.after) ? 'pending' : 'incomplete';
+    const statusTxt = j.verified ? '✓ VERIFIED' : (j.before && j.after) ? '● AWAITING REVIEW' : '○ PHOTOS NEEDED';
+    const verifyBtnCls = j.verified ? 'verified' : 'can-verify';
+    const verifyBtnTxt = j.verified ? '✓ Verified' : 'Verify';
+    const verifyDisabled = (!j.before || !j.after || j.verified) ? 'disabled' : '';
+    return `
+    <div class="ba-job" id="job-${j.id}">
+      <div class="ba-job-head">
+        <div class="ba-addr">${j.address}</div>
+        <div class="ba-ts">${j.ts}</div>
+      </div>
+      <div class="ba-photos">
+        <div class="ba-slot ${j.before ? '' : 'empty'}" onclick="openLightbox('${j.id}',${wn})">
+          ${j.before
+            ? `<img src="${j.before}" alt="Before"><div class="ba-slot-label before">BEFORE</div>`
+            : `<div class="upload-icon">📷</div><div class="upload-txt">TAP TO UPLOAD<br>BEFORE</div>
+               <input type="file" accept="image/*" onchange="handlePhoto(event,'${j.id}',${wn},'before')" onclick="event.stopPropagation()">`
+          }
+        </div>
+        <div class="ba-slot ${j.after ? '' : 'empty'}" onclick="${j.after ? `openLightbox('${j.id}',${wn})` : ''}">
+          ${j.after
+            ? `<img src="${j.after}" alt="After"><div class="ba-slot-label after">AFTER</div>`
+            : `<div class="upload-icon">📷</div><div class="upload-txt">TAP TO UPLOAD<br>AFTER</div>
+               <input type="file" accept="image/*" onchange="handlePhoto(event,'${j.id}',${wn},'after')" onclick="event.stopPropagation()">`
+          }
+        </div>
+      </div>
+      <div class="ba-job-footer">
+        <div class="ba-status ${statusCls}">${statusTxt}</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          ${j.before && j.after ? `<button class="btn btn-g btn-sm" style="padding:3px 8px;font-size:10px;" onclick="openLightbox('${j.id}',${wn})">🔍 Review</button>` : ''}
+          <button class="ba-verify-btn ${verifyBtnCls}" ${verifyDisabled}
+            onclick="verifyJob('${j.id}',${wn})">${verifyBtnTxt}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + `<button class="ba-add-job" onclick="addBAJob(${wn})">+ Add Lot / Job Record</button>`;
+}
+
+function handlePhoto(evt, jobId, wn, type) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const jobs = photoStore[wn] || [];
+    const job  = jobs.find(j => j.id === jobId);
+    if (!job) return;
+    job[type] = e.target.result;
+    buildBASection(wn);
+    logBAEvent(wn, jobId, `${type.toUpperCase()} photo uploaded`, type === 'after' ? 'var(--green)' : 'var(--accent)');
+  };
+  reader.readAsDataURL(file);
+}
+
+function verifyJob(jobId, wn) {
+  const job = (photoStore[wn] || []).find(j => j.id === jobId);
+  if (!job || !job.before || !job.after) return;
+  job.verified = true;
+  buildBASection(wn);
+  closeLightbox();
+  logBAEvent(wn, jobId, 'Work VERIFIED — before & after photos confirmed', 'var(--green)');
+}
+
+function addBAJob(wn) {
+  if (!photoStore[wn]) photoStore[wn] = [];
+  const n   = photoStore[wn].length + 1;
+  const addr = prompt(`Enter lot address for Ward ${wn} Job #${n}:`, 'e.g. 1234 E. 99th St.');
+  if (!addr) return;
+  const now = new Date();
+  const ts  = `Today ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  photoStore[wn].push({ id:`job-${wn}-${n}`, address:addr, ts, before:null, after:null, verified:false });
+  buildBASection(wn);
+}
+
+function logBAEvent(wn, jobId, msg, color) {
+  const c  = contractors.find(x => x.ward === wn);
+  const now = new Date();
+  const t  = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const entry = document.createElement('div');
+  entry.className = 'log';
+  entry.innerHTML = `<div class="log-t">${t}</div><div class="log-d" style="background:${color}"></div>
+    <div class="log-txt"><strong>Ward ${wn} · ${c ? c.name : '—'}</strong> — ${msg}.</div>`;
+  document.getElementById('logList').prepend(entry);
+}
+
+/* ── LIGHTBOX ─────────────────────────────────────────────────────────── */
+function openLightbox(jobId, wn) {
+  const job  = (photoStore[wn] || []).find(j => j.id === jobId);
+  const c    = contractors.find(x => x.ward === wn);
+  if (!job) return;
+  lightboxJobId = jobId;
+  const lb = document.getElementById('lightbox');
+
+  document.getElementById('lbTitle').textContent  = job.address;
+  document.getElementById('lbMeta').textContent   = `${c ? c.name : ''} · Ward ${wn} · ${job.ts}`;
+  document.getElementById('lbJobInfo').innerHTML  =
+    `<strong>${job.address}</strong> &nbsp;·&nbsp; Ward ${wn} &nbsp;·&nbsp; ${job.ts}`;
+
+  const bEl = document.getElementById('lbBefore');
+  const aEl = document.getElementById('lbAfter');
+  bEl.innerHTML = job.before ? `<img src="${job.before}" alt="Before">` : `<span class="lb-no-img">No photo uploaded</span>`;
+  aEl.innerHTML = job.after  ? `<img src="${job.after}"  alt="After">`  : `<span class="lb-no-img">No photo uploaded</span>`;
+
+  const vBtn = document.getElementById('lbVerifyBtn');
+  if (job.verified) {
+    vBtn.textContent = '✓ Already Verified'; vBtn.disabled = true;
+    vBtn.className = 'btn btn-g';
+  } else if (job.before && job.after) {
+    vBtn.textContent = '✓ Mark Verified'; vBtn.disabled = false;
+    vBtn.className = 'btn btn-p';
+  } else {
+    vBtn.textContent = 'Photos Needed'; vBtn.disabled = true;
+    vBtn.className = 'btn btn-g';
+  }
+  lb.classList.add('open');
+}
+
+function verifyFromLightbox() {
+  if (!lightboxJobId || !currentPhotoWard) return;
+  verifyJob(lightboxJobId, currentPhotoWard);
+}
+
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+function closeLightboxOutside(e) { if (e.target === document.getElementById('lightbox')) closeLightbox(); }
+
+/* ── INIT ─────────────────────────────────────────────────────────────── */
+buildSidebar();
+</script>
+</body>
+</html>
